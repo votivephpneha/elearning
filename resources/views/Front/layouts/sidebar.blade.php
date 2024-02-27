@@ -1,0 +1,21 @@
+<div id="mySidebar" class="sidebar" onmouseover="toggleSidebar()" onmouseout="toggleSidebar()" style="width: 250px;">
+  <a href="#"><span style="padding-right: 23px;"><img src="{{ url('/public') }}/assets/img/m.png"> </span><span class="icon-text"><img src="{{ url('/public') }}/assets/img/text-logo.png"></span></a><br>
+  
+<a href="#"><i class="material-symbols-outlined">
+grid_view
+</i><span class="icon-text">Home</span></a><br>
+
+<a href="#"><i class="material-symbols-outlined">
+content_paste_search
+</i><span class="icon-text"></span>Exam Builder</a>
+<br>
+
+<a href="#"><i class="material-symbols-outlined">
+pie_chart
+</i>
+<span class="icon-text"></span>User Status</a><br>
+
+<a href="#"><i class="material-symbols-outlined">
+settings
+</i><span class="icon-text"></span>Settings<span></span></a>
+</div>

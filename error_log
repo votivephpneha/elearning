@@ -1,0 +1,4 @@
+[26-Feb-2024 00:12:22 America/Chicago] PHP Warning:  Undefined variable $Ah in /home2/eicyjdte/public_html/dev/adminer-4.8.1.php on line 1787
+[26-Feb-2024 00:12:22 America/Chicago] PHP Warning:  Undefined variable $Ah in /home2/eicyjdte/public_html/dev/adminer-4.8.1.php on line 1787
+[26-Feb-2024 00:12:22 America/Chicago] PHP Warning:  Undefined variable $Ah in /home2/eicyjdte/public_html/dev/adminer-4.8.1.php on line 1787
+[26-Feb-2024 06:38:02 UTC] PHP Fatal error:  Cannot use App\Http\Controllers\AuthController as AuthController because the name is already in use in /home2/eicyjdte/public_html/dev/routes/web.php on line 6
