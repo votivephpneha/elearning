@@ -1,26 +1,15 @@
 <?php
 
 namespace App\Http\Controllers\AdminAuth;
-
-use App\Admin;
-
 use App\Http\Controllers\Controller;
-
-use DB;
-
-use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Auth;
-
-use PHPMailer\PHPMailer;
-
+use Illuminate\Http\Request;
+use App\Models\Admin;
+use Hash;
 use Redirect;
-
 use Session;
-
 use Validator;
-
-use Mail;
+use DB;
 
 
 
@@ -148,16 +137,17 @@ class AuthController extends Controller
 
     public function showLoginForm()
     {
+        if (view()->exists('auth.authenticate')) {
+            return view('auth.authenticate');
+        }
+        return view('admin.auth.login');
+    }
 
-      if (view()->exists('auth.authenticate')) {
-
-       return view('auth.authenticate');
-
-   }
-
-   return view('admin.auth.login');
-
-}
+    public function logout()
+    {
+        Auth::guard("admin")->logout();
+        return redirect()->back();
+    }
 
 
 

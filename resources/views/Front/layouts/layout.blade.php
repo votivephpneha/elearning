@@ -22,13 +22,13 @@
   <link href="{{ url('/public') }}/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="{{ url('/public') }}/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
   <link href="{{ url('/public') }}/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
   <!-- Template Main CSS File -->
   <link href="{{ url('/public') }}/assets/css/style.css" rel="stylesheet">
   @yield('current_page_css')
   <?php
-  if($_SERVER['REQUEST_URI'] != "/dev/login" and $_SERVER['REQUEST_URI'] != "/dev/register"){
+  if($_SERVER['REQUEST_URI'] != "/dev/login" and $_SERVER['REQUEST_URI'] != "/dev/register" and $_SERVER['REQUEST_URI'] != "/dev/user/start_quiz"){
     ?>
     <style type="text/css">
       body{
@@ -38,6 +38,18 @@
     <?php
   }
 ?>
+<?php
+  if($_SERVER['REQUEST_URI'] == "/dev/user/start_quiz"){
+    ?>
+    <style type="text/css">
+      body{
+            background-color: #F7FBFF;
+      }
+    </style>
+    <?php
+  }
+?>
+
 </head>
 
 <body>
@@ -45,19 +57,20 @@
 <!-- End About Section -->
 
 <?php
-  if($_SERVER['REQUEST_URI'] != "/dev/login" and $_SERVER['REQUEST_URI'] != "/dev/register"){
+  
+  if($_SERVER['REQUEST_URI'] != "/dev/" and $_SERVER['REQUEST_URI'] != "/dev/register" and $_SERVER['REQUEST_URI'] != "/dev/user/start_quiz" and $_SERVER['REQUEST_URI'] != "/dev/user/quiz"){
     ?>
-    @include('Front.layouts.header');
+    @include('Front.layouts.header')
     <div id="main" style="margin-left: 250px;">
-    <div class="class-box">
+    <div class="class-box <?php if($_SERVER['REQUEST_URI'] == "/dev/user/course_view"){ ?>topics<?php } ?>">
     <?php
   }
 ?>
 @yield('content')
 <?php
-  if($_SERVER['REQUEST_URI'] != "/dev/login" and $_SERVER['REQUEST_URI'] != "/dev/register"){
+  if($_SERVER['REQUEST_URI'] != "/dev/" and $_SERVER['REQUEST_URI'] != "/dev/register" and $_SERVER['REQUEST_URI'] != "/dev/user/start_quiz" and $_SERVER['REQUEST_URI'] != "/dev/user/quiz"){
     ?>
-    @include('Front.layouts.sidebar');
+    @include('Front.layouts.sidebar')
     </div>
   </div>
     <?php
@@ -83,7 +96,12 @@
   <script type="text/javascript">
   
   var mini = true;
-
+  $(window).on("load", function(){
+    console.log("closing sidebar");
+    document.getElementById("mySidebar").style.width = "80px";
+    document.getElementById("main").style.marginLeft = "80px";
+    //this.mini = true;
+});
 function toggleSidebar() {
   if (mini) {
     console.log("opening sidebar");

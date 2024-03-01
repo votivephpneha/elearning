@@ -1,0 +1,275 @@
+<?php
+
+namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use App\Models\Topics;
+use App\Models\Subtopics;
+use Session;
+use DB;
+
+class TopicController extends Controller
+{
+
+    public function __construct(){
+
+        $this->middleware('admin'); // Class admin does not exist
+
+    }
+
+   
+    public function topic_list(){
+        DB::connection()->enableQueryLog();
+        // $topic_list = DB::table('topics')
+        // ->select('*')
+        // ->orderBy('topic_id', 'desc')
+        // ->get();
+        $topic_list = DB::table('topics')
+        ->select('topics.*', 'courses.title as course_title')
+        ->leftJoin('courses', 'topics.course_id', '=', 'courses.course_id')
+        ->whereNull('topics.deleted_at') 
+        ->orderBy('topics.topic_id', 'desc')
+        ->get();
+
+        $data_onview = array('topic_list' =>$topic_list );
+        return View('admin.topics.topic_list')->with($data_onview);
+
+    }
+
+    public function topic_form(Request $request){
+
+        $id = base64_decode($request->id);
+        $course_list  = DB::table('courses')->get();
+        if($id){
+
+        $topic_detail  = DB::table('topics')->where('topic_id', '=' ,$id)->get();
+        $topic_list  = DB::table('topics')->where('topic_id', '!=' ,$id)->get();
+        $data_onview = array('topic_detail' =>$topic_detail,'id'=>$id,'course_list'=>$course_list,'topic_list'=>$topic_list);
+        return View('admin.topics.topic_form')->with($data_onview);
+
+        }else{
+
+
+        $topic_list  = DB::table('topics')->where('topic_id', '!=' ,$id)->get();
+        $data_onview = array('id'=>$id,'topic_list'=>$topic_list,'course_list'=>$course_list);
+         
+        return View('admin.topics.topic_form')->with($data_onview);
+
+        }
+    }
+
+    public function topic_action(Request $request)
+    {
+
+        $request->all();
+
+        
+        $id = $request->id;
+        // Validate the incoming request...
+        $title = $request->input('title');
+        // Generate slug from the title
+        $slug = Str::slug($title);
+        if($id==0){
+            $request->all();
+            $validatedData = $request->validate([
+            'title' => 'required|unique:topics|max:255'
+        ]);
+
+            $topics = new Topics;
+            $topics->title = trim($request->title);
+            $topics->course_id = trim($request->course_id);
+            $topics->slug = $slug;
+            $topics->status = "1";
+            $topics->save();
+            $topic_id = $topics->topic_id;
+            Session::flash('message', 'Course Inserted Sucessfully!');
+            return redirect()->to('/admin/topiclist');
+
+        }else
+        {
+            $count_topic = DB::table('topics')
+                    ->where('title', $request->title)
+                    ->where('topic_id', '!=', $request->id)
+                    ->count();
+            if($count_topic > 0){
+                 $validatedData = $request->validate([
+                 'title' => 'required|unique:topics|max:255'
+             ]);
+            }
+            DB::table('topics')
+                ->where('topic_id', $id)
+                ->update(['title' => trim($request->title),
+                    'slug'=>  $slug,
+                    'course_id'=> trim($request->course_id),
+                ]);
+            Session::flash('message', 'Topic Updated Sucessfully!');
+            return redirect()->to('/admin/topiclist');
+        }
+
+
+    }
+    public function course_view(Request $request,$id){
+
+        $id = base64_decode($id);
+        if($id){
+        $course_id = $request->id;
+        $course_detail  = DB::table('courses')->where('course_id', '=' ,$course_id)->get();
+        $course_list  = DB::table('courses')->where('course_id', '!=' ,$course_id)->get();
+        $data_onview = array('course_detail' =>$course_detail,'course_id'=>$course_id,'course_list'=>$course_list);
+        return View('admin.course.course_view')->with($data_onview);
+
+        }
+    }
+
+    public function course_status(Request $request){
+        DB::table('courses')
+                ->where('course_id', $request->course_id)
+                ->update(
+                    ['status' => $request->status]
+                );
+        return response()->json(['success' => true]);
+    }
+
+    public function topic_delete($id){
+
+        $id = base64_decode($id);
+
+        $topics = Topics::find($id);
+        $topics->delete();
+
+        Session::flash('message', 'Topic Deleted Sucessfully!');
+
+        return Redirect('/admin/topiclist');
+    }
+
+    public function topic_status(Request $request){
+
+        DB::table('topics')
+                ->where('topic_id', $request->topic_id)
+                ->update(
+                    ['status' => $request->status]
+                );
+        return response()->json(['success' => true]);
+    }
+
+    // Sub Topic Management 
+
+    public function subtopic_list(){
+
+        $topic_list = DB::table('subtopics')
+        ->select('subtopics.*', 'courses.title as course_title', 'topics.title as topic_title')
+        ->leftJoin('courses', 'subtopics.course_id', '=', 'courses.course_id')
+        ->leftJoin('topics','subtopics.topic_id', '=' , 'topics.topic_id')
+        ->whereNull('subtopics.deleted_at') 
+        ->orderBy('subtopics.st_id', 'desc')
+        ->get();
+
+        $data_onview = array('topic_list' =>$topic_list );
+        return View('admin.sub-topics.subtopic_list')->with($data_onview);
+
+    }
+
+     public function subtopic_form(Request $request){
+
+
+        $id = base64_decode($request->id);
+        $course_list  = DB::table('courses')->get();
+        $topic_list  = DB::table('topics')->get();
+
+        if($id){
+
+        $subtopic_detail  = DB::table('subtopics')->where('st_id', '=' ,$id)->get();
+        $subtopic_list  = DB::table('subtopics')->where('st_id', '!=' ,$id)->get();
+        $data_onview = array('subtopic_detail' =>$subtopic_detail,'id'=>$id,'course_list'=>$course_list,'subtopic_list'=>$subtopic_list,'topic_list'=>$topic_list);
+        return View('admin.sub-topics.subtopic_form')->with($data_onview);
+
+        }else{
+
+        $id =0;
+        $subtopic_list  = DB::table('subtopics')->where('topic_id', '!=' ,$id)->get();
+        $data_onview = array('id'=>$id,'subtopic_list'=>$subtopic_list,'course_list'=>$course_list,'topic_list'=>$topic_list);
+         
+        return View('admin.sub-topics.subtopic_form')->with($data_onview);
+
+        }
+    }
+
+    public function subtopic_delete($id){
+
+        $id = base64_decode($id);
+        $topics = Subtopics::find($id);
+        $topics->delete();
+        Session::flash('message', 'Sub-topic Deleted Sucessfully!');
+        return Redirect('/admin/subtopiclist');
+    }
+
+    public function subtopic_action(Request $request)
+    {
+
+        $id = $request->id;
+       
+
+      
+        // Validate the incoming request...
+        $title = $request->input('title');
+        // Generate slug from the title
+        $slug = Str::slug($title);
+        if($id==0){
+               $validatedData = $request->validate([
+            'title' => 'required|unique:subtopics|max:255'
+        ]);
+            $subtopics = new Subtopics;
+            $subtopics->title = trim($request->title);
+            $subtopics->course_id = trim($request->course_id);
+            $subtopics->topic_id = trim($request->topic_id);
+            $subtopics->slug = $slug;
+            $subtopics->status = "1";
+            $subtopics->save();
+            $st_id = $subtopics->st_id;
+            Session::flash('message', 'Sub-topic Inserted Sucessfully!');
+            return redirect()->to('/admin/subtopiclist');
+
+        }else
+        {
+           $count_subtopic = DB::table('subtopics')
+                    ->where('title', $request->title)
+                    ->where('st_id', '!=', $request->id)
+                    ->count();
+            if($count_subtopic > 0){
+                 $validatedData = $request->validate([
+                 'title' => 'required|unique:subtopics|max:255'
+             ]);
+            }
+            DB::table('subtopics')
+                ->where('st_id', $id)
+                ->update(['title' => trim($request->title),
+                    'slug'=>  $slug,
+                    'course_id'=> trim($request->course_id),
+                    'topic_id'=> trim($request->topic_id),
+
+                ]);
+            Session::flash('message', 'Sub-topic Updated Sucessfully!');
+            return redirect()->to('/admin/subtopiclist');
+        }
+
+
+    }
+
+    public function subtopic_status(Request $request){
+
+        DB::table('subtopics')
+                ->where('st_id', $request->topic_id)
+                ->update(
+                    ['status' => $request->status]
+                );
+        return response()->json(['success' => true]);
+    }
+
+    
+
+     
+    
+
+
+}

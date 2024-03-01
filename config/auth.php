@@ -50,7 +50,7 @@ return [
 
             'provider' => 'admin',
 
-        ]
+        ],
     ],
 
     /*
@@ -79,11 +79,11 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-         'admin' => [
+        'admin' => [
 
          'driver' => 'eloquent',
 
-         'model' => App\Admin::class,
+         'model' => App\Models\Admin::class,
 
      ],
 

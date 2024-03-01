@@ -1,6 +1,5 @@
 @extends('Front.layouts.layout')
 @section('title', 'Login')
-
 @section('current_page_css')
 <style type="text/css">
   form .error {
@@ -58,7 +57,6 @@ $(function() {
 });
 </script>
 @endsection
-
 @section('content')
 <!-- ======= About Section ======= -->
     <section>
@@ -78,12 +76,12 @@ $(function() {
            <div class="input-group favi-can">
               <i class='bx bx-envelope'></i>
                 <input type="text" name="email" class="form-control input" placeholder="What's your e-mail?"/>
-              </div><br />
+              </div>
          
                   <div class="input-group favi-can">
                  <i class='bx bx-lock-open'></i>
                   <input type="Password" name="password" class="form-control input" placeholder="Your password?"/>
-              </div><br />
+              </div>
             <!-- <div class="d-flex justify-content-between rem-pass">
             <div class="checkbox">
               <label class="d-flex align-items-center"><input type="checkbox" value=""/> Remember me</label>
@@ -93,7 +91,11 @@ $(function() {
           </div> -->
 
               <button type="submit" class="btn btn-success login-btn"><span class="glyphicon glyphicon-off"></span> Login</button>
-         
+            <div class="dont-asc mt-3">
+           <p class="m-0 mb-2"> Don't have an account?</p>
+           <a href="{{ url('/register') }}" style="color: #2571d7;"> Click here to register</a>
+
+   </div>
           
 
 

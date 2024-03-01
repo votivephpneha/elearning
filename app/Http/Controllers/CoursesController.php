@@ -1,0 +1,169 @@
+<?php
+
+namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use App\Models\Courses;
+use App\Models\Topics;
+
+use Session;
+use DB;
+
+class CoursesController extends Controller
+{
+
+    public function __construct(){
+
+        $this->middleware('admin'); // Class admin does not exist
+
+    }
+
+   
+    public function course_list(){
+        DB::connection()->enableQueryLog();
+
+        $course_list = DB::table('courses')
+
+        ->select('*')
+
+        ->whereNull('courses.deleted_at') 
+
+        ->orderBy('course_id', 'desc')
+
+        ->get();
+
+        $data_onview = array('course_list' =>$course_list);
+
+     
+
+        return View('admin.course.course_list')->with($data_onview);
+
+    }
+
+    public function course_form(Request $request){
+
+
+        $id = base64_decode($request->id);
+       
+
+        if($id){
+
+        $id = base64_decode($request->id);
+        $course_detail  = DB::table('courses')->where('course_id', '=' ,$id)->get();
+        $course_list  = DB::table('courses')->where('course_id', '!=' ,$id)->get();
+        $data_onview = array('course_detail' =>$course_detail,'id'=>$id,'course_list'=>$course_list);
+       
+        return View('admin.course.course_edit')->with($data_onview);
+
+        }else{
+
+        $id =0;
+        $course_list  = DB::table('courses')->where('course_id', '!=' ,$id)->get();
+        $data_onview = array('id'=>$id,'course_id'=>$course_list);
+         
+        return View('admin.course.course_form')->with($data_onview);
+
+        }
+    }
+
+    public function course_action(Request $request)
+    {
+
+        $request->all();
+        
+
+        $id = $request->id;
+        // Validate the incoming request...
+        $title = $request->input('title');
+        // Generate slug from the title
+        $slug = Str::slug($title);
+        if($id==0){
+
+            if ($request->hasFile('course_img')) {
+                $image = $request->file('course_img');
+                $imageName = "stu".time().'.'.$image->getClientOriginalExtension();
+                $image->move(public_path('/uploads/courses'), $imageName);
+            }
+            $validatedData = $request->validate([
+                'title' => 'required|unique:courses|max:255'
+            ]);
+            $courses = new Courses;
+            $courses->title = trim($request->title);
+            $courses->course_img = $imageName;
+            $courses->slug = $slug;
+            $courses->status = "1";
+            $courses->description = trim($request->description);
+            $courses->save();
+            $course_id = $courses->course_id;
+            Session::flash('message', 'Course Inserted Sucessfully!');
+            return redirect()->to('/admin/courselist');
+
+        }else
+        {
+            if ($request->hasFile('course_img')) {
+            $image = $request->file('course_img');
+            $imageName = "stu".time().'.'.$image->getClientOriginalExtension();
+            $image->move(public_path('/uploads/courses'), $imageName);
+        }
+        else{
+            $course_detail  = DB::table('courses')->where('course_id', '=' ,$id)->first();
+            $imageName = $course_detail->course_img;
+        }
+         DB::table('courses')
+                ->where('course_id', $id)
+                ->update(['title' => trim($request->title),
+                    'slug'=>  $slug,
+                    'course_img'=> $imageName,
+                    'description'=>trim($request->description),
+
+                ]);
+            Session::flash('message', 'Course Updated Sucessfully!');
+            return redirect()->to('/admin/courselist');
+        }
+
+
+    }
+
+    public function course_view(Request $request,$id){
+
+        $id = base64_decode($id);
+        if($id){
+        $course_id = $request->id;
+        $course_detail  = DB::table('courses')->where('course_id', '=' ,$course_id)->get();
+        $course_list  = DB::table('courses')->where('course_id', '!=' ,$course_id)->get();
+        $data_onview = array('course_detail' =>$course_detail,'course_id'=>$course_id,'course_list'=>$course_list);
+        return View('admin.course.course_view')->with($data_onview);
+
+        }
+    }
+
+    public function course_status(Request $request){
+        DB::table('courses')
+                ->where('course_id', $request->course_id)
+                ->update(
+                    ['status' => $request->status]
+                );
+        return response()->json(['success' => true]);
+    }
+
+    public function course_delete($id){
+
+        $id = base64_decode($id);
+
+        $courses = Courses::find($id);
+        $courses->delete();
+
+        Session::flash('message', 'Course Deleted Sucessfully!');
+
+        return Redirect('/admin/courselist');
+    }
+
+    public function fetch_topics(Request $request)
+    {
+        $data['topics'] = Topics::where("course_id", $request->country_id)
+                                ->get(["topic_id","title"]);
+        return response()->json($data);
+    }
+
+}

@@ -1,6 +1,5 @@
 @extends('Front.layouts.layout')
-@section('title', 'Registration')
-
+@section('title', 'Login')
 
 @section('current_page_css')
 <style type="text/css">
@@ -124,6 +123,11 @@ $(function() {
           </div>
           <br> -->
               <button type="submit" class="btn btn-success login-btn"><span class="glyphicon glyphicon-off"></span> Start your learning journey</button>
+              <div class="dont-asc mt-3">
+           <p class="m-0 mb-2"> Already Have an account</p>
+           <a href="{{ url('/') }}" style="color: #2571d7;"> Click here to login</a>
+
+   </div>
          
           </form>
 

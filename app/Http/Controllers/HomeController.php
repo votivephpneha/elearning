@@ -10,6 +10,7 @@ use App\Models\User;
 use Hash;
 use DB;
 use Auth;
+use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {
@@ -23,9 +24,9 @@ class HomeController extends Controller
 
     public function submit_registration(Request $request){
     	$name = $request->name;
-    	$email = $request->email;
-    	$password = $request->password;
-    	$c_password = $request->c_password;
+        $email = $request->email;
+        $password = $request->password;
+        $c_password = $request->c_password;
 
         $checkUserEmail = DB::table("users")->where("email",$email)->first();
         //print_r($checkUserEmail);die;
@@ -36,18 +37,27 @@ class HomeController extends Controller
             $user->email = $email;
             $user->password = Hash::make($password);
             $user->role = "student";
+            $user->status = "1";
             $user_save = $user->save();
 
             if($user_save){
-                return redirect()->back()->with('success', 'Registered Successfully.');
+                $user_data = array(
+                  'email'  => $request->get('email'),
+                  'password' => $request->get('password')
+                );
+                if(Auth::guard("customer")->attempt($user_data))
+                {
+                    
+                    return redirect()->route('user_dashboard');
+                    
+                }
+                //return redirect()->back()->with('success', 'Registered Successfully.');
             }else{
                 return redirect()->back()->with('error', 'Server error');
             }
         }else{
             return redirect()->back()->with('error', 'Email already exist');
         }
-
-    	
     }
 
     public function submit_login(Request $request){
@@ -58,7 +68,7 @@ class HomeController extends Controller
         $user = User::where('email', '=', $request->email)->first();
         //print_r($user);die;
         //echo Auth::guard("customer")->attempt($user_data);die;
-        if(Auth::guard("customer")->attempt($user_data))
+        if(Auth::guard("customer")->attempt($user_data) and $user->status == 1)
         {
             
             return redirect()->route('user_dashboard');
@@ -71,6 +81,12 @@ class HomeController extends Controller
     }
 
     public function user_dashboard(Request $request){
-        return view("Front.user_dashboard");
+        $data['course_data'] = DB::table("courses")->get();
+        return view("Front.user_dashboard")->with($data);
+    }
+
+    public function user_logout(){
+        Auth::guard("customer")->logout();
+        return redirect()->route('login');
     }
 }

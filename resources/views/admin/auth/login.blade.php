@@ -3,12 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Site Name | Log in </title>
+  <title>Mathify | Login</title>
 
   <!-- Google Font: Source Sans Pro -->
+    <!-- Favicons -->
+  <link href="{{ url('/public') }}/assets/img/favicon.png" rel="icon">
+  <link href="{{ url('/public') }}/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="{{ url('/') }}/public/design/admin/plugins/fontawesome-free/css/all.min.css">
+
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="{{ url('/') }}/public/design/admin/css/all.min.css">
   <link rel="stylesheet" href="{{ url('/') }}/public/design/admin/css/adminlte.min.css">
 </head>
 <body class="hold-transition login-page">
@@ -16,7 +20,7 @@
   <!-- /.login-logo -->
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
-      <a href="../../index2.html" class="h1"><b>Site</b>Name</a>
+      <a href="../../index2.html" class="h1"><img src="{{ url('/public') }}/assets/img/logo.png"></a>
     </div>
     <div class="card-body">
         <p class="login-box-msg">
@@ -45,7 +49,6 @@
                         <span class="fas fa-lock"></span>
                     </div>
                 </div>
-
                 @if ($errors->has('password'))
                 <span class="help-block">
                     <strong>{{ $errors->first('password') }}</strong>
@@ -53,19 +56,8 @@
                 @endif
             </div>
         <div class="row">
-         <!--  <div class="col-8">
-            <div class="icheck-primary">
-              <input type="checkbox" id="remember">
-              <label for="remember">
-                Remember Me
-              </label>
-            </div>
-          </div> -->
-          <!-- /.col -->
-          <!-- <div class="col-4"> -->
             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-          <!-- </div> -->
-          <!-- /.col -->
+
         </div>
       </form>
 
