@@ -49,7 +49,13 @@
     <?php
   }
 ?>
-
+<style type="text/css">
+  .nav-custome {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+</style>  
 </head>
 
 <body>
@@ -61,8 +67,11 @@
   if($_SERVER['REQUEST_URI'] != "/dev/" and $_SERVER['REQUEST_URI'] != "/dev/register" and $_SERVER['REQUEST_URI'] != "/dev/user/start_quiz" and $_SERVER['REQUEST_URI'] != "/dev/user/quiz"){
     ?>
     @include('Front.layouts.header')
-    <div id="main" style="margin-left: 250px;">
-    <div class="class-box <?php if($_SERVER['REQUEST_URI'] == "/dev/user/course_view"){ ?>topics<?php } ?>">
+    <?php if($_SERVER['REQUEST_URI'] != "/dev/user/user_status" and $_SERVER['REQUEST_URI'] != "/dev/user/settings" and $_SERVER['REQUEST_URI'] != "/dev/user/change_password"){ ?>
+      <div id="main" style="margin-left: 250px;">
+    <div class="class-box <?php if(strpos($_SERVER['REQUEST_URI'],'course_view')){ ?>topics<?php } ?>">
+    <?php } ?>
+    
     <?php
   }
 ?>
@@ -71,8 +80,12 @@
   if($_SERVER['REQUEST_URI'] != "/dev/" and $_SERVER['REQUEST_URI'] != "/dev/register" and $_SERVER['REQUEST_URI'] != "/dev/user/start_quiz" and $_SERVER['REQUEST_URI'] != "/dev/user/quiz"){
     ?>
     @include('Front.layouts.sidebar')
+    <?php if($_SERVER['REQUEST_URI'] != "/dev/user/user_status"  and $_SERVER['REQUEST_URI'] != "/dev/user/settings" and $_SERVER['REQUEST_URI'] != "/dev/user/change_password"){ ?>
     </div>
   </div>
+  <?php
+  }
+?>
     <?php
   }
 ?>

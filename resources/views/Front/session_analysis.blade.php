@@ -3,13 +3,13 @@
 
 @section('content')
 	<div class="col-md-12">
-   <div class="class-box-se">
+   <div class="class-box-se" style="background-color: inherit;">
     <h3 class="setion-ana">Session Analysis </h3>
 
 <div class="flex-br">
 <div class="seesion-box">
-  <div class="d-flex justify-content-center">
-  <div class="mr-3a">
+  <div class="d-flex">
+  <div class="mr-3a a1">
 <label> <i class='bx bx-task'></i></label>
 </div>
 <div class="tex-bk">
@@ -21,8 +21,8 @@
 
 
 <div class="seesion-box">
-  <div class="d-flex justify-content-center">
-  <div class="mr-3a">
+  <div class="d-flex ">
+  <div class="mr-3a a2">
 <label> <i class='bx bx-check-double'></i></label>
 </div>
 
@@ -34,37 +34,37 @@
 </div>
 
 <div class="seesion-box">
-  <div class="d-flex justify-content-center">
-<div class="mr-3a">
+  <div class="d-flex ">
+<div class="mr-3a a3">
 <label> <i class='bx bx-time-five'></i></label>
 </div>
 
 <div class="tex-bk">
-<h5> 10 Seconds</h5>
+<h5> 10 <small>Seconds</small></h5>
 <p>Avg. Time per Questions</p>
 </div>
 </div>
 </div>
 
 <div class="seesion-box">
-  <div class="d-flex justify-content-center">
- <div class="mr-3a">
+  <div class="d-flex ">
+ <div class="mr-3a a4">
 <label> <i class='bx bx-stopwatch'></i></label>
 </div>
 
 <div class="tex-bk">
-<h5>10 minutes</h5>
+<h5>10 <small>minutes</small></h5>
 <p>Total Time Spent</p>
 </div>
 </div>
 </div>
 </div>
 
-<div class="funct-box">
+<!-- <div class="funct-box">
 
 <div class="seesion-box">
-  <div class="d-flex justify-content-center align-content-center">
- <div class="mr-3a">
+  <div class="d-flex  align-content-center">
+ <div class="mr-3a a5">
 <label><i class='bx bx-book-open'></i></label>
 </div>
 
@@ -74,6 +74,67 @@
 </div>
 </div>
 </div>
+</div> -->
+
+
+
+<div class="col-md-12 mt-4">
+<div class="recomend-topic">
+<h5 class="pb-2 pt-2"> Recommended topics to study</h5>
+
+<div class="topic-bar">
+
+<!-- <div class="chepter-box">
+  <a href="#">
+  <div class="box1 bx1-c">
+<h2><img src="{{ url('/public') }}/assets/img/folder-open.png"> Functions </h2>
+
+<p class="m-0"><i class="bx bx-chevron-right"></i> </p>
+</div>
+</a>
+</div> -->
+<!-- <div class="chepter-box">
+  <a href="#">
+  <div class="box1 bx2-c">
+<h2><img src="{{ url('/public') }}/assets/img/folder-openred.png"> Functions </h2>
+
+<p class="m-0"><i class="bx bx-chevron-right"></i> </p>
+</div>
+</a>
+</div> -->
+<div class="chepter-box">
+  <a href="#">
+  <div class="box1 bx3-c">
+<h2><img src="{{ url('/public') }}/assets/img/folder-openyelow.png"> Functions </h2>
+
+<p class="m-0"><i class="bx bx-chevron-right"></i> </p>
+</div>
+</a>
+</div>
+<div class="chepter-box">
+  <a href="#">
+  <div class="box1 bx4-c">
+<h2><img src="{{ url('/public') }}/assets/img/folder-open-green.png"> Functions </h2>
+
+<p class="m-0"><i class="bx bx-chevron-right"></i> </p>
+</div>
+</a>
+</div>
+<div class="chepter-box">
+  <a href="#">
+  <div class="box1 bx5-c">
+<h2><img src="{{ url('/public') }}/assets/img/folder-open-yellow.png"> Functions </h2>
+
+<p class="m-0"><i class="bx bx-chevron-right"></i> </p>
+</div>
+</a>
+</div>
+
+
+</div>
+
+
+</div>
 </div>
 
 <div class="attempt-quesa">
@@ -81,7 +142,7 @@
     <p class="atmpt"> Attempted </p>
 <h3>Question 1 - Which is Real Function ? </h3>
 
-<div class="color-bx"> <label> Average Time: 1.0 seconds</label> <label> Average Time: 1.0 seconds</label> <label> You spent : 5 seconds</label>  </div>
+<div class="color-bx"> <label> Average Time: 1.0 seconds</label> <label> 100% got it correct</label> <label> You spent : 5 seconds</label>  </div>
 </div>
 
 <div class="correct-ans">
@@ -114,7 +175,7 @@
     <p class="atmpt"> Attempted </p>
 <h3>Question 2 - What is the value of dy/dx (sin⁡ x tan⁡ x)? ? </h3>
 
-<div class="color-bx"> <label> Average Time: 1.0 seconds</label> <label> Average Time: 1.0 seconds</label> <label> You spent : 5 seconds</label>  </div>
+<div class="color-bx"> <label> Average Time: 1.0 seconds</label> <label> 100% got it correct</label> <label> You spent : 5 seconds</label>  </div>
 </div>
 
 <div class="correct-ans">

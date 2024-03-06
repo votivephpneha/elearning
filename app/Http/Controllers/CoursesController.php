@@ -22,16 +22,9 @@ class CoursesController extends Controller
    
     public function course_list(){
         DB::connection()->enableQueryLog();
-
-        $course_list = DB::table('courses')
-
-        ->select('*')
-
-        ->whereNull('courses.deleted_at') 
-
-        ->orderBy('course_id', 'desc')
-
-        ->get();
+        $course_list = courses::orderBy('ordering_id', 'ASC')
+                     ->whereNull('deleted_at')
+                     ->get();
 
         $data_onview = array('course_list' =>$course_list);
 
@@ -110,6 +103,15 @@ class CoursesController extends Controller
             $course_detail  = DB::table('courses')->where('course_id', '=' ,$id)->first();
             $imageName = $course_detail->course_img;
         }
+         $count_course = DB::table('courses')
+                    ->where('title', $request->title)
+                    ->where('course_id', '!=', $request->id)
+                    ->count();
+            if($count_course > 0){
+                 $validatedData = $request->validate([
+                 'title' => 'required|unique:courses|max:255'
+             ]);
+            }
          DB::table('courses')
                 ->where('course_id', $id)
                 ->update(['title' => trim($request->title),
@@ -164,6 +166,25 @@ class CoursesController extends Controller
         $data['topics'] = Topics::where("course_id", $request->country_id)
                                 ->get(["topic_id","title"]);
         return response()->json($data);
+    }
+
+    public function update_order(Request $request)
+    {    
+        $courses = Courses::all();
+    
+
+        foreach ($courses as $course) {
+
+            foreach ($request->order as $order) {
+
+                if ($order['course_id'] == $course->course_id) {
+
+                    $course->update(['ordering_id' => $order['ordering_id']]);
+                }
+            }
+        }
+
+        return response(['message' => 'Update Successfully'], 200);
     }
 
 }

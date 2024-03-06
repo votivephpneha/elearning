@@ -23,9 +23,6 @@
 }
 </style>
 
- <section class="section-bg" style="margin-top: 0px;">
-      <div class="container-fluid">
-  <div class="class-box" style="top: 0px !important;">
 <div class="row">
 
 
@@ -39,9 +36,7 @@
                   <div id="accordion-list-1" class="collapse show" data-bs-parent=".accordion-list">
                     
                     <div class="course-ilsit">
-                      <h3><a href="{{ url('/user/theory') }}" class="d-flex align-items-center"> <span class="material-symbols-outlined">
-menu_book
-</span> Theory - Basic Trigonometry Ratios & Revisions (I) </a></h3>
+                      <h3><a href="{{ url('/user/theory') }}" class="d-flex align-items-center"> <span class="material-symbols-outlined">menu_book</span> Theory - Basic Trigonometry Ratios & Revisions (I) </a></h3>
                       <ul> 
                         <li><a href="{{ url('/user/start_quiz') }}"><img src="{{ url('/public') }}/assets/img/ancre.png"> Basic Trigonometry Ratios & Revisions (I)  </a> </li>
                         <li><a href="#"><img src="{{ url('/public') }}/assets/img/ancre.png"> Basic Trigonometry Ratios & Revisions (I)  </a> </li>
@@ -87,7 +82,5 @@ menu_book
 
 
 </div>
-</div>
-</div>
-</section>
+
 @endsection

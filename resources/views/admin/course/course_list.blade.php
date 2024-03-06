@@ -50,7 +50,10 @@
                      </div>
 
                     @endif
-                <table id="example1" class="table table-bordered table-striped">
+                    <div id="result" class="box" style="display:none">
+        <!-- Event result: -->
+    </div>
+                <table id="course_list" class=" display table table-bordered table-striped">
                   <thead>
                   <tr>
                     <th>ID</th>
@@ -62,11 +65,11 @@
                     <th>Action</th>
                   </tr>
                   </thead>
-                  <tbody>
+                  <tbody id="courseBodyContents">
                   <?php $i=1; ?>
                   @foreach ($course_list as $list)
-                  <tr>
-                    <td>{{$i}}</td>
+                  <tr class="tableRow" data-course_id="{{ $list->course_id }}">
+                    <td> {{ $i }}</td>
                     <td>{{ $list->title}}</td>
                     <td>
                      <?php
@@ -149,13 +152,11 @@
 
 <!-- Bootstrap -->
 
-<script src="{{ url('/') }}/public/design/admin/js/bootstrap.min.js" type="text/javascript"></script>
+
 
 <!-- DATA TABES SCRIPT -->
-<script src="https://jqueryvalidation.org/files/dist/jquery.validate.min.js"></script>
   
 <!--Export table button CSS-->
-
 
 
 
@@ -165,10 +166,13 @@
     var status = $(this).prop('checked') == true ? 1 : 0; 
     var course_id = $(this).data('id'); 
     $.ajax({
-      type: "GET",
+      type: "POST",
       dataType: "json",
       url: "<?php echo url('/admin/course_status'); ?>",
       data: {'status': status, 'course_id': course_id},
+       headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Include CSRF token in headers
+    },
        success: function(data){
 
         if(data.success){

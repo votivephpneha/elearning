@@ -81,8 +81,30 @@ class HomeController extends Controller
     }
 
     public function user_dashboard(Request $request){
-        $data['course_data'] = DB::table("courses")->get();
+        $data['course_data'] = DB::table("courses")->orderBy('ordering_id', 'ASC')->get();
         return view("Front.user_dashboard")->with($data);
+    }
+
+    public function change_password(){
+        return view("Front.change_password");
+        
+    }
+
+    public function postuser_ChangePassword(Request $request)
+    {
+        $auth = Auth::user();
+        if (!Hash::check($request->get('old_password'), $auth->password)) 
+        {
+            session::flash('password_error', 'Current password is invalid');
+            return redirect()->route('user_ChangePassword');
+        }else{
+            $user_id = Auth::User()->id;
+            $user = User::find($user_id);
+            $user->password = Hash::make($request->new_password);
+            $user->save();
+            session::flash('password_success', 'Password updated successfully');
+            return redirect()->route('user_ChangePassword');
+        }
     }
 
     public function user_logout(){

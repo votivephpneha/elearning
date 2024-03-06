@@ -50,7 +50,7 @@
                      </div>
 
                     @endif
-                <table id="example1" class="table table-bordered table-striped">
+                <table id="topic_list" class="table table-bordered table-striped">
                   <thead>
                   <tr>
                     <th>ID</th>
@@ -61,11 +61,11 @@
                     <th>Action</th>
                   </tr>
                   </thead>
-                  <tbody>
-                  <?php $i=1; ?>
+                  <tbody id="topicBodyContents">
                   @foreach ($topic_list as $list)
-                  <tr>
-                    <td>{{$i}}</td>
+                   <tr class="topictableRow" data-topic_id="{{ $list->topic_id }}">
+
+                    <td> {{ $loop->iteration }}</td>
                     <td>{{ $list->title}}</td>
                     <td>{{ $list->course_title}}</td>
                     <td>
@@ -81,11 +81,7 @@
                       <a title="Delete Topic" href="{{ route('topic.delete', base64_encode($list->topic_id)) }}" onclick="return confirm('Are you sure you want to delete this record?')"><i class="fa fa-trash"></i></a>
                     </td>
                   </tr>
-                  
-                  
-                 
-                 
-                     <?php $i++; ?>
+
                                     @endforeach            
                   </tbody>
                 <!--   <tfoot>
@@ -138,10 +134,13 @@
     var status = $(this).prop('checked') == true ? 1 : 0; 
     var topic_id = $(this).data('id'); 
     $.ajax({
-      type: "GET",
+      type: "post",
       dataType: "json",
       url: "<?php echo url('/admin/topic_status'); ?>",
       data: {'status': status, 'topic_id': topic_id},
+       headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Include CSRF token in headers
+    },
       success: function(data){
 
         if(data.success){

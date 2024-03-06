@@ -29,7 +29,7 @@ class TopicController extends Controller
         ->select('topics.*', 'courses.title as course_title')
         ->leftJoin('courses', 'topics.course_id', '=', 'courses.course_id')
         ->whereNull('topics.deleted_at') 
-        ->orderBy('topics.topic_id', 'desc')
+        ->orderBy('topics.ordering_id', 'asc')
         ->get();
 
         $data_onview = array('topic_list' =>$topic_list );
@@ -40,7 +40,9 @@ class TopicController extends Controller
     public function topic_form(Request $request){
 
         $id = base64_decode($request->id);
-        $course_list  = DB::table('courses')->get();
+        $course_list  = DB::table('courses')->whereNull('courses.deleted_at')->get();
+
+
         if($id){
 
         $topic_detail  = DB::table('topics')->where('topic_id', '=' ,$id)->get();
@@ -162,7 +164,7 @@ class TopicController extends Controller
         ->leftJoin('courses', 'subtopics.course_id', '=', 'courses.course_id')
         ->leftJoin('topics','subtopics.topic_id', '=' , 'topics.topic_id')
         ->whereNull('subtopics.deleted_at') 
-        ->orderBy('subtopics.st_id', 'desc')
+        ->orderBy('subtopics.ordering_id', 'ASC')
         ->get();
 
         $data_onview = array('topic_list' =>$topic_list );
@@ -174,8 +176,8 @@ class TopicController extends Controller
 
 
         $id = base64_decode($request->id);
-        $course_list  = DB::table('courses')->get();
-        $topic_list  = DB::table('topics')->get();
+        $course_list  = DB::table('courses')->whereNull('courses.deleted_at')->get();
+        $topic_list  = DB::table('topics')->whereNull('topics.deleted_at')->get();
 
         if($id){
 
@@ -265,6 +267,46 @@ class TopicController extends Controller
                 );
         return response()->json(['success' => true]);
     }
+
+    
+    public function update_chapterorder(Request $request)
+    {    
+        $subtopics = Subtopics::all();
+    
+
+        foreach ($subtopics as $subtopicVal) {
+
+            foreach ($request->order as $order) {
+
+                if ($order['st_id'] == $subtopicVal->st_id) {
+
+                    $subtopicVal->update(['ordering_id' => $order['ordering_id']]);
+                }
+            }
+        }
+
+        return response(['message' => 'Update Successfully'], 200);
+    }
+
+    public function update_topicrorder(Request $request)
+    {    
+        $topics = Topics::all();
+    
+
+        foreach ($topics as $topicVal) {
+
+            foreach ($request->order as $order) {
+
+                if ($order['topic_id'] == $topicVal->topic_id) {
+
+                    $topicVal->update(['ordering_id' => $order['ordering_id']]);
+                }
+            }
+        }
+
+        return response(['message' => 'Update Successfully'], 200);
+    }
+
 
     
 

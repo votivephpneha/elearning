@@ -9,6 +9,8 @@ use App\Http\Controllers\CoursesController;
 use App\Http\Controllers\AdminquesController1;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TopicController;
+use App\Http\Controllers\TheoryController;
+
 
 
 
@@ -39,11 +41,17 @@ Route::post('/submit_registration', [HomeController::class, 'submit_registration
 Route::post('/submit_login', [HomeController::class, 'submit_login'])->name("submit_login");
 Route::group(['prefix' => 'user', 'middleware' => 'user_auth:customer'], function () {
 	Route::get('/user_dashboard', [HomeController::class, 'user_dashboard'])->name("user_dashboard");
-	Route::get('/course_view', [UserController::class, 'course_view'])->name("course_view");
+	Route::get('/course_view/{id}', [UserController::class, 'course_view'])->name("course_view");
 	Route::get('/theory', [UserController::class, 'theory'])->name("theory");
 	Route::get('/start_quiz', [UserController::class, 'start_quiz'])->name("start_quiz");
 	Route::get('/quiz', [UserController::class, 'quiz'])->name("quiz");
 	Route::get('/session_analysis', [UserController::class, 'session_analysis'])->name("session_analysis");
+	Route::get('/exam_builder', [UserController::class, 'exam_builder'])->name("exam_builder");
+	Route::get('/exam_builder_view', [UserController::class, 'exam_builder_view'])->name("exam_builder_view");
+	Route::get('/user_status', [UserController::class, 'user_status'])->name("user_status");
+	Route::get('/settings', [UserController::class, 'settings'])->name("settings");
+	Route::get('/change_password', [HomeController::class, 'change_password'])->name("change_password");
+	Route::post('/postuser_ChangePassword', [HomeController::class, 'postuser_ChangePassword'])->name("postuser_ChangePassword");
 	Route::get('/logout', [HomeController::class, 'user_logout'])->name("user_logout");
 });
 
@@ -51,6 +59,8 @@ Route::get('/admin/add_questions', [AdminquesController1::class, 'index'])->name
 Route::post('/admin/post_questions', [AdminquesController1::class, 'post_questions'])->name('post_questions');
 Route::get('/admin/add_questions_bank', [AdminquesController1::class, 'add_questions_bank'])->name('add_questions_bank');
 Route::post('/admin/post_questions_bank', [AdminquesController1::class, 'post_questions_bank'])->name('post_questions_bank');
+Route::post('/admin/fetch-subtopics', [AdminquesController1::class, 'fetch_subtopics'])->name('fetch-subtopics');
+Route::get('/admin/show_questions', [AdminquesController1::class, 'show_questions'])->name('show_questions');
 Route::get('/admin', [AuthController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/admin/login', [Authcontroller::class, 'login'])->name("login.admin");
 Route::get('/admin/dashboard', [AdminController::class, 'index'])->name("admin.dashboard");
@@ -76,9 +86,13 @@ Route::post('/admin/course_action', [CoursesController::class, 'course_action'])
 Route::get('/admin/course-view/{id}', [CoursesController::class, 'course_view'])->name("course.view");
 Route::get('/admin/course-form/{id}', [CoursesController::class, 'course_form'])->name("course.edit");
 Route::get('/admin/course-delete/{id}', [CoursesController::class, 'course_delete'])->name("course.delete");
-Route::get('/admin/course_status', [CoursesController::class, 'course_status'])->name("course.status");
-Route::get('/student/student_status', [StudentController::class, 'student_status'])->name("student.status");
+Route::post('/admin/course_status', [CoursesController::class, 'course_status'])->name("course.status");
+Route::post('/student/student_status', [StudentController::class, 'student_status'])->name("student.status");
 Route::post('/admin/fetch-topics', [CoursesController::class, 'fetch_topics'])->name("fetch.topics");
+Route::post('/admin/update-order', [CoursesController::class, 'update_order'])->name("update.order");
+Route::post('/admin/update_chapterorder', [TopicController::class, 'update_chapterorder'])->name("update.chapter.order");
+
+
 
 
 
@@ -90,7 +104,9 @@ Route::get('/admin/topic-form', [TopicController::class, 'topic_form'])->name("t
 Route::post('/admin/topic_action', [TopicController::class, 'topic_action'])->name("topic.action");
 Route::get('/admin/topic-form/{id}', [TopicController::class, 'topic_form'])->name("topic.edit");
 Route::get('/admin/topic-delete/{id}', [TopicController::class, 'topic_delete'])->name("topic.delete");
-Route::get('/admin/topic_status', [TopicController::class, 'topic_status'])->name("topic.status");
+Route::post('/admin/topic_status', [TopicController::class, 'topic_status'])->name("topic.status");
+
+Route::post('/admin/update_topicrorder', [TopicController::class, 'update_topicrorder'])->name("update.topic.order");
 
 // Sub - Topic Management 
 
@@ -101,6 +117,20 @@ Route::get('/admin/subtopic-form', [TopicController::class, 'subtopic_form'])->n
 Route::get('/admin/subtopic-form/{id}', [TopicController::class, 'subtopic_form'])->name("subtopic.edit");
 Route::get('/admin/subtopic-delete/{id}', [TopicController::class, 'subtopic_delete'])->name("subtopic.delete");
 Route::get('/admin/subtopic_status', [TopicController::class, 'subtopic_status'])->name("subtopic.status");
+
+
+// Theory management
+Route::get('/admin/theorylist', [TheoryController::class, 'theory_list'])->name("theory.list");
+Route::get('/admin/theory-form', [TheoryController::class, 'theory_form'])->name("theory.form");
+Route::post('/admin/fetch-chapters', [TheoryController::class, 'fetch_chapters'])->name("fetch.chapters");
+Route::post('/admin/theory_action', [TheoryController::class, 'theory_action'])->name("theory.action");
+Route::get('/admin/theory-form/{id}', [TheoryController::class, 'theory_form'])->name("theory.edit");
+Route::get('/admin/theory-delete/{id}', [TheoryController::class, 'theory_delete'])->name("theory.delete");
+Route::post('/admin/theory_status', [TheoryController::class, 'theory_status'])->name("theory.status");
+
+	Route::get('/course_view', [UserController::class, 'course_view'])->name("course_view_dashboard");
+
+
 
 
  

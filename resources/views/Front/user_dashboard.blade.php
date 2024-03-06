@@ -34,20 +34,24 @@
 @foreach($course_data as $c_data)
 
 @if($c_data->status == 1 && $c_data->deleted_at == NULL)
-<div class="col-md-3">
+<div class="col-md-4">
 <div class="subject-box">
+	<div class="inline-bx">
   <div class="img-subject">
 <img src="{{ url('/public') }}/uploads/courses/{{ $c_data->course_img }}">
 
 </div>
+<div class="fielxi">
 <div class="sub-name-about">
 <h5>{{ $c_data->title }}</h5>
 <p class="dash_con">{!! $c_data->description !!}</p>
 </div>
 
 <div class="btm-btn">
-<a href="<?php if($i == 1){ ?>{{ url('/user/course_view') }}<?php }else{ echo "#"; } ?>">View</a> <p>23,350+ Enrolled </p>
+<a href="{{ url('/user/course_view') }}/{{ $c_data->course_id }}">View</a> <p>23,350+ Enrolled </p>
   </div>
+</div>
+</div>
 </div>
 </div>
 <?php

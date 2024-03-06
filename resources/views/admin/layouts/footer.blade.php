@@ -45,18 +45,199 @@
     <script src="{{ url('/') }}/public/design/admin/plugins/summernote/summernote-bs4.min.js"></script>
     <script type="text/javascript">
 
-  $(document).ready(function() {
-     $('#example1').DataTable({
+
+</script>
+
+<!-- <script type="text/javascript">
+
+
+        $(function () {
+
+            $('#course_list').DataTable({
+                        dom: 'Bfrtip',
+                        responsive :true,
+                        rowReorder: true,
+                        buttons: [
+                             'csv', 'excel'
+                        ]
+                    });
+
+            $("#courseBodyContents").sortable({
+                items: "tr",
+                cursor: 'move',
+                opacity: 0.6,
+                rowReorder: true,
+
+                update: function() {
+                    sendOrderToServer();
+                }
+            });
+
+            function sendOrderToServer() {
+
+                var order = [];
+                var token = $('meta[name="csrf-token"]').attr('content');
+
+                $('tr.tableRow').each(function(index,element) {
+                    order.push({
+                        course_id: $(this).attr('data-course_id'),
+                        ordering_id: index+1
+                    });
+                });
+
+                $.ajax({
+                    type: "Post",
+                    dataType: "json",
+                    url: "{{ route('update.order') }}",
+                        data: {
+                        order: order,
+                    },
+                     headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Include CSRF token in headers
+    },
+                    success: function(response) {
+                        if (response.status == "success") {
+                            console.log(response);
+                        } else {
+                            console.log(response);
+                        }
+                    }
+                });
+            }
+        });
+</script> -->
+
+
+<script>
+    let table = new DataTable('#course_list', {
+    rowReorder: true
+});
+ 
+table.on('row-reorder', function (e, diff, edit) {
+    let result = 'Reorder started on row: ' + edit.triggerRow.data()[1] + '<br>';
+ 
+    for (var i = 0, ien = diff.length; i < ien; i++) {
+        let rowData = table.row(diff[i].node).data();
+ 
+        result +=
+            `${rowData[1]} updated to be in position ${diff[i].newData} ` +
+            `(was ${diff[i].oldData})<br>`;
+    }
+ 
+    document.querySelector('#result').innerHTML = 'Event result:<br>' + result;
+});
+    </script>
+
+<script type="text/javascript">
+        $(function () {
+
+              $('#chapter_list').DataTable({
                         dom: 'Bfrtip',
                         responsive :true,
                         buttons: [
                              'csv', 'excel'
                         ]
                     });
-});
 
+            $("#chapterBodyContents").sortable({
+                items: "tr",
+                cursor: 'move',
+                opacity: 0.6,
+                update: function() {
+                    sendOrderToServer();
+                }
+            });
 
+            function sendOrderToServer() {
+
+                var order = [];
+                var token = $('meta[name="csrf-token"]').attr('content');
+
+                $('tr.chaptertableRow').each(function(index,element) {
+                    order.push({
+                        st_id: $(this).attr('data-st_id'),
+                        ordering_id: index+1
+                    });
+                });
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "{{ url('/admin/update_chapterorder') }}",
+                        data: {
+                        order: order,
+                    },
+                     headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Include CSRF token in headers
+    },
+                    success: function(response) {
+                        if (response.status == "success") {
+                            console.log(response);
+                        } else {
+                            console.log(response);
+                        }
+                    }
+                });
+            }
+        });
 </script>
+
+<script type="text/javascript">
+        $(function () {
+
+              $('#topic_list').DataTable({
+                        dom: 'Bfrtip',
+                        responsive :true,
+                        buttons: [
+                             'csv', 'excel'
+                        ]
+                    });
+
+            $("#topicBodyContents").sortable({
+                items: "tr",
+                cursor: 'move',
+                opacity: 0.6,
+                update: function() {
+                    sendOrderToServer();
+                }
+            });
+
+            function sendOrderToServer() {
+
+                var order = [];
+                var token = $('meta[name="csrf-token"]').attr('content');
+
+                $('tr.topictableRow').each(function(index,element) {
+                    order.push({
+                        topic_id: $(this).attr('data-topic_id'),
+                        ordering_id: index+1
+                    });
+                });
+
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: "{{ url('/admin/update_topicrorder') }}",
+                        data: {
+                        order: order,
+                    },
+                     headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Include CSRF token in headers
+    },
+                    success: function(response) {
+                        if (response.status == "success") {
+                            console.log(response);
+                        } else {
+                            console.log(response);
+                        }
+                    }
+                });
+            }
+        });
+</script>
+
+
+
 
 
     

@@ -76,7 +76,7 @@
 
                   <tr>
                     <td>{{$i}}</td>
-                    <td>{{ $list->name}}</td>
+                    <td>{{ $list->first_name}} {{ $list->last_name}} </td>
                     <td>{{$list->email}}</td>
                      <td>
                     <input data-id="{{$list->id}}" class="toggle-class" type="checkbox" data-onstyle="success" data-offstyle="danger" data-toggle="toggle" data-on="Active" data-off="InActive" {{ $list->status ? 'checked' : '' }}>
@@ -85,7 +85,7 @@
                     <td>
                       <a href="{{ route('student.view', base64_encode($list->id)) }}"><i class="fa fa-eye"></i></a>
 
-                      <!-- <a href="{{ route('student.edit', base64_encode($list->id)) }}"><i class="fa fa-edit"></i></a> -->
+                      <a href="{{ route('student.edit', base64_encode($list->id)) }}"><i class="fa fa-edit"></i></a>
                       <a href="{{ route('student.delete', base64_encode($list->id)) }}" onclick="return confirm('Are you sure you want to delete this record?')"><i class="fa fa-trash"></i></a>
                     </td>
                   </tr>
@@ -139,10 +139,13 @@
     var status = $(this).prop('checked') == true ? 1 : 0; 
     var id = $(this).data('id'); 
     $.ajax({
-      type: "GET",
+      type: "POST",
       dataType: "json",
       url: "<?php echo url('/student/student_status'); ?>",
       data: {'status': status, 'id': id},
+          headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Include CSRF token in headers
+    },
        success: function(data){
 
         if(data.success){

@@ -79,30 +79,18 @@ class StudentController extends Controller
 
         }else
         {   
-            $studentemail  = DB::table('users')->where('email', '=' , Input::get('email'))->where('id','!=',$id)->first();
-             if(!empty($studentemail)){
-                return redirect()->back()->withErrors(["email" => "The email has already been taken."])->withInput();
-            }
-
-           
-
-                DB::table('users')
+            // $studentemail  = DB::table('users')->where('email', '=' , $request->email)->where('id','!=',$id)->first();
+            //  if(!empty($studentemail)){
+            //     return redirect()->back()->withErrors(["email" => "The email has already been taken."])->withInput();
+            // }
+             DB::table('users')
                 ->where('id', $id)
                 ->update(['first_name' => trim($request->fname),
 
-                    'last_name'=>  trim($request->lname),
+                    'last_name'=>  trim($request->lname)
 
-                    
 
-                    'email' => trim(Input::get('email')),
-
-                    'dob'=>   Input::get('dob'),
-
-                    'state'=>  Input::get('state')
                 ]);
-
-         
-
             Session::flash('message', 'Student Information Updated Sucessfully!');
             return redirect()->to('/admin/studentlist');
         }

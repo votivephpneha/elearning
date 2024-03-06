@@ -51,7 +51,7 @@
                      </div>
 
                     @endif
-                <table id="example1" class="table table-bordered table-striped">
+                <table id="chapter_list" class="table table-bordered table-striped">
                   <thead>
                   <tr>
                     <th>ID</th>
@@ -63,11 +63,10 @@
                     <th>Action</th>
                   </tr>
                   </thead>
-                  <tbody>
-                  <?php $i=1; ?>
+                  <tbody id="chapterBodyContents">
                   @foreach ($topic_list as $list)
-                  <tr>
-                    <td>{{$i}}</td>
+                  <tr class="chaptertableRow" data-st_id="{{ $list->st_id }}">
+                    <td> {{ $loop->iteration }}</td>
                     <td>{{ $list->title}}</td>
                     <td>{{ $list->course_title}}</td>
                     <td>{{ $list->topic_title}}</td>
@@ -84,7 +83,6 @@
                       <a title="Delete Topic" href="{{ route('subtopic.delete', base64_encode($list->st_id)) }}" onclick="return confirm('Are you sure you want to delete this record?')"><i class="fa fa-trash"></i></a>
                     </td>
                   </tr>
-                  <?php $i++; ?>
                   @endforeach            
                   </tbody>
                 </table>
@@ -111,22 +109,21 @@
 @endsection
 
 @section('js_bottom')
+<script src="{{ url('/') }}/public/design/admin/js/bootstrap.min.js" type="text/javascript"></script>
 
-
-
-
-
-
+<!-- DATA TABES SCRIPT -->
+<script src="https://jqueryvalidation.org/files/dist/jquery.validate.min.js"></script>
 <script>
-   $(document).on("change", ".toggle-class", function() {
+
+   $('.toggle-class').on("change", function() {
     var status = $(this).prop('checked') == true ? 1 : 0; 
-    var topic_id = $(this).data('id'); 
+    var st_id = $(this).data('id'); 
     $.ajax({
       type: "GET",
       dataType: "json",
       url: "<?php echo url('/admin/subtopic_status'); ?>",
-      data: {'status': status, 'topic_id': topic_id},
- success: function(data){
+      data: {'status': status, 'st_id': st_id},
+       success: function(data){
 
         if(data.success){
           toastr.success('status changeed successfully');
@@ -138,9 +135,12 @@
         },
       
     });
-});
+  })
 
 </script>
+
+
+
 @stop
 
 

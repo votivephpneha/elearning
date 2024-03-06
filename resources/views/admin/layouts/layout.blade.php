@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Mathify | @yield('title') </title>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <link href="{{ url('/public') }}/assets/img/favicon.png" rel="icon">
   <link href="{{ url('/public') }}/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
   <!-- Google Font: Source Sans Pro -->
@@ -46,7 +47,7 @@
     height: 250px; /* Adjust the height as needed */
 }
   </style>
-  
+  @yield("current_page_css")
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 

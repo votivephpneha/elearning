@@ -202,7 +202,7 @@ main .sidebar {
   height: 175px;
   background-image: url(../img/Creative-img.png);
   background-repeat: no-repeat;
-  padding: 52px 18px 18px 187px;
+  padding: 51px 19px 22px 196px;
   background-size: 100% 100%;
 
 }
@@ -237,10 +237,14 @@ color: #256fd6 !important;
 .top-header a label {
     height: 45px !important;
     width: 45px !important;
-    background-color: #f7f7f7;
+    background-color: #e4e4ff;
     border-radius: 50px;
     overflow: hidden;
-    border: 1px solid #e9e9e9;
+    border: 1px solid #e4e4ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
 }
 .mr-1z {
     margin-right: 9px;
@@ -492,12 +496,12 @@ background-color: #FFF;
 
 .subject-box {
     /* border: 1px solid #ccc; */
-    border-radius: 20px;
-    min-height: 324px;
+    border-radius: 10px;
+    min-height: 161px;
     background-color: #FFF;
     box-shadow: 1px 2px 7px 5px #ebebeb;
     margin-top: 32px;
-    padding: 15px;
+    padding: 10px;
     cursor: pointer;
 }
 
@@ -506,11 +510,15 @@ background-color: #FFF;
 }
 
 .img-subject {
-    padding-bottom: 20px;
+    /* padding-bottom: 20px; */
     height: 140px;
     overflow: hidden;
-    margin-bottom: 11px;
+    /* margin-bottom: 11px; */
     border-radius: 10px;
+    margin-right: 12px;
+    background: #f5f5f5;
+    width: 116px;
+    float: left;
 }
 
 .sub-name-about h5 {
@@ -524,7 +532,8 @@ background-color: #FFF;
     color: #4D4D4D;
     font-size: 12px;
     font-weight: 500;
-    padding-bottom: 18px;
+    padding-bottom: 9px;
+    height: 62px;
 }
 .btm-btn {
     display: flex;
@@ -545,11 +554,11 @@ background-color: #FFF;
 .btm-btn p {
     margin: 0;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .topics {
-  padding: 0;
+  padding: 13px;
       margin-top: 85px;
 }
 
@@ -811,8 +820,10 @@ a.key-space{
     border: 1px solid #EDEDED;
     min-height: 150px;
     text-align: center;
-    padding: 40px;
+    padding: 20px;
     background: #FFF;
+    float: left;
+    width: 100%;
 }
 
 .eleps-circle{
@@ -820,6 +831,7 @@ a.key-space{
 }
 .text-quize h5 {
     font-weight: 600;
+        color: #000;
 }
 .elepsed-time{
   background-color: #F9FCFF;
@@ -838,10 +850,19 @@ a.key-space{
 }
 .start-quz {
     background: #3077D6;
-    padding: 10px 19px;
-    border-radius: 9px;
+    padding: 7px 19px;
+    border-radius: 7px;
     color: #FFF;
     margin-top: 13px;
+    float: right;
+}
+.text-quize p{
+  font-size: 18px;
+      margin-bottom: 2px;
+}
+.alrm-ct b {
+    color: #D88923;
+    font-weight: 500;
 }
 .start-quz:hover {
 color: #FFF;
@@ -850,9 +871,12 @@ background: #024fb7;
 
 .text-quize{
       margin-bottom: 23px;
+      text-align: left;
 }
-.watch-box{
-
+.watch-box {
+    display: flex;
+    align-items: center;
+    padding-left: 14px;
 }
  .timer{
     width: 150px;
@@ -869,24 +893,73 @@ margin: 0px;
   }
 
 .elepsed-time {
-    background-color: #f3f9ff;
+    background-color: #FFF;
     height: 100vh;
-    padding: 30px;
+    padding: 12px;
     margin: auto;
     display: flex;
     justify-content: center;
-    align-items: center;
+   
+    border-radius: 11px;
+    padding-top: 50px;
+
 }
 .watch-box h5 {
-    padding-bottom: 10px;
-    text-align: center;
+    padding-bottom: 0px;
+    text-align: left;
     font-size: 18px;
 }
 .watch-quet h5 {
-    padding-top: 45px;
-    text-align: center;
-    padding-bottom: 11px;
+    padding-top: 27px;
+    text-align: left;
+    padding-bottom: 6px;
     font-size: 18px;
+}
+.staus-que {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 17px;
+    margin-top: 11px;
+}
+.staus-que p {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    margin-right: 4px;
+    font-size: 13px;
+    font-weight: 600;
+}
+.staus-que p span.atp {
+    height: 17px !important;
+    width: 17px !important;
+    background: #29caab;
+    /* position: relative; */
+    float: left;
+        margin-right: 4px;
+            border-radius: 4px;
+}
+
+.staus-que p span.atp1 {
+    height: 17px !important;
+    width: 17px !important;
+    background: #283b75;
+    /* position: relative; */
+    float: left;
+        margin-right: 4px;
+            border-radius: 4px;
+}
+.staus-que p span.atp2 {
+    height: 17px !important;
+    width: 17px !important;
+    background: #e9e9e9;
+    /* position: relative; */
+    float: left;
+        margin-right: 4px;
+            border-radius: 4px;
+}
+.fiv-con i{
+
 }
 .qust-no{
   display: flex;
@@ -896,53 +969,183 @@ margin: 0px;
       margin-bottom: 20px;
 }
 .active-q{
-  background-color: #2571d6;
+  background-color: #29CAAB;
   color: #FFF !important;
 }
 .qust-no a {
     color: #262626;
-    border: 1px solid #c3c3c3;
-    padding: 12px 6px;
-    margin-right: 7px;
-    width: 56px;
+    border: 1px solid #e9e9e9;
+    padding: 8px 5px;
+    margin-right: 10px;
+    width: 48px;
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 14px;
     border-radius: 6px;
     transition: 0.5s;
 }
-.qust-no a:hover {
-color: #FFF;
-background-color: #2571d6;
+.skiped {
+color: #FFF !important;
+background-color: #283B75;
 
   }
+ .not-atempt  {
+  color: #000 !important;
+  background-color: #e9e9e9;
+}
 .submit-btn {
     color: #FFF;
     border: 1px solid #2571d6;
-    padding: 9px 27px;
+    padding: 9px 88px;
     background-color: #2571d6;
     border-radius: 6px;
 }
 .submit-btn:hover {
     color: #FFF !important;
     border: 1px solid #2571d6;
-    padding: 9px 27px;
+    padding: 9px 88px;
     background-color: #2571d6;
     border-radius: 6px;
 }
 .funt-far {
     font-size: 20px;
-    border-bottom: 1px solid #ccc;
+    /*border-bottom: 1px solid #ccc;*/
     padding: 11px 4px;
     color: #020202;
+
+}
+.func-tn{
+
+}
+.tp-q{
+
+}
+.fiv-con {
+    display: flex;
+    align-items: center;
+    background: #FFF;
+    border-radius: 6px;
+    padding: 7px 17px;
+    margin-bottom: 8px !important;
+    font-weight: 600;
+}
+.fiv-con i {
+    color: #FF763B;
+    margin-right: 8px;
+    font-size: 22px;
+    position: relative;
+    top: -1px;
+}
+.profle-c {
+    height: 75px;
+    width: 75px;
+    border-radius: 50px;
+    background-color: #EDF5FF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+    margin-right: 14px;
+    font-size: 17px;
+}
+.info-ex p {
+    margin: 0px !important;
+    color: #a3a3a3;
+        font-size: 15px;
+}
+.info-ex b {
+color: #000;
+    margin-left: 5px;
+  }
+.profle-c h2{
+  margin: 0px;
+  padding: 0px;
+      font-size: 23px;
 }
 .qustion-box-one {
-    background-color: #FCFCFC;
+    background-color: #FFF;
     border-radius: 40px;
-    padding: 44px 47px;
+    padding: 29px 26px;
     border: 1px solid #ebeaea;
+    margin-bottom: 40px;
+}
+.q-img{
+  width: 100%;
+  text-align: center;
+}
+.tp-q{
+  color: #FFA800;
 }
 .title span{
   color: #222;
+}
+.radiotextsty {
+  color: #1a1a1a;
+  font-size: 18px;
+}
+
+.customradio {
+  display: block;
+  position: relative;
+  padding-left: 30px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  font-size: 18px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.customradio input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Create a custom radio button */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 22px;
+  width: 22px;
+  background-color: white;
+  border-radius: 50%;
+  border:1px solid #BEBEBE;
+}
+
+/* On mouse-over, add a grey background color */
+.customradio:hover input ~ .checkmark {
+  background-color: transparent;
+}
+
+/* When the radio button is checked, add a blue background */
+.customradio input:checked ~ .checkmark {
+  background-color: white;
+  border:1px solid #2571d6;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.customradio input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.customradio .checkmark:after {
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #2571d6;
 }
 .main-quest{
     display: flex;
@@ -1053,7 +1256,7 @@ As long as its 'for' attribute matches the input's 'id', it will maintain the fu
     background-color: #FFF;
     box-shadow: 1px 2px 7px 5px #f1f1f1;
     margin-top: 31px;
-    padding: 18px 12px;
+    padding: 18px 8px;
     cursor: pointer;
     width: 267px;
     margin-right: 21px;
@@ -1061,6 +1264,7 @@ As long as its 'for' attribute matches the input's 'id', it will maintain the fu
 .tex-bk p {
     margin-bottom: 0px;
     font-size: 14px;
+        font-weight: 500;
 }
 .setion-ana {
     font-size: 22px;
@@ -1068,21 +1272,29 @@ As long as its 'for' attribute matches the input's 'id', it will maintain the fu
     color: #171717;
 }
 .mr-3a {
-    margin-right: 21px;
+    margin-right: 10px;
+    margin-left: 5px;
 }
+.seesion-box .d-flex {
+  align-items: center;
+}   
 .tex-bk{
-  text-align: center;
+  text-align: left;
 }
 .mr-3a img {
     width: 50px;
 }
+.tex-bk h5 small{
+  font-size: 12px;
+}
 .tex-bk h5 {
     font-weight: 600;
     font-size: 18px;
+        margin-bottom: 0;
 }
 .class-box-se {
     background-color: #FFF;
-    padding: 36px 32px;
+    padding: 34px 20px;
     margin-top: 29px;
     border-radius: 19px;
 }
@@ -1249,6 +1461,64 @@ align-items: center;
     margin: auto;
     line-height: 55px;
 }
+
+.mr-3a.a1 label {
+    font-size: 28px;
+    color: #FFF;
+    background: #FFB978;
+    /* padding: 10px; */
+    border-radius: 10px;
+    height: 50px;
+    width: 50px;
+    text-align: center;
+    align-items: center;
+    margin: auto;
+    line-height: 55px;
+}
+
+.mr-3a.a2 label {
+    font-size: 28px;
+    color: #FFF;
+    background: #92CC91;
+    /* padding: 10px; */
+    border-radius: 10px;
+    height: 50px;
+    width: 50px;
+    text-align: center;
+    align-items: center;
+    margin: auto;
+    line-height: 55px;
+}
+
+.mr-3a.a3 label {
+    font-size: 28px;
+    color: #FFF;
+    background: #778DFF;
+    /* padding: 10px; */
+    border-radius: 10px;
+    height: 50px;
+    width: 50px;
+    text-align: center;
+    align-items: center;
+    margin: auto;
+    line-height: 55px;
+}
+
+.mr-3a.a4 label {
+    font-size: 28px;
+    color: #FFF;
+    background: #F86060;
+    /* padding: 10px; */
+    border-radius: 10px;
+    height: 50px;
+    width: 50px;
+    text-align: center;
+    align-items: center;
+    margin: auto;
+    line-height: 55px;
+}
+
+
 
 .tick-box {
     border: 1px solid #ccc;
@@ -1710,13 +1980,44 @@ justify-content: space-between;
     top: 5px;
         font-size: 15px;
 }
+@media (min-width: 768px) and (max-width: 1024px) {
 
+.elepsed-time {
+    background-color: #FFF;
+    min-height: 450px;
+    padding: 12px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    border-radius: 11px;
+    float: left;
+}
+.submit-btn {
+   
+    padding: 9px 64px;
+   
+}
+}
+
+@media (min-width: 1500px) and (max-width: 2200px) {
+.add-box{
+  height: 175px;
+  background-image: url(../img/Creative-img.png);
+  background-repeat: no-repeat;
+  padding: 51px 19px 22px 271px;
+  background-size: 100% 100%;
+
+}
+}
 @media (min-width: 320px) and (max-width: 767px) {
 .add-box {
     height: 122px;
     background-size: cover;
     border-radius: 11px;
     padding: 10px;
+}
+.main-quest{
+  height: inherit !important;
 }
 .topics .accordion-list p {
    
@@ -1816,4 +2117,88 @@ justify-content: space-between;
     top: 74px;
 }
 
+}
+
+.inline-bx {
+   /* display: flex;*/
+    align-items: center;
+    justify-content: space-between;
+}
+
+.recomend-topic{
+
+}
+
+.box1 h2 {
+    font-size: 19px;
+    color: #36f;
+    display: flex;
+    align-items: center;
+    margin: 0px;
+}
+.box1 img{
+  width: 50px;
+  margin-right: 10px;
+}
+.box1 i {
+    font-size: 33px;
+    color: #2569d5;
+}
+.box1 {
+    display: flex;
+    align-items: center;
+    width: 224px;
+    padding: 15px;
+    border-radius: 8px;
+    justify-content: space-between;
+    align-items: center;
+        margin-right: 8px;
+}
+.bx1-c{
+    background: #d1dbf9;
+  
+}
+.bx2-c{
+    background: #f9d1d3;
+  
+}
+.bx3-c{
+    background: #f9e4d1;
+  
+}
+.bx4-c{
+    background: #d2f3d7;
+  
+}
+.bx5-c{
+    background: #d1f0f9;
+  
+}
+
+ .topic-bar{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+
+.bx1-c h2{
+   color: #3366ff;
+  
+}
+.bx2-c h2{
+   
+  color: #FF333F;
+}
+.bx3-c h2{
+  color: #FF9533;
+  
+}
+.bx4-c h2{
+  color: #33D94D;
+  
+}
+.bx5-c h2{
+   color: #339DFF;
+  
 }

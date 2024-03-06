@@ -46,7 +46,7 @@
                     <div class="input-group-prepend">
                     </div>
                     <input type="text" class="form-control" name="fname" required="required" 
-                    value="@if($id>0){{trim($student_detail[0]->name)}}@endif" >
+                    value="@if($id>0){{trim($student_detail[0]->first_name)}}@endif" >
                   </div>
                   <!-- /.input group -->
                 </div>
