@@ -10,15 +10,47 @@
 
 @section('js_bottom')
 <script src="{{ url('/public') }}/ckeditor/ckeditor.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML"></script>
 <script>
         //$('textarea[name="DSC"]').ckeditor();
+      //   CKEDITOR.replace('question_content', {
+      //       toolbar:[
+      //         { name: 'styles', items: [ 'Styles', 'Format', 'Font', 'FontSize' ] },
+      //         { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'CopyFormatting', 'RemoveFormat' ] }
+      //       ],
+      //       toolbarGroups: [
+        
+      //  {
+      //     "name": "basicstyles",
+      //     "groups": ["basicstyles"]
+      //   },
+        
+      //   {
+      //     "name": "insert",
+      //     "groups": ["insert"]
+      //   },
+      //   {
+      //     "name": "styles",
+      //     "groups": ["styles"]
+      //   }
+      // ],
+      // // Remove the redundant buttons from toolbar groups defined above.
+      // removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar,PasteFromWord',
+      //   extraPlugins:'mathjax',
+      //       //mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML'
+      //   });
         CKEDITOR.replace('question_content', { mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' });
         CKEDITOR.replace('answer_explanation', { mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' });
         CKEDITOR.replace('options', { mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' });
         var counter = 1;
+        $(".check").click(function(){
+            $(this).val("correct");
+          });
         function add_options(){
-          $(".option_answer").append('<textarea name="DSC" class="materialize-textarea" id="options-'+counter+'"></textarea>');
+          $(".option_answer").append('<input type="hidden" name="correct_answer_check[]" value="incorrect" /><input type="checkbox" name="correct_answer_check[]" class="check-'+counter+'" value="incorrect"> Correct Answer<br><textarea name="options[]" class="materialize-textarea" id="options-'+counter+'"></textarea>');
+          $(".check-"+counter).click(function(){
+            $(this).val("correct");
+          });
           CKEDITOR.replace('options-'+counter, { mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' });
           counter++;
         }
@@ -72,6 +104,16 @@
                 });
             });
           });
+        function preview_latex(){
+          var editor_value = CKEDITOR.instances['question_content'].getData();
+          //alert(editor_value);
+          $(".preview_latex_code").html(editor_value);
+        }
+        function preview_latex_ans_exp(){
+          var editor_value = CKEDITOR.instances['answer_explanation'].getData();
+          //alert("hello");
+          $(".preview_latex_ans_exp").html(editor_value);
+        }
     </script>
 
 @endsection
@@ -137,7 +179,11 @@
                   <label>Question Content</label>
                   <div class="input-group">
                     <textarea name="question_title" class="materialize-textarea" id="question_content"></textarea>
+                  </div><br>
+                  <div class="preview_latex_button">
+                    <button type="button" class="btn btn-primary" onclick="preview_latex()" >Preview Latex</button>
                   </div>
+                  <div class="preview_latex_code"></div>
                 </div>
               </div>
               <div class="col-md-12">
@@ -221,15 +267,19 @@
                   <div class="input-group">
                     <textarea name="answer_explanation" class="materialize-textarea" id="answer_explanation"></textarea>
                   </div>
+                  <button type="button" class="btn btn-primary" onclick="preview_latex_ans_exp()" >Preview Latex</button>
+                  <div class="preview_latex_ans_exp"></div>
                 </div>
               </div>
               <div class="col-md-12">
                 <div class="form-group">
                   <label>Add Options</label>
                   <div class="input-group option_answer">
-                    <textarea name="options" class="materialize-textarea" id="options" col="10"></textarea>
-                  </div>
-                  <button type="button" onclick="add_options()">Add options</button>
+                    <!-- <input type="hidden" name="correct_answer_check[]" value="incorrect" /> -->
+                    <input type="checkbox" name="correct_answer_check[]" class="check" value="incorrect"> Correct Answer<br>
+                    <textarea name="options[]" class="materialize-textarea" id="options" col="10"></textarea>
+                  </div><br>
+                  <button style="text-align:center" type="button" class="btn btn-primary" onclick="add_options()">Add options</button>
                 </div>
               </div>
               <div class="col-md-4">
@@ -308,4 +358,23 @@
   </aside>
   <!-- /.control-sidebar -->
 </div>
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Modal Header</h4>
+        </div>
+        <div class="modal-body">
+          <p>Some text in the modal.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
 @endsection

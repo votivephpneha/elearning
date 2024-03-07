@@ -48,92 +48,82 @@
 
 </script>
 
-<!-- <script type="text/javascript">
-
-
+<script type="text/javascript">
         $(function () {
+    $('#student_list').DataTable({
+        dom: 'Bfrtip',
+        responsive: true,
+        rowReorder: true,
+        buttons: ['csv', 'excel']
+    });
+});
+</script>
 
-            $('#course_list').DataTable({
-                        dom: 'Bfrtip',
-                        responsive :true,
-                        rowReorder: true,
-                        buttons: [
-                             'csv', 'excel'
-                        ]
-                    });
+<script type="text/javascript">
 
-            $("#courseBodyContents").sortable({
-                items: "tr",
-                cursor: 'move',
-                opacity: 0.6,
-                rowReorder: true,
 
-                update: function() {
-                    sendOrderToServer();
-                }
+  
+    $(function () {
+    $('#course_list').DataTable({
+        dom: 'Bfrtip',
+        responsive: true,
+        rowReorder: true,
+        buttons: ['csv', 'excel']
+    });
+
+    $("#courseBodyContents").sortable({
+        items: "tr",
+        cursor: 'move',
+        opacity: 0.6,
+        update: function () {
+            sendOrderToServer();
+        }
+    });
+
+    function sendOrderToServer() {
+        var order = [];
+        var token = $('meta[name="csrf-token"]').attr('content');
+
+        $('tr.tableRow').each(function (index, element) {
+            order.push({
+                course_id: $(this).attr('data-course_id'),
+                ordering_id: index + 1
             });
 
-            function sendOrderToServer() {
+            // Update serial number in the table
+            $(this).find('td.serial-number').text(index + 1);
+        });
 
-                var order = [];
-                var token = $('meta[name="csrf-token"]').attr('content');
-
-                $('tr.tableRow').each(function(index,element) {
-                    order.push({
-                        course_id: $(this).attr('data-course_id'),
-                        ordering_id: index+1
-                    });
-                });
-
-                $.ajax({
-                    type: "Post",
-                    dataType: "json",
-                    url: "{{ route('update.order') }}",
-                        data: {
-                        order: order,
-                    },
-                     headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Include CSRF token in headers
-    },
-                    success: function(response) {
-                        if (response.status == "success") {
-                            console.log(response);
-                        } else {
-                            console.log(response);
-                        }
-                    }
-                });
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "{{ route('update.order') }}",
+            data: {
+                order: order,
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (response) {
+                if (response.status == "success") {
+                    console.log(response);
+                } else {
+                    console.log(response);
+                }
             }
         });
-</script> -->
-
-
-<script>
-    let table = new DataTable('#course_list', {
-    rowReorder: true
-});
- 
-table.on('row-reorder', function (e, diff, edit) {
-    let result = 'Reorder started on row: ' + edit.triggerRow.data()[1] + '<br>';
- 
-    for (var i = 0, ien = diff.length; i < ien; i++) {
-        let rowData = table.row(diff[i].node).data();
- 
-        result +=
-            `${rowData[1]} updated to be in position ${diff[i].newData} ` +
-            `(was ${diff[i].oldData})<br>`;
     }
- 
-    document.querySelector('#result').innerHTML = 'Event result:<br>' + result;
 });
-    </script>
+
+</script>
 
 <script type="text/javascript">
         $(function () {
 
               $('#chapter_list').DataTable({
                         dom: 'Bfrtip',
-                        responsive :true,
+                        responsive: true,
+                        rowReorder :true,
                         buttons: [
                              'csv', 'excel'
                         ]
@@ -158,6 +148,8 @@ table.on('row-reorder', function (e, diff, edit) {
                         st_id: $(this).attr('data-st_id'),
                         ordering_id: index+1
                     });
+                    // Update serial number in the table
+            $(this).find('td.serial-number').text(index + 1);
                 });
 
                 $.ajax({
@@ -187,7 +179,8 @@ table.on('row-reorder', function (e, diff, edit) {
 
               $('#topic_list').DataTable({
                         dom: 'Bfrtip',
-                        responsive :true,
+                        responsive: true,
+                        rowReorder :true,
                         buttons: [
                              'csv', 'excel'
                         ]
@@ -212,6 +205,8 @@ table.on('row-reorder', function (e, diff, edit) {
                         topic_id: $(this).attr('data-topic_id'),
                         ordering_id: index+1
                     });
+                    $(this).find('td.serial-number').text(index + 1);
+
                 });
 
                 $.ajax({

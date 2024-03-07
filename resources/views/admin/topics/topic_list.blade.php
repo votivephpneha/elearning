@@ -62,10 +62,12 @@
                   </tr>
                   </thead>
                   <tbody id="topicBodyContents">
+                                      <?php $i=1; ?>
+
                   @foreach ($topic_list as $list)
                    <tr class="topictableRow" data-topic_id="{{ $list->topic_id }}">
 
-                    <td> {{ $loop->iteration }}</td>
+                    <td class="serial-number"> {{ $i }}</td>
                     <td>{{ $list->title}}</td>
                     <td>{{ $list->course_title}}</td>
                     <td>
@@ -81,6 +83,7 @@
                       <a title="Delete Topic" href="{{ route('topic.delete', base64_encode($list->topic_id)) }}" onclick="return confirm('Are you sure you want to delete this record?')"><i class="fa fa-trash"></i></a>
                     </td>
                   </tr>
+                     <?php $i++; ?>
 
                                     @endforeach            
                   </tbody>

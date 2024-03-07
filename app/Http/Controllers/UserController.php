@@ -13,58 +13,42 @@ use App\Models\Courses;
 use App\Models\Topics;
 use App\Models\Subtopics;
 use Hash;
+use Session;
 use DB;
 use Auth;
 
 class UserController extends Controller
 {
 
-
-     public function course_view(Request $request){
+    public function course_view(Request $request){
         $id = base64_decode($request->id);
-
-
-        $course_detail = Topics::where("topics.course_id", $id)
-        ->leftjoin('courses', 'topics.course_id', '=', 'courses.course_id')
-        ->get(['topics.topic_id', 'topics.title as topic_title', 'courses.course_id as main_course_id', 'courses.title as course_title']);
-
-        if ($course_detail->count() > 0) {
-            $course_title = $course_detail[0]->course_title;
-        } else {
-            $course_title = '';
-        }
-        $chapert_list = [];
-        foreach ($course_detail as $list) {
-            $subtopics = Subtopics::where("subtopics.topic_id", $list->topic_id)
-            ->leftJoin('topics', 'topics.topic_id', '=', 'subtopics.topic_id')
-            ->select('subtopics.title as chapter_title', 'topics.topic_id as topic_title_id', 'topics.title as topic_title')
-            ->get();
-            foreach ($subtopics as $subtopic) {
-                $chapert_list[$subtopic->topic_title_id][] = [
-                    'chapter_title' => $subtopic->chapter_title,
-                    'topic_title_id' => $subtopic->topic_title_id,
-                    'topic_title' => $subtopic->topic_title
-                ];
-            }
-        }
-
-        $data_onview = array('course_title'=>$course_title,'chapert_list' =>$chapert_list);
-      
-        return View('Front.course_view')->with($data_onview);
+       $groupedData = DB::table('courses')
+                        ->join('topics', 'courses.course_id', '=', 'topics.course_id')
+                        ->leftJoin('subtopics', 'topics.topic_id', '=', 'subtopics.topic_id')
+                       ->select('topics.topic_id','topics.course_id','topics.title AS topic_title','courses.title AS course_title',DB::raw('GROUP_CONCAT(subtopics.st_id) as chapter_id'),DB::raw('GROUP_CONCAT(topics.topic_id) as topics_id_list'),DB::raw('GROUP_CONCAT(subtopics.title) as subtopics_list'))
+                        ->where('topics.course_id', $id)
+                        ->groupBy('topics.topic_id', 'topics.course_id', 'topics.title', 'courses.title')
+                        ->get();
+        $course_title = !empty($groupedData->toArray()) ? $groupedData[0]->course_title : "No Data Found";
+        return view('Front.course_view', compact('groupedData','course_title'));
     }
 
     // public function theory(){
     // 	return view("Front.theory");
     // }
-    public function theory(){
-        $pdfUrl = Storage::url('uploads/Merchant  Dashboard.csv');
+    public function theory(Request $request){
+        $id =base64_decode($request->id);
+         $queries = DB::table('theory')
+        ->where('st_id', '=', $id)
+        ->get();
+        // print_r($queries);die;
+       
+        $pdfUrl = Storage::url('uploads/{{$queries->theory_pdf}}');
         // echo $pdfUrl;die;
-        $pdfContent = Storage::url('uploads/Merchant  Dashboard.csv'); // Get the 
+        $pdfContent = Storage::url('uploads/{{$queries->theory_pdf}}'); // Get the 
         $headers = ['Content-Type' => 'application/pdf']; // Set the response headers
         $pdfResponse = new Response($pdfContent, 200, $headers); // Create the PDF 
-
         return view("Front.theory", ['pdfResponse' => $pdfResponse]);
-        // return view("Front.theory");
     }
 
     public function start_quiz(){
@@ -96,5 +80,73 @@ class UserController extends Controller
         $data['user_data'] = Auth::guard('customer')->user();
         return view("Front.settings")->with($data);
     }
+
+    public function theoryOrnot($course_id, $topic_id, $st_id)
+    {
+        $queries = DB::table('theory')
+        ->where('course_id', '=', $course_id)
+        ->where('topic_id', '=', $topic_id)
+        ->where('st_id', '=', $st_id)
+        ->first();
+        $check = !empty($queries) ? "Theory" : "";
+        $theory_id   =   !empty($queries) ? $queries->theory_id : "";
+        $data_onview = array('check'=>$check,'theory_id'=>$theory_id);
+        return ($data_onview);
+    }
+    public function showPasswordForm(){
+        $data['user_data'] = Auth::guard('customer')->user();
+        return view("Front.changepassword")->with($data);
+    }
+
+    public function change_password(Request $request){
+
+
+        $user_id = Auth::guard('customer')->user()->id;
+        $credentials = [
+                'password' => $request->old_password,
+                'id' =>  $user_id
+            ];
+        if(Auth::guard('customer')->attempt($credentials))
+
+        {
+            $this->validate($request,["password" => "required_with:confirm_password|same:confirm_password"]);
+            DB::table('users')
+            ->where('id', $user_id)
+            ->update(['password' =>  Hash::make($request->password)]);
+            Session::flash('success_message', 'Password Update Sucessfully.');
+            return redirect()->to('/user/change_password');
+
+        }else{
+            Session::flash('error_message', 'Old Password Not Match.');
+            return redirect()->to("/user/change_password");
+        }
+
+    }
+
+    public function profile_action(Request $request){
+
+        $id = $request->id;
+        if ($request->hasFile('profile_img')) {
+            $image = $request->file('profile_img');
+            $imageName = "stu".time().'.'.$image->getClientOriginalExtension();
+            $image->move(public_path('/uploads/users'), $imageName);
+        }
+        else{
+            $user_detail  = DB::table('users')->where('id', '=' ,$id)->first();
+            $imageName = $user_detail->profile_img;
+        }
+        DB::table('users')
+                ->where('id', $id)
+                ->update([
+                    'first_name' => trim($request->first_name),
+                    'last_name' => trim($request->last_name),
+                    'profile_img'=> $imageName,
+
+                ]);
+            Session::flash('message', 'Profile Updated Sucessfully!');
+            return redirect()->to('/user/user_dashboard');
+
+    }
+
 
 }    

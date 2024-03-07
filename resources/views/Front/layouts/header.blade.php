@@ -30,8 +30,8 @@
     </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item" href="{{ url('/user/settings') }}">Profile</a></li>
-            <li><a class="dropdown-item" href="#">Change Password</a></li>
-            <li><a class="dropdown-item" href="{{ url('/user/logout') }}">Logout</a></li>
+
+            <li><a class="dropdown-item" href="{{ url('/user/change_password') }}">Change Password</a></li>            <li><a class="dropdown-item" href="{{ url('/user/logout') }}">Logout</a></li>
            
           </ul>
         </li>

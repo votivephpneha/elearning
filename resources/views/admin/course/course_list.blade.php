@@ -37,23 +37,24 @@
 
               <!-- /.card-header -->
               <div class="card-body">
-                 @if(Session::has('message'))
-
-                     <div class="alert alert-success alert-dismissable">
-
-                          <i class="fa fa-check"></i>
-
-                           <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-
-                                       {{Session::get('message')}}
-
-                     </div>
+               @if(Session::has('message'))
+                 <div class="alert alert-success alert-dismissable">
+                  <i class="fa fa-check"></i>
+                  <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                {{Session::get('message')}}</div>
 
                     @endif
+                     @if(Session::has('error'))
+        <div class="alert alert-danger alert-dismissable">
+          <i class="fa fa-check"></i>
+          <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+          {{Session::get('error')}}
+        </div>
+      @endif
                     <div id="result" class="box" style="display:none">
         <!-- Event result: -->
     </div>
-                <table id="course_list" class=" display table table-bordered table-striped">
+                <table id="course_list" class="table table-bordered table-striped display">
                   <thead>
                   <tr>
                     <th>ID</th>
@@ -69,7 +70,7 @@
                   <?php $i=1; ?>
                   @foreach ($course_list as $list)
                   <tr class="tableRow" data-course_id="{{ $list->course_id }}">
-                    <td> {{ $i }}</td>
+                    <td class="serial-number"> {{ $i }}</td>
                     <td>{{ $list->title}}</td>
                     <td>
                      <?php
@@ -86,7 +87,7 @@
 
                     ?>
                    
-                    <td>{{$description}}</td>
+                    <td>{{str_replace('&nbsp;', '', $description)}}</td>
                      <td>
                     <input data-id="{{$list->course_id}}" class="toggle-class" type="checkbox" data-onstyle="success" data-offstyle="danger" data-toggle="toggle" data-on="Active" data-off="InActive" {{ $list->status ? 'checked' : '' }}>
                     </td>

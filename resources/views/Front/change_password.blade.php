@@ -18,7 +18,10 @@
               <input type="password" name="" class="form-control" placeholder="Danny"></div>
               <div class="mt-3">
               <label>New Password</label>
-              <input type="password" name="" class="form-control" placeholder="Lau"></div>
+              <input type="password" name="" class="form-control" placeholder="Lau">
+            @if($errors->has('password'))
+                           <div class="text-danger">{{ $errors->first('password') }}</div>
+                        @endif</div>
                <div class="mt-3">
               <label>Confirm Password</label>
               <input type="password" name="" class="form-control" placeholder="danny@domain.com"></div><br>

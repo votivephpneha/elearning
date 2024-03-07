@@ -18,3 +18,4 @@
 [29-Feb-2024 23:24:30 America/Chicago] PHP Warning:  Undefined variable $Ah in /home2/eicyjdte/public_html/dev/adminer-4.8.1.php on line 1787
 [29-Feb-2024 23:24:30 America/Chicago] PHP Warning:  Undefined variable $Ah in /home2/eicyjdte/public_html/dev/adminer-4.8.1.php on line 1787
 [29-Feb-2024 23:24:30 America/Chicago] PHP Warning:  Undefined variable $Ah in /home2/eicyjdte/public_html/dev/adminer-4.8.1.php on line 1787
+[06-Mar-2024 06:45:11 UTC] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 266342400 bytes) in /home2/eicyjdte/public_html/dev/storage/framework/views/a80bda05850ea1d20265252f8e9113679638b772.php on line 46

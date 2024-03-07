@@ -14,6 +14,11 @@
 @section('content')
 <div class="row">
 <div class="col-md-12">
+			 @if(Session::has('message'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ Session::get('message') }}		
+    </div>
+@endif
 <div class="add-box">
   <div class="pd-bane">
     <div>
@@ -48,7 +53,7 @@
 </div>
 
 <div class="btm-btn">
-<a href="{{ url('/user/course_view') }}/{{ $c_data->course_id }}">View</a> <p>23,350+ Enrolled </p>
+<a href="{{ url('/user/course_view') }}/{{ base64_encode($c_data->course_id) }}">View</a> <p>23,350+ Enrolled </p>
   </div>
 </div>
 </div>

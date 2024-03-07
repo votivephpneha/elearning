@@ -9,12 +9,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Sub-topic Management</h1>
+            <h1>Chapter Management</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{url('admin/dashboard')}}">Home</a></li>
-              <li class="breadcrumb-item active">Sub-opic List</li>
+              <li class="breadcrumb-item active">Chapter List</li>
             </ol>
           </div>
         </div>
@@ -30,9 +30,9 @@
 
             <div class="card">
               <div class="card-header">
-                <h1 class="card-title">sub-topic List</h1>
+                <h1 class="card-title">Chapter List</h1>
                 <div style="float:right; margin-right:10px; margin-top:10px;">
-                  <a href="{{ url('/admin/subtopic-form') }}" class="btn btn-primary" style="color:#FFFFFF"> Add New Sub-topic</a>
+                  <a href="{{ url('/admin/subtopic-form') }}" class="btn btn-primary" style="color:#FFFFFF"> Add New Chapter</a>
                 </div>
               </div>
 
@@ -64,9 +64,11 @@
                   </tr>
                   </thead>
                   <tbody id="chapterBodyContents">
+                                      <?php $i=1; ?>
+
                   @foreach ($topic_list as $list)
                   <tr class="chaptertableRow" data-st_id="{{ $list->st_id }}">
-                    <td> {{ $loop->iteration }}</td>
+                    <td class="serial-number"> {{ $i }}</td>
                     <td>{{ $list->title}}</td>
                     <td>{{ $list->course_title}}</td>
                     <td>{{ $list->topic_title}}</td>
@@ -83,6 +85,8 @@
                       <a title="Delete Topic" href="{{ route('subtopic.delete', base64_encode($list->st_id)) }}" onclick="return confirm('Are you sure you want to delete this record?')"><i class="fa fa-trash"></i></a>
                     </td>
                   </tr>
+                                       <?php $i++; ?>
+
                   @endforeach            
                   </tbody>
                 </table>

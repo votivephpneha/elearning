@@ -115,8 +115,19 @@
  <h4 class="mb-1 p-0"><b>Choose question type </b></h4>
             </div>
 <div class="any-quest">
-<input type="text" name="" class="form-control" placeholder="Only Questions that I have not done">
-<a href="#"> Any Questions</a>
+<div class="select-difi">
+<input type="radio" class="btn-check" name="options-outlined-questions" id="success-outlinedx" autocomplete="off" >
+<label class="btn btn-outline-success" for="success-outlinedx">Attempted</label>
+
+<input type="radio" class="btn-check" name="options-outlined-questions" id="danger-outlinedy" autocomplete="off">
+<label class="btn btn-outline-success" for="danger-outlinedy">Not attempted</label>
+
+<input type="radio" class="btn-check" name="options-outlined-questions" id="success-outlinedbz" autocomplete="off" >
+<label class="btn btn-outline-success" for="success-outlinedbz"> Any Questions</label>
+
+
+</div>
+
 </div>
 
 </div>
@@ -149,15 +160,15 @@
  <h4 class="mb-1 p-0"><b>Session Length</b></h4>
             </div>
 <div class="select-difi">
-<input type="radio" class="btn-check" name="options-outlined" id="success-outlinedy" autocomplete="off" >
+<input type="radio" class="btn-check" name="options-outlined1" id="success-outlinedy" autocomplete="off" >
 <label class="btn btn-outline-success" for="success-outlinedy">Short
 10 mins - 20 mins</label>
 
-<input type="radio" class="btn-check" name="options-outlined" id="danger-outlinedk" autocomplete="off">
+<input type="radio" class="btn-check" name="options-outlined1" id="danger-outlinedk" autocomplete="off">
 <label class="btn btn-outline-success" for="danger-outlinedk">Medium
 30 mins - 1 hour</label>
 
-<input type="radio" class="btn-check" name="options-outlined" id="success-outlinedbx" autocomplete="off" >
+<input type="radio" class="btn-check" name="options-outlined1" id="success-outlinedbx" autocomplete="off" >
 <label class="btn btn-outline-success" for="success-outlinedbx">Long
 2 Hour - 3 hour</label>
 

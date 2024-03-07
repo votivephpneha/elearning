@@ -155,11 +155,15 @@ class CoursesController extends Controller
 
         $courses = Courses::find($id);
         $courses->delete();
-
-        Session::flash('message', 'Course Deleted Sucessfully!');
-
+        $course = Courses::find($id);
+        if (!$course) {
+            Session::flash('message', 'Course Deleted Successfully!');
+        } else {
+            Session::flash('error', 'Course not found or could not be deleted!');
+        }
         return Redirect('/admin/courselist');
     }
+
 
     public function fetch_topics(Request $request)
     {

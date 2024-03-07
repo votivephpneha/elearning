@@ -42,7 +42,7 @@ Route::post('/submit_login', [HomeController::class, 'submit_login'])->name("sub
 Route::group(['prefix' => 'user', 'middleware' => 'user_auth:customer'], function () {
 	Route::get('/user_dashboard', [HomeController::class, 'user_dashboard'])->name("user_dashboard");
 	Route::get('/course_view/{id}', [UserController::class, 'course_view'])->name("course_view");
-	Route::get('/theory', [UserController::class, 'theory'])->name("theory");
+	Route::get('/theory/{id}', [UserController::class, 'theory'])->name("theory");
 	Route::get('/start_quiz', [UserController::class, 'start_quiz'])->name("start_quiz");
 	Route::get('/quiz', [UserController::class, 'quiz'])->name("quiz");
 	Route::get('/session_analysis', [UserController::class, 'session_analysis'])->name("session_analysis");
@@ -127,8 +127,14 @@ Route::post('/admin/theory_action', [TheoryController::class, 'theory_action'])-
 Route::get('/admin/theory-form/{id}', [TheoryController::class, 'theory_form'])->name("theory.edit");
 Route::get('/admin/theory-delete/{id}', [TheoryController::class, 'theory_delete'])->name("theory.delete");
 Route::post('/admin/theory_status', [TheoryController::class, 'theory_status'])->name("theory.status");
+Route::get('/user/course_view/{id}', [UserController::class, 'course_view'])->name("course_view_dashboard");
 
-	Route::get('/course_view', [UserController::class, 'course_view'])->name("course_view_dashboard");
+Route::post('/user/profile_action', [UserController::class, 'profile_action'])->name("profile_action");
+
+Route::get('/user/change_password', [UserController::class, 'showPasswordForm'])->name("user.showPasswordForm");
+
+Route::post('/user/change_password', [UserController::class, 'change_password'])->name("user.change_password");
+
 
 
 

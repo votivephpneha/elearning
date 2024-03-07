@@ -1,4 +1,4 @@
-<div id="mySidebar" class="sidebar" onmouseover="toggleSidebar()" onmouseout="toggleSidebar()" style="width: 250px;">
+<div id="mySidebar" class="sidebar" onmouseover="toggleSidebar()" onmouseout="toggleSidebar()" style="width: 80px;">
   <a href="{{ url('/user/user_dashboard') }}" class="logo-box"><span class="favi-logo"><img src="{{ url('/public') }}/assets/img/m.png"> </span><span class="icon-text"><img src="{{ url('/public') }}/assets/img/text-logo.png"></span></a><br>
   
 <a href="{{ url('/user/user_dashboard') }}"><i class="material-symbols-outlined">

@@ -109,12 +109,7 @@
   <script type="text/javascript">
   
   var mini = true;
-  $(window).on("load", function(){
-    console.log("closing sidebar");
-    document.getElementById("mySidebar").style.width = "80px";
-    document.getElementById("main").style.marginLeft = "80px";
-    //this.mini = true;
-});
+  
 function toggleSidebar() {
   if (mini) {
     console.log("opening sidebar");

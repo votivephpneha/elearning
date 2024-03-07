@@ -101,12 +101,14 @@ class StudentController extends Controller
     public function student_delete($id){
 
         $id = base64_decode($id);
-
         $students = Students::find($id);
         $students->delete();
-
-        Session::flash('message', 'Student Information Deleted Sucessfully!');
-
+        $student = Students::find($id);
+        if (!$student) {
+            Session::flash('message', 'Student Information Deleted Successfully!');
+        } else {
+            Session::flash('error', 'Student not found or could not be deleted!');
+        }
         return Redirect('/admin/studentlist');
     }
 
