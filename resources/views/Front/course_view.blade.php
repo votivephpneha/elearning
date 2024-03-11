@@ -43,6 +43,7 @@
                         <?php $subtopics_id = explode(",",$course->chapter_id);
                         foreach($subtopics_id as $st_id){
                           $result = app()->call('App\Http\Controllers\UserController@theoryOrnot', ['course_id' => $course->course_id, 'topic_id' => $course->topic_id , 'st_id' => $st_id  ]);
+                          
                          }
                          ?> 
                          <!-- - Basic Trigonometry Ratios & Revisions (I) -->
@@ -51,13 +52,17 @@
                         <?php $subtopics_list = explode(",",$course->subtopics_list);?>
                           <?php $subtopics_list = explode(",",$course->subtopics_list);?>
                           @foreach($subtopics_list as $list)
+                           <?php
+                            $subtopic_title = DB::table("subtopics")->where("st_id",$list)->first();
+                           ?>
+                           
                            @if($result['check'] == "Theory")
                            <h3>
                           <a href="{{ url('/user/theory/') }}/{{ base64_encode($result['theory_id']) }}" class="d-flex align-items-center"> <span class="material-symbols-outlined">menu_book</span>  
-                             {{$result['check']}}- {{$list}}
+                             {{$result['check']}}- {{$subtopic_title->title}}
                           </a></h3>
                           @else
-                           <li><a href="{{ url('/user/start_quiz') }}"><img src="{{ url('/public') }}/assets/img/ancre.png">{{$list}} </a> </li>
+                           <li><a href="{{ url('/user/start_quiz') }}/{{ base64_encode($list) }}"><img src="{{ url('/public') }}/assets/img/ancre.png">{{$subtopic_title->title}} </a> </li>
                           @endif
 
 

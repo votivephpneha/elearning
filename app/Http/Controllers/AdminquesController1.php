@@ -112,4 +112,29 @@ class AdminquesController1 extends Controller{
 
 		return view("admin.show_questions")->with($data);
 	}
+
+	public function question_delete(Request $request){
+		$id = base64_decode($request->id);
+		$question_bank = QuestionBank::find($id);
+        $question_bank->delete();
+        $question = QuestionBank::find($id);
+        if (!$question) {
+            Session::flash('message', 'Question Information Deleted Successfully!');
+        } else {
+            Session::flash('error', 'Question not found or could not be deleted!');
+        }
+        return Redirect('/admin/show_questions');
+
+	}
+
+	public function question_status(Request $request){
+       $result = DB::table('question_bank')
+                    ->where('question_id', $request->question_id)
+                    ->update(['status' => $request->status]);
+                    if ($result) {
+                    	return response()->json(['success' => true, 'message' => 'Status updated successfully']);} else {
+        	return response()->json(['success' => false, 'message' => 'Failed to update status']);
+        }
+
+    }
 }	

@@ -22,20 +22,23 @@ class UserController extends Controller
 
     public function course_view(Request $request){
         $id = base64_decode($request->id);
-       $groupedData = DB::table('courses')
+        $groupedData = DB::table('courses')
                         ->join('topics', 'courses.course_id', '=', 'topics.course_id')
                         ->leftJoin('subtopics', 'topics.topic_id', '=', 'subtopics.topic_id')
-                       ->select('topics.topic_id','topics.course_id','topics.title AS topic_title','courses.title AS course_title',DB::raw('GROUP_CONCAT(subtopics.st_id) as chapter_id'),DB::raw('GROUP_CONCAT(topics.topic_id) as topics_id_list'),DB::raw('GROUP_CONCAT(subtopics.title) as subtopics_list'))
+                        ->select('topics.topic_id', 'topics.course_id', 'topics.title AS topic_title', 'courses.title AS course_title')
+                        ->selectRaw('GROUP_CONCAT(subtopics.st_id ORDER BY subtopics.st_id ASC) AS chapter_id')
+                        ->selectRaw('GROUP_CONCAT(topics.topic_id) AS topics_id_list')
+                        ->selectRaw('GROUP_CONCAT(subtopics.st_id ORDER BY subtopics.st_id ASC) AS subtopics_list')
                         ->where('topics.course_id', $id)
                         ->groupBy('topics.topic_id', 'topics.course_id', 'topics.title', 'courses.title')
+                        ->orderBy('topics.ordering_id')
+                        ->orderBy('subtopics.ordering_id', 'asc') // assuming subtopics.ordering_id exists
                         ->get();
+                        //print_r($groupedData);die;
         $course_title = !empty($groupedData->toArray()) ? $groupedData[0]->course_title : "No Data Found";
         return view('Front.course_view', compact('groupedData','course_title'));
     }
 
-    // public function theory(){
-    // 	return view("Front.theory");
-    // }
     public function theory(Request $request){
         $id =base64_decode($request->id);
          $queries = DB::table('theory')
@@ -51,8 +54,10 @@ class UserController extends Controller
         return view("Front.theory", ['pdfResponse' => $pdfResponse]);
     }
 
-    public function start_quiz(){
-    	return view("Front.start-quiz");
+    public function start_quiz(Request $request){
+
+        $data['st_id'] = $request->st_id;
+    	return view("Front.start-quiz")->with($data);
     }
 
     public function quiz(){
@@ -93,6 +98,20 @@ class UserController extends Controller
         $data_onview = array('check'=>$check,'theory_id'=>$theory_id);
         return ($data_onview);
     }
+
+    public function quizOrnot($course_id, $topic_id, $st_id)
+    {
+        $queries = DB::table('question_bank')
+        ->where('course_id', '=', $course_id)
+        ->where('topic_id', '=', $topic_id)
+        ->where('st_id', '=', $st_id)
+        ->first();
+        $check = !empty($queries) ? "Quiz" : "";
+        $question_id   =   !empty($queries) ? $queries->question_id : "";
+        $data_onview = array('check'=>$check,'theory_id'=>$theory_id);
+        return ($data_onview);
+    }
+
     public function showPasswordForm(){
         $data['user_data'] = Auth::guard('customer')->user();
         return view("Front.changepassword")->with($data);
@@ -135,13 +154,14 @@ class UserController extends Controller
             $user_detail  = DB::table('users')->where('id', '=' ,$id)->first();
             $imageName = $user_detail->profile_img;
         }
+        $name = trim($request->first_name).' '.trim($request->last_name);
         DB::table('users')
                 ->where('id', $id)
                 ->update([
+                    'name'       => $name,
                     'first_name' => trim($request->first_name),
-                    'last_name' => trim($request->last_name),
-                    'profile_img'=> $imageName,
-
+                    'last_name'  => trim($request->last_name),
+                    'profile_img'=> $imageName
                 ]);
             Session::flash('message', 'Profile Updated Sucessfully!');
             return redirect()->to('/user/user_dashboard');

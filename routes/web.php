@@ -43,8 +43,8 @@ Route::group(['prefix' => 'user', 'middleware' => 'user_auth:customer'], functio
 	Route::get('/user_dashboard', [HomeController::class, 'user_dashboard'])->name("user_dashboard");
 	Route::get('/course_view/{id}', [UserController::class, 'course_view'])->name("course_view");
 	Route::get('/theory/{id}', [UserController::class, 'theory'])->name("theory");
-	Route::get('/start_quiz', [UserController::class, 'start_quiz'])->name("start_quiz");
-	Route::get('/quiz', [UserController::class, 'quiz'])->name("quiz");
+	Route::get('/start_quiz/{st_id}', [UserController::class, 'start_quiz'])->name("start_quiz");
+	Route::get('/quiz/{st_id}', [UserController::class, 'quiz'])->name("quiz");
 	Route::get('/session_analysis', [UserController::class, 'session_analysis'])->name("session_analysis");
 	Route::get('/exam_builder', [UserController::class, 'exam_builder'])->name("exam_builder");
 	Route::get('/exam_builder_view', [UserController::class, 'exam_builder_view'])->name("exam_builder_view");
@@ -134,6 +134,10 @@ Route::post('/user/profile_action', [UserController::class, 'profile_action'])->
 Route::get('/user/change_password', [UserController::class, 'showPasswordForm'])->name("user.showPasswordForm");
 
 Route::post('/user/change_password', [UserController::class, 'change_password'])->name("user.change_password");
+  // Question Management 
+    Route::get('/admin/show_questions', [AdminquesController1::class, 'show_questions'])->name('show_questions');
+    Route::get('/admin/question_delete/{id}', [AdminquesController1::class, 'question_delete'])->name("question.delete");
+    Route::post('/admin/question_status', [AdminquesController1::class, 'question_status'])->name("question.status");
 
 
 

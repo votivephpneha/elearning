@@ -39,9 +39,6 @@ class TheoryController extends Controller
         ->whereNull('theory.deleted_at') 
         ->orderBy('theory.theory_id', 'desc')
         ->get();
-
-
-
         $data_onview = array('theory_list' =>$theory_list);
 
         return View('admin.theory.theory_list')->with($data_onview);
@@ -172,11 +169,17 @@ class TheoryController extends Controller
 
         $theory = Theory::find($id);
         $theory->delete();
-
-        Session::flash('message', 'Theory Deleted Sucessfully!');
+        $theory_check = Theory::find($id);
+        if (!$theory_check) {
+            Session::flash('message', 'Theory Deleted Successfully!');
+        } else {
+            Session::flash('error', 'theory not found or could not be deleted!');
+        }
 
         return Redirect('/admin/theorylist');
     }
+
+ 
 
     public function fetch_topics(Request $request)
     {
@@ -207,12 +210,15 @@ class TheoryController extends Controller
 
     public function theory_status(Request $request){
 
-        DB::table('theory')
+        $result = DB::table('theory')
                 ->where('theory_id', $request->theory_id)
                 ->update(
                     ['status' => $request->status]
                 );
-        return response()->json(['success' => true]);
+        if ($result) {
+                        return response()->json(['success' => true, 'message' => 'Status updated successfully']);} else {
+            return response()->json(['success' => false, 'message' => 'Failed to update status']);
+        }
     }
 
 

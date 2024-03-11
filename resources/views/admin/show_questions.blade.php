@@ -37,20 +37,20 @@
 
               <!-- /.card-header -->
               <div class="card-body">
-                 @if(Session::has('message'))
-
-                     <div class="alert alert-success alert-dismissable">
-
-                          <i class="fa fa-check"></i>
-
-                           <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-
-                                       {{Session::get('message')}}
-
-                     </div>
-
-                    @endif
-                <table id="example1" class="table table-bordered table-striped">
+                  @if(Session::has('message'))
+                 <div class="alert alert-success alert-dismissable">
+                  <i class="fa fa-check"></i>
+                  <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                {{Session::get('message')}}</div>
+                @endif
+                @if(Session::has('error'))
+                <div class="alert alert-danger alert-dismissable">
+                  <i class="fa fa-check"></i>
+                  <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                  {{Session::get('error')}}
+                </div>
+                @endif
+                <table id="question_list" class="table table-bordered table-striped">
                   <thead>
                   <tr>
                     <th>ID</th>
@@ -59,15 +59,15 @@
                     <th>Course</th>
                     <th>Topic</th>
                     <th>Chapter</th>
-                    <!-- <th>Status</th> -->
+                    <th>Status</th>
                     <th>Action</th>
                   </tr>
                   </thead>
                   <tbody>
                   <?php $i=1; ?>
                   @foreach ($questions_data as $list)
-                  <tr>
-                    <td>{{$i}}</td>
+                  <tr class="tableRow" data-course_id="{{ $list->question_id }}">
+                    <td class="serial-number"> {{ $i }}</td>
                     <td>{!! $list->title !!}</td>
                     <td>{{ $list->quiz_exam }}</td>
                     <td>
@@ -79,23 +79,30 @@
                     <td>
                       <?php
                         $topic = DB::table("topics")->where("topic_id",$list->topic_id)->first();
-                        echo $course->title;
+                        echo $topic->title;
                       ?>
                     </td>
                     <td>
                       <?php
-                        $subtopic = DB::table("subtopics")->where("st_id",$list->chapter_id)->first();
+                        if($list->chapter_id){
+                          $subtopic = DB::table("subtopics")->where("st_id",$list->chapter_id)->first();
+
                         echo $subtopic->title;
+                        }
+                        
                       ?>
+                    </td>
+                        <td>
+                    <input data-id="{{$list->question_id}}" class="toggle-class" type="checkbox" data-onstyle="success" data-offstyle="danger" data-toggle="toggle" data-on="Active" data-off="InActive" {{ $list->status ? 'checked' : '' }}>
                     </td>
                      
                     <td>
 
                       <!-- <a href="{{ route('course.view', base64_encode($list->course_id)) }}"><i class="fa fa-eye"></i></a> -->
 
-                    <a href="{{ route('course.edit', base64_encode($list->course_id)) }}"><i class="fa fa-edit"></i></a>
+                    <a href="{{ route('course.edit', base64_encode($list->question_id)) }}"><i class="fa fa-edit"></i></a>
                       
-                      <a title="Delete User" href="{{ route('course.delete', base64_encode($list->course_id)) }}" onclick="return confirm('Are you sure you want to delete this record?')"><i class="fa fa-trash"></i></a>
+                      <a title="Delete User" href="{{ route('question.delete', base64_encode($list->question_id)) }}" onclick="return confirm('Are you sure you want to delete this record?')"><i class="fa fa-trash"></i></a>
                     </td>
                   </tr>
                   
@@ -165,14 +172,16 @@
 
    $('.toggle-class').on("change", function() {
     var status = $(this).prop('checked') == true ? 1 : 0; 
-    var course_id = $(this).data('id'); 
+    var question_id = $(this).data('id'); 
     $.ajax({
-      type: "GET",
+      type: "Post",
       dataType: "json",
-      url: "<?php echo url('/admin/course_status'); ?>",
-      data: {'status': status, 'course_id': course_id},
+      url: "<?php echo url('/admin/question_status'); ?>",
+      data: {'status': status, 'question_id': question_id},
+        headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Include CSRF token in headers
+    },
        success: function(data){
-
         if(data.success){
           toastr.success('status changeed successfully');
         }

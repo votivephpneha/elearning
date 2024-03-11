@@ -137,15 +137,18 @@ class StudentController extends Controller
     }
 
     public function student_status(Request $request){
-
-    DB::table('users')
+        $result = DB::table('users')
                 ->where('id', $request->id)
                 ->update(
                     ['status' => $request->status]
                 );
-        return response()->json(['success' => true]);
-    }
+                if ($result) {
+                return response()->json(['success' => true, 'message' => 'Status updated successfully']);} else {
+            return response()->json(['success' => false, 'message' => 'Failed to update status']);
+        }    }
 
 
 
 }
+
+

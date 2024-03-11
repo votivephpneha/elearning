@@ -38,18 +38,19 @@
               <!-- /.card-header -->
               <div class="card-body">
                  @if(Session::has('message'))
-
-                     <div class="alert alert-success alert-dismissable">
-
-                          <i class="fa fa-check"></i>
-
-                           <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
-
-                                       {{Session::get('message')}}
-
-                     </div>
+                 <div class="alert alert-success alert-dismissable">
+                  <i class="fa fa-check"></i>
+                  <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+                {{Session::get('message')}}</div>
 
                     @endif
+                     @if(Session::has('error'))
+        <div class="alert alert-danger alert-dismissable">
+          <i class="fa fa-check"></i>
+          <button aria-hidden="true" data-dismiss="alert" class="close" type="button">x</button>
+          {{Session::get('error')}}
+        </div>
+      @endif
                 <table id="topic_list" class="table table-bordered table-striped">
                   <thead>
                   <tr>

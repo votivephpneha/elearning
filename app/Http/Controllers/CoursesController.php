@@ -141,12 +141,15 @@ class CoursesController extends Controller
     }
 
     public function course_status(Request $request){
-        DB::table('courses')
+       $result =  DB::table('courses')
                 ->where('course_id', $request->course_id)
                 ->update(
                     ['status' => $request->status]
                 );
-        return response()->json(['success' => true]);
+          if ($result) {
+                        return response()->json(['success' => true, 'message' => 'Status updated successfully']);} else {
+            return response()->json(['success' => false, 'message' => 'Failed to update status']);
+        }
     }
 
     public function course_delete($id){

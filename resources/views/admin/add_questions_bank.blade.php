@@ -1,57 +1,231 @@
 @extends('admin.layouts.layout')
 
+@section('current_page_js')
+
+@endsection
+
 @section('current_page_css')
 <style type="text/css">
   .cke_contents{
     height:100px !important;
   }
+  /* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 9999; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: right;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+.error{
+  color:red;
+}
 </style>
 @endsection
 
 @section('js_bottom')
 <script src="{{ url('/public') }}/ckeditor/ckeditor.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.0.0/es5/tex-mml-chtml.js"></script>
+
 <script>
         //$('textarea[name="DSC"]').ckeditor();
-      //   CKEDITOR.replace('question_content', {
-      //       toolbar:[
-      //         { name: 'styles', items: [ 'Styles', 'Format', 'Font', 'FontSize' ] },
-      //         { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'CopyFormatting', 'RemoveFormat' ] }
-      //       ],
-      //       toolbarGroups: [
+        CKEDITOR.replace('question_content', {
         
-      //  {
-      //     "name": "basicstyles",
-      //     "groups": ["basicstyles"]
-      //   },
+            toolbarGroups: [
         
-      //   {
-      //     "name": "insert",
-      //     "groups": ["insert"]
-      //   },
-      //   {
-      //     "name": "styles",
-      //     "groups": ["styles"]
-      //   }
-      // ],
-      // // Remove the redundant buttons from toolbar groups defined above.
-      // removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar,PasteFromWord',
-      //   extraPlugins:'mathjax',
-      //       //mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML'
-      //   });
-        CKEDITOR.replace('question_content', { mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' });
-        CKEDITOR.replace('answer_explanation', { mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' });
-        CKEDITOR.replace('options', { mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' });
+       {
+          "name": "basicstyles",
+          "groups": ["basicstyles"]
+        },
+        {
+          "name": "links",
+          "groups": ["links"]
+        },
+        {
+          "name": "paragraph",
+          "groups": ['list', 'indent', 'blocks', 'align', 'bidi', 'paragraph', 'justify']
+        },
+        {
+          "name": "document",
+          "groups": ["mode"]
+        },
+        {
+          "name": "insert",
+          "groups": ["insert"]
+        },
+        {
+          "name": "styles",
+          "groups": ["styles"]
+        },
+        {
+          "name": "about",
+          "groups": ["about"]
+        }
+        
+      ],
+      // Remove the redundant buttons from toolbar groups defined 
+        //extraPlugins:'mathjax',
+           mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML'
+        });
+        CKEDITOR.replace('answer_explanation', {
+        
+            toolbarGroups: [
+        
+       {
+          "name": "basicstyles",
+          "groups": ["basicstyles"]
+        },
+        {
+          "name": "links",
+          "groups": ["links"]
+        },
+        {
+          "name": "paragraph",
+          "groups": ['list', 'indent', 'blocks', 'align', 'bidi', 'paragraph', 'justify']
+        },
+        {
+          "name": "document",
+          "groups": ["mode"]
+        },
+        {
+          "name": "insert",
+          "groups": ["insert"]
+        },
+        {
+          "name": "styles",
+          "groups": ["styles"]
+        },
+        {
+          "name": "about",
+          "groups": ["about"]
+        }
+        
+      ],
+      // Remove the redundant buttons from toolbar groups defined 
+        //extraPlugins:'mathjax',
+           mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML'
+        });
+        CKEDITOR.replace('options', {
+        
+            toolbarGroups: [
+        
+       {
+          "name": "basicstyles",
+          "groups": ["basicstyles"]
+        },
+        {
+          "name": "links",
+          "groups": ["links"]
+        },
+        {
+          "name": "paragraph",
+          "groups": ['list', 'indent', 'blocks', 'align', 'bidi', 'paragraph', 'justify']
+        },
+        {
+          "name": "document",
+          "groups": ["mode"]
+        },
+        {
+          "name": "insert",
+          "groups": ["insert"]
+        },
+        {
+          "name": "styles",
+          "groups": ["styles"]
+        },
+        {
+          "name": "about",
+          "groups": ["about"]
+        }
+        
+      ],
+      // Remove the redundant buttons from toolbar groups defined 
+        //extraPlugins:'mathjax',
+           mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML'
+        });
+
         var counter = 1;
         $(".check").click(function(){
             $(this).val("correct");
           });
+        CKEDITOR.instances.question_content.on('key',function(){
+          $(".preview_latex_error").hide();
+        });
         function add_options(){
           $(".option_answer").append('<input type="hidden" name="correct_answer_check[]" value="incorrect" /><input type="checkbox" name="correct_answer_check[]" class="check-'+counter+'" value="incorrect"> Correct Answer<br><textarea name="options[]" class="materialize-textarea" id="options-'+counter+'"></textarea>');
           $(".check-"+counter).click(function(){
             $(this).val("correct");
           });
-          CKEDITOR.replace('options-'+counter, { mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' });
+          
+          CKEDITOR.replace('options-'+counter, {
+        
+            toolbarGroups: [
+        
+       {
+          "name": "basicstyles",
+          "groups": ["basicstyles"]
+        },
+        {
+          "name": "links",
+          "groups": ["links"]
+        },
+        {
+          "name": "paragraph",
+          "groups": ['list', 'indent', 'blocks', 'align', 'bidi', 'paragraph', 'justify']
+        },
+        {
+          "name": "document",
+          "groups": ["mode"]
+        },
+        {
+          "name": "insert",
+          "groups": ["insert"]
+        },
+        {
+          "name": "styles",
+          "groups": ["styles"]
+        },
+        {
+          "name": "about",
+          "groups": ["about"]
+        }
+        
+      ],
+      // Remove the redundant buttons from toolbar groups defined 
+        //extraPlugins:'mathjax',
+           mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML'
+        });
           counter++;
         }
         $("#cke_3_contents").removeAttr("style");
@@ -106,14 +280,127 @@
           });
         function preview_latex(){
           var editor_value = CKEDITOR.instances['question_content'].getData();
+          
+           //var mathml = MathJax.tex2mml(editor_value);
           //alert(editor_value);
-          $(".preview_latex_code").html(editor_value);
+          $(".preview_latex_code").empty().append("<p>" +editor_value+ "</p>");
+    MathJax.typeset([".preview_latex_code"]);
+          //$(".preview_latex_code").html(editor_value);
         }
         function preview_latex_ans_exp(){
           var editor_value = CKEDITOR.instances['answer_explanation'].getData();
           //alert("hello");
           $(".preview_latex_ans_exp").html(editor_value);
         }
+        // Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+  var editor_value = CKEDITOR.instances['question_content'].getData();
+  if(editor_value != ""){
+    modal.style.display = "block";
+  }else{
+    $(".preview_latex_error").text("Please add the content");
+  }
+  
+  
+          
+           //var mathml = MathJax.tex2mml(editor_value);
+          //alert(editor_value);
+          $(".preview_latex_code").empty().append("<p>" +editor_value+ "</p>");
+    MathJax.typeset([".preview_latex_code"]);
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+$(function () {
+    
+
+    $("input[name=question_exam]:radio").click(function () {
+        if ($('input[name=question_exam]:checked').val() == "Quiz") {
+            $('.chapter-dropdown').show();
+            
+        } else if ($('input[name=question_exam]:checked').val() == "Exam Builder") {
+            $('.chapter-dropdown').hide();
+            $('.chapter-dropdown').removeClass("error");
+
+        }else if ($('input[name=question_exam]:checked').val() == "Both") {
+            $('.chapter-dropdown').show();
+
+        }
+    });
+});
+// Wait for the DOM to be ready
+$(function() {
+  // Initialize form validation on the registration form.
+  // It has the name attribute "registration"
+  $("#question_form").validate({
+    ignore: [],  
+    // Specify validation rules
+    rules: {
+      // The key name on the left side is the name attribute
+      // of an input field. Validation rules are defined
+      // on the right side
+      question_exam: "required",
+      course: "required",
+      topics: "required",
+      //chapter: "required",
+      time_length: "required",
+      difficulty_level: "required",
+      marks: "required",
+      
+    question_title: {
+       required: function(textarea) {
+         CKEDITOR.instances['question_content'].updateElement();
+         var editorcontent = textarea.value.replace(/<[^>]*>/gi, '');
+         return editorcontent.length === 0;
+       }
+    },
+    answer_explanation: {
+       required: function(textarea) {
+         CKEDITOR.instances['answer_explanation'].updateElement();
+         var editorcontent = textarea.value.replace(/<[^>]*>/gi, '');
+         return editorcontent.length === 0;
+       }
+    }
+    },
+    errorPlacement: function(error, element) 
+                {
+                    if (element.attr("name") == "question_title") 
+                   {
+                    error.insertAfter("#cke_question_content");
+                    } else if(element.attr("name") == "question_exam"){
+                      error.insertAfter(".questions_available");
+                    
+                    }else{
+                      error.insertAfter(element);
+                    }
+                },
+    // Make sure the form is submitted to the destination defined
+    // in the "action" attribute of the form when valid
+    submitHandler: function(form) {
+      form.submit();
+      
+    }
+  });
+});
+
     </script>
 
 @endsection
@@ -127,6 +414,18 @@
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
+     <!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close" style="color:black;">&times;</span>
+    <div class="preview_latex_code">
+                    
+                  </div>
+  </div>
+
+</div>
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
@@ -154,7 +453,7 @@
           </div>
           <!-- /.card-header -->
           <div class="card-body">
-
+            
             <form action="{{ url('/admin/post_questions_bank') }}" id="question_form" method="post">
                       {!! csrf_field() !!}
                        
@@ -180,14 +479,17 @@
                   <div class="input-group">
                     <textarea name="question_title" class="materialize-textarea" id="question_content"></textarea>
                   </div><br>
+                  
                   <div class="preview_latex_button">
-                    <button type="button" class="btn btn-primary" onclick="preview_latex()" >Preview Latex</button>
+                    <button type="button" class="btn btn-primary" id="myBtn">Preview Latex</button>
                   </div>
-                  <div class="preview_latex_code"></div>
+                  <div class="preview_latex_error" style="color:red"></div>
                 </div>
               </div>
               <div class="col-md-12">
                 <div class="form-group">
+                  <label>Questions available in:</label>
+                  <div class="input-group questions_available">
                   <div class="icheck-primary d-inline">
                     <input type="radio" id="radioPrimary1" name="question_exam" value="Quiz">
                     <label for="radioPrimary1">
@@ -206,6 +508,7 @@
                       Both
                     </label>
                   </div><br><br>
+                  </div>
                 </div>
               </div>
               <div class="col-md-4">
@@ -243,7 +546,7 @@
                 </div>
               </div>
 
-              <div class="col-md-4">
+              <div class="col-md-4 chapter-dropdown">
               	<div class="form-group">
                   <label>Select Chapter</label>
                   <div class="input-group">
@@ -266,7 +569,7 @@
                   <label>Correct Answer Explanation</label>
                   <div class="input-group">
                     <textarea name="answer_explanation" class="materialize-textarea" id="answer_explanation"></textarea>
-                  </div>
+                  </div><br>
                   <button type="button" class="btn btn-primary" onclick="preview_latex_ans_exp()" >Preview Latex</button>
                   <div class="preview_latex_ans_exp"></div>
                 </div>
@@ -325,7 +628,7 @@
             <!-- /.row -->
           </div>
            <div class="card-footer">
-            <input type="submit" class="btn btn-primary" value="Submit" id="">
+            <input type="submit" id="submit_btn" class="btn btn-primary" value="Submit" id="">
           </div>
         </form>
             <!-- /.row -->
@@ -346,8 +649,10 @@
         <!-- /.row -->
       </div>
       <!-- /.container-fluid -->
+       
     </section>
     <!-- /.content -->
+
   </div>
   <!-- /.content-wrapper -->
 
@@ -358,23 +663,5 @@
   </aside>
   <!-- /.control-sidebar -->
 </div>
-<div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Modal Header</h4>
-        </div>
-        <div class="modal-body">
-          <p>Some text in the modal.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-      
-    </div>
-  </div>
+
 @endsection

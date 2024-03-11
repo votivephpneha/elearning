@@ -1896,11 +1896,12 @@ border-color: #2569d5;
     border-radius: 4px;
 }
 .user-st {
-    border-radius: 14px;
+    border-radius: 9px;
     background-color: #FFF;
-    padding: 31px;
+    padding: 13px;
     border: 1px solid #ebebeb;
     box-shadow: 1px 2px 11px #dfdfdf;
+    margin-bottom: 11px;
 }
 .cirle{
       padding-left: 41px;
@@ -2015,6 +2016,71 @@ justify-content: space-between;
     background-size: cover;
     border-radius: 11px;
     padding: 10px;
+}
+.chart-box p{
+  margin-bottom: 5px;
+}
+.chart-box .cirle{
+    padding-left: 20px;
+}
+.semi-donut:after {
+    content: "";
+    width: 176px;
+    height: 176px;
+    border: 15px solid;
+    }
+.lablo label {
+    height: 19px;
+    width: 19px;
+    }
+    .lablo span {
+    
+    left: 4px;
+    font-size: 14px;
+}
+.chart-box p {
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+.chart-box{
+  display: inherit !important;
+}
+.topics .chose-q {
+    padding: 10px;
+    }
+    .w-50-half {
+    width: 100%;
+}
+.tick-box{
+      padding: 11px;
+}
+.tick-radio label {
+    font-size: 12px;
+  }
+  .tick-radio {
+   
+    margin-bottom: 2px;
+}
+.select-difi .btn-outline-success {
+    border-color: #e1e0e0;
+    color: #747474;
+    font-size: 15px;
+    margin-right: 3px;
+    padding: 6px 14px;
+}
+.tick-radio input {
+    width: 37px;
+    height: 14px;
+    }
+    .tick-radio small {
+    color: #7c7c7c;
+    font-size: 10px;
+}
+.chose-q .mb-4{
+  margin-bottom: 10px !important; 
+}
+.select-difi .btn-outline-success{
+  margin-bottom: 7px;
 }
 .main-quest{
   height: inherit !important;

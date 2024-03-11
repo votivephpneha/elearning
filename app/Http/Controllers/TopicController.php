@@ -139,20 +139,26 @@ class TopicController extends Controller
 
         $topics = Topics::find($id);
         $topics->delete();
-
-        Session::flash('message', 'Topic Deleted Sucessfully!');
-
+        $topic = Topics::find($id);
+        if (!$topic) {
+            Session::flash('message', 'Topic Deleted Successfully!');
+        } else {
+            Session::flash('error', 'Topic not found or could not be deleted!');
+        }
         return Redirect('/admin/topiclist');
     }
 
     public function topic_status(Request $request){
 
-        DB::table('topics')
+        $result = DB::table('topics')
                 ->where('topic_id', $request->topic_id)
                 ->update(
                     ['status' => $request->status]
-                );
-        return response()->json(['success' => true]);
+                      );
+          if ($result) {
+                        return response()->json(['success' => true, 'message' => 'Status updated successfully']);} else {
+            return response()->json(['success' => false, 'message' => 'Failed to update status']);
+        }
     }
 
     // Sub Topic Management 
@@ -197,12 +203,19 @@ class TopicController extends Controller
         }
     }
 
+
     public function subtopic_delete($id){
 
         $id = base64_decode($id);
-        $topics = Subtopics::find($id);
-        $topics->delete();
-        Session::flash('message', 'Sub-topic Deleted Sucessfully!');
+
+        $subtopics = Subtopics::find($id);
+        $subtopics->delete();
+        $subtopic = Subtopics::find($id);
+        if (!$subtopic) {
+            Session::flash('message', 'Chapter Deleted Successfully!');
+        } else {
+            Session::flash('error', 'Chapter not found or could not be deleted!');
+        }
         return Redirect('/admin/subtopiclist');
     }
 
@@ -260,12 +273,17 @@ class TopicController extends Controller
 
     public function subtopic_status(Request $request){
 
-        DB::table('subtopics')
-                ->where('st_id', $request->topic_id)
+        $result = DB::table('subtopics')
+                ->where('st_id', $request->st_id)
                 ->update(
                     ['status' => $request->status]
                 );
-        return response()->json(['success' => true]);
+            
+        if ($result) {
+            return response()->json(['success' => true, 'message' => 'Status updated successfully']);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Failed to update status']);
+        }
     }
 
     
