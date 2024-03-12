@@ -75,8 +75,10 @@ class TopicController extends Controller
         if($id==0){
             $request->all();
             $validatedData = $request->validate([
-            'title' => 'required|unique:topics|max:255'
+                'title' => 'required|unique:topics,title,NULL,id,deleted_at,NULL|max:255'
         ]);
+
+
 
             $topics = new Topics;
             $topics->title = trim($request->title);
@@ -232,8 +234,9 @@ class TopicController extends Controller
         $slug = Str::slug($title);
         if($id==0){
                $validatedData = $request->validate([
-            'title' => 'required|unique:subtopics|max:255'
+            'title' => 'required|unique:subtopics,title,NULL,id,deleted_at,NULL|max:255'
         ]);
+               
             $subtopics = new Subtopics;
             $subtopics->title = trim($request->title);
             $subtopics->course_id = trim($request->course_id);

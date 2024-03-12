@@ -1,4 +1,13 @@
 @extends('admin.layouts.layout')
+@section("other_css")
+
+<!-- DATA TABLES -->
+
+<link href="{{ url('/') }}/design/admin/css/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
+
+<meta name="_token" content="{!! csrf_token() !!}" />
+
+@stop
 @section('content')
 
   <!-- Content Wrapper. Contains page content -->
@@ -100,7 +109,7 @@
 
                       <!-- <a href="{{ route('course.view', base64_encode($list->course_id)) }}"><i class="fa fa-eye"></i></a> -->
 
-                    <a href="{{ route('course.edit', base64_encode($list->question_id)) }}"><i class="fa fa-edit"></i></a>
+                    <a href="{{ route('question.edit', base64_encode($list->question_id)) }}"><i class="fa fa-edit"></i></a>
                       
                       <a title="Delete User" href="{{ route('question.delete', base64_encode($list->question_id)) }}" onclick="return confirm('Are you sure you want to delete this record?')"><i class="fa fa-trash"></i></a>
                     </td>

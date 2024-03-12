@@ -102,6 +102,7 @@ class TheoryController extends Controller
         if($id==0){
             $request->validate([
                 'theory_pdf' => 'required|mimes:pdf,xlxs,xlx,docx,doc,csv,txt,png,gif,jpg,jpeg',
+                 'title' => 'required|unique:theory,title,NULL,id,deleted_at,NULL|max:255'
             ]);
             $fileName = $request->theory_pdf->getClientOriginalName();
             $filePath = 'uploads/' . $fileName;

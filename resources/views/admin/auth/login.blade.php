@@ -14,6 +14,14 @@
 
   <!-- Font Awesome -->
   <link rel="stylesheet" href="{{ url('/') }}/public/design/admin/css/adminlte.min.css">
+  <style type="text/css">
+  form .error {
+    color: #ff0000;
+  }
+  form .input {
+    width: 100% !important;
+  }
+</style>
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
@@ -32,7 +40,7 @@
         </span>
         @endif
 
-        <form  role="form" id="signin" method="POST" action="{{ url('/admin/login') }}">
+        <form  role="form" id="login" name="login" method="POST" action="{{ url('/admin/login') }}">
                {{ csrf_field() }}
             <div class="input-group mb-3">
                 <input type="email" class="form-control" name="email" placeholder="Email">
@@ -90,6 +98,36 @@
 <!-- Bootstrap 4 -->
 <script src="{{ url('/') }}/public/design/admin/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
-<script src="{{ url('/') }}/public/design/admin/adminlte.min.js"></script>
 </body>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+<script type="text/javascript">
+$(function() {
+  $("form[name='login']").validate({
+    rules: {
+     email: {
+        required: true,
+        email: true
+      },
+      password: {
+        required: true,
+      }
+    },
+    // Specify validation error messages
+    messages: {
+      
+      password: {
+        required: "Please enter a password",
+      },
+      email:{
+        required: "Please enter the email",
+        email:  "Please enter a valid email address"
+      }
+    },
+ 
+    submitHandler: function(form) {
+      form.submit();
+    }
+  });
+});
+</script>
 </html>

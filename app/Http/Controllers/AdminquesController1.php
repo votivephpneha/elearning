@@ -47,8 +47,22 @@ class AdminquesController1 extends Controller{
 		
 	}
 
-	public function add_questions_bank(){
+	public function add_questions_bank(Request $request){
+
 		return view("admin.add_questions_bank");
+	}
+
+	public function edit_questions_bank(Request $request){
+		
+
+		$id = base64_decode($request->id);
+
+		if($id){
+		  $question_details  = DB::table("question_bank")->where('question_id','=',$id)->first();
+          $options  = DB::table("question_bank")->where('q_id','=',$question_details->q_id)->get();
+          $data_onview = array('id'=>$id,'question_details'=>$question_details,'options'=>$options);
+          return view("admin.edit_questions_bank")->with($data_onview);
+		 }
 	}
 
 	public function fetch_subtopics(Request $request){
@@ -58,6 +72,11 @@ class AdminquesController1 extends Controller{
 	}
 
 	public function post_questions_bank(Request $request){
+
+		// echo "<pre>";
+		// dd($request);die;
+
+            
 
 		$question_title = $request->question_title;
 		$question_exam = $request->question_exam;
@@ -80,6 +99,8 @@ class AdminquesController1 extends Controller{
 		}
 		
 		$i = 0;
+		//print_r($correct_answer_check);die;
+		//echo $correct_answer_check[3];die;
 		foreach($options as $op){
 			$questions_model = new QuestionBank();
 
@@ -137,4 +158,47 @@ class AdminquesController1 extends Controller{
         }
 
     }
+
+public function post_questions_bank_edit(Request $request){
+
+			$options = $request->options;
+
+			echo "<pre>";
+
+				// print_r($options);die;
+
+    $correct_answer_check = $request->correct_answer_check;
+
+	  DB::table('question_bank')
+                ->where('question_id', $request->question_id)
+                ->update([
+                	'title' => trim($request->question_title),
+                	'quiz_exam' => $request->question_exam,
+                	'course_id'        => $request->course,
+                	'topic_id'        => $request->topics,
+                	'chapter_id'       => $request->chapter,
+                	'correct_answer_explanation' => $request->correct_answer_check,
+                	'time_length'         => $request->time_length,
+                	'difficulty_level' => $request->difficulty_level,
+                	'marks' => $request->marks
+                ]);
+                // Update options
+    foreach($options as  $index=>$op){
+
+
+        $option->is_correct = in_array($index, $correct_answer_check);
+
+
+      
+
+
+
+
+        $option->save();
+    }
+
+    Session::flash('message', 'Question updated successfully');
+    return redirect()->to('/admin/show_questions');
+}
+
 }	

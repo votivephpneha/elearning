@@ -79,8 +79,11 @@ class CoursesController extends Controller
                 $image->move(public_path('/uploads/courses'), $imageName);
             }
             $validatedData = $request->validate([
-                'title' => 'required|unique:courses|max:255'
+                'title' => 'required|unique:courses,title,NULL,id,deleted_at,NULL|max:255'
             ]);
+
+                           
+
             $courses = new Courses;
             $courses->title = trim($request->title);
             $courses->course_img = $imageName;

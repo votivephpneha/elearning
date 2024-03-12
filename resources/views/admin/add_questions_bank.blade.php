@@ -183,7 +183,9 @@
           $(".preview_latex_error").hide();
         });
         function add_options(){
-          $(".option_answer").append('<input type="hidden" name="correct_answer_check[]" value="incorrect" /><input type="checkbox" name="correct_answer_check[]" class="check-'+counter+'" value="incorrect"> Correct Answer<br><textarea name="options[]" class="materialize-textarea" id="options-'+counter+'"></textarea>');
+          $(".option_answer").append('<input type="hidden" name="correct_answer_check[]" value="incorrect" /><input type="checkbox" name="correct_answer_check[]" class="check-'+counter+'" value="incorrect"> Correct Answer<br><textarea name="options[]" class="materialize-textarea" id="options-'+counter+'"></textarea><br><button type="button" class="btn btn-primary" id="myBtn_options-'+counter+'">Preview Latex</button><br>');
+
+          $(".option_modal_div").append('<div id="myModal_options-'+counter+'" class="modal"><div class="modal-content"><span class="close close_options-'+counter+'" style="color:black;">×</span><div class="preview_latex_code_options-'+counter+'"></div></div></div>');
           $(".check-"+counter).click(function(){
             $(this).val("correct");
           });
@@ -226,6 +228,62 @@
         //extraPlugins:'mathjax',
            mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML'
         });
+          
+             // Get the modal
+var modal1 = document.getElementById("myModal_options-"+counter);
+
+// Get the button that opens the modal
+var btn1= document.getElementById("myBtn_options-"+counter);
+
+// Get the <span> element that closes the modal
+var span1 = document.getElementsByClassName("close_options-"+counter)[0];
+
+// When the user clicks the button, open the modal 
+
+$("#myBtn_options-"+counter).click(function(){
+   var counter1 = counter-1;
+    var editor_value = CKEDITOR.instances["options-"+counter1].getData();
+  if(editor_value != ""){
+    modal1.style.display = "block";
+  }else{
+    $(".preview_latex_error").text("Please add the content");
+  }
+  
+  
+          
+           //var mathml = MathJax.tex2mml(editor_value);
+          //alert(editor_value);
+          $(".preview_latex_code_options-"+counter1).empty().append("<p>" +editor_value+ "</p>");
+              MathJax.typeset([".preview_latex_code"]);
+});
+// btn1.onclick = function() {
+
+//   var editor_value = CKEDITOR.instances["options-"+counter].getData();
+//   if(editor_value != ""){
+//     modal.style.display = "block";
+//   }else{
+//     $(".preview_latex_error").text("Please add the content");
+//   }
+  
+  
+          
+//            //var mathml = MathJax.tex2mml(editor_value);
+//           //alert(editor_value);
+//           $(".preview_latex_code").empty().append("<p>" +editor_value+ "</p>");
+//               MathJax.typeset([".preview_latex_code"]);
+//           }
+
+          // When the user clicks on <span> (x), close the modal
+          span1.onclick = function() {
+            modal1.style.display = "none";
+          }
+
+          // When the user clicks anywhere outside of the modal, close it
+          window.onclick = function(event) {
+            if (event.target == modal1) {
+              modal1.style.display = "none";
+            }
+          }
           counter++;
         }
         $("#cke_3_contents").removeAttr("style");
@@ -329,6 +387,86 @@ window.onclick = function(event) {
     modal.style.display = "none";
   }
 }
+
+        // Get the modal
+var modal = document.getElementById("myModal_ans");
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn_ans");
+
+// Get the <span> element that closes the modal
+var span1 = document.getElementsByClassName("close_ans")[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+  var editor_value = CKEDITOR.instances['answer_explanation'].getData();
+  if(editor_value != ""){
+    modal.style.display = "block";
+  }else{
+    $(".preview_latex_error_ans").text("Please add the content");
+  }
+  
+  
+          
+           //var mathml = MathJax.tex2mml(editor_value);
+          //alert(editor_value);
+          $(".preview_latex_code_ans").empty().append("<p>" +editor_value+ "</p>");
+    MathJax.typeset([".preview_latex_code_ans"]);
+}
+
+// When the user clicks on <span> (x), close the modal
+span1.onclick = function() {
+  
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+        // Get the modal
+var modal = document.getElementById("myModal_options");
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn_options");
+
+// Get the <span> element that closes the modal
+var span2 = document.getElementsByClassName("close_options")[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+  var editor_value = CKEDITOR.instances['options'].getData();
+  if(editor_value != ""){
+    modal.style.display = "block";
+  }else{
+
+    $(".preview_latex_error_options").text("Please add the content");
+  }
+  
+  
+          
+           //var mathml = MathJax.tex2mml(editor_value);
+          //alert(editor_value);
+          $(".preview_latex_code_options").empty().append("<p>" +editor_value+ "</p>");
+    MathJax.typeset([".preview_latex_code_options"]);
+}
+
+// When the user clicks on <span> (x), close the modal
+span2.onclick = function() {
+  
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
 $(function () {
     
 
@@ -426,6 +564,32 @@ $(function() {
   </div>
 
 </div>
+
+   <!-- The Modal -->
+<div id="myModal_ans" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close close_ans" style="color:black;">&times;</span>
+    <div class="preview_latex_code_ans">
+                    
+                  </div>
+  </div>
+
+</div>
+<!-- The Modal -->
+<div id="myModal_options" class="modal modal_option">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close close_options" style="color:black;">&times;</span>
+    <div class="preview_latex_code_options">
+                    
+                  </div>
+  </div>
+
+</div>
+<div class="option_modal_div"></div>
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
@@ -570,8 +734,8 @@ $(function() {
                   <div class="input-group">
                     <textarea name="answer_explanation" class="materialize-textarea" id="answer_explanation"></textarea>
                   </div><br>
-                  <button type="button" class="btn btn-primary" onclick="preview_latex_ans_exp()" >Preview Latex</button>
-                  <div class="preview_latex_ans_exp"></div>
+                  <button type="button" class="btn btn-primary" id="myBtn_ans">Preview Latex</button>
+                  <div class="preview_latex_error_ans" style="color:red"></div>
                 </div>
               </div>
               <div class="col-md-12">
@@ -580,8 +744,11 @@ $(function() {
                   <div class="input-group option_answer">
                     <!-- <input type="hidden" name="correct_answer_check[]" value="incorrect" /> -->
                     <input type="checkbox" name="correct_answer_check[]" class="check" value="incorrect"> Correct Answer<br>
-                    <textarea name="options[]" class="materialize-textarea" id="options" col="10"></textarea>
+                    <textarea name="options[]" class="materialize-textarea" id="options" col="10"></textarea><br>
+                    <button type="button" class="btn btn-primary" id="myBtn_options">Preview Latex</button><br>
+                    <div class="preview_latex_error_options" style="color:red"></div>
                   </div><br>
+                  
                   <button style="text-align:center" type="button" class="btn btn-primary" onclick="add_options()">Add options</button>
                 </div>
               </div>

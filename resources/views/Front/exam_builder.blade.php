@@ -5,7 +5,7 @@
 <div class="row">
 <div class="col-md-12">
 <div class="add-box">
-  <div class="d-flex justify-content-between align-items-center" style="padding-right: 49px;">
+  <div class="d-flex justify-content-between align-items-center">
     <div>
 <h3>Select a Course</h3>
 <p> You’ve learned 70% of your goal this week! Keep it up and improve your progress.</p>

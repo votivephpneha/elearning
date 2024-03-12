@@ -38,12 +38,12 @@
               
               <div class="mt-3">
               <label>Old Password</label>
-              <input type="text" name="old_password" class="form-control" placeholder="" >
+              <input type="password" name="old_password" class="form-control" placeholder="" >
           </div>
                        <div class="mt-3">
 
               <label>New Password</label>
-              <input type="text" name="password" class="form-control" placeholder="" >
+              <input type="password" name="password" id="password" class="form-control" placeholder="" >
               @if($errors->has('password'))
                            <div class="text-danger">{{ $errors->first('password') }}</div>
                         @endif</div>
@@ -52,9 +52,9 @@
              
               <div class="mt-3">
               <label>Confirm New Password</label>
-              <input type="text"  name="confirm_password" class="form-control" placeholder=""></div>
+              <input type="password"  name="confirm_password" class="form-control" placeholder=""></div>
                <br>
-              <input type="submit" class="btn btn-primary" value="Update Profile" id="">
+              <input type="submit" class="btn btn-primary" value="Change Password" id="">
 
 
             </form>

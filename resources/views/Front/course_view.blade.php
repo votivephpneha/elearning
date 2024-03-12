@@ -31,9 +31,13 @@
    <div class="accordion-list">
     <h4><b> {{ $course_title }} </b></h4>
               <ul>
+                 <?php
+                  $i = 1;
+                 ?>
                  @foreach($groupedData as $course)
+                 @if($course->status == 1 && $course->deleted_at == NULL)
                 <li>
-                  <a data-bs-toggle="collapse" class="collapse" data-bs-target="#accordion-list-1"><span>{{$loop->iteration}}</span> {{ $course->topic_title }} <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
+                  <a data-bs-toggle="collapse" class="collapse" data-bs-target="#accordion-list-1"><span>{{$i}}</span> {{ $course->topic_title }} <i class="bx bx-chevron-down icon-show"></i><i class="bx bx-chevron-up icon-close"></i></a>
                   <div id="accordion-list-1" class="collapse show" data-bs-parent=".accordion-list">
                     
                     <div class="course-ilsit">
@@ -62,7 +66,11 @@
                              {{$result['check']}}- {{$subtopic_title->title}}
                           </a></h3>
                           @else
-                           <li><a href="{{ url('/user/start_quiz') }}/{{ base64_encode($list) }}"><img src="{{ url('/public') }}/assets/img/ancre.png">{{$subtopic_title->title}} </a> </li>
+                           @if(!empty($subtopic_title))
+                           <li><a href="{{ url('/user/start_quiz') }}/{{ base64_encode($list) }}"><img src="{{ url('/public') }}/assets/img/ancre.png">{{$subtopic_title->title}}</a> </li>
+                           @else
+                           <li><div class="no_chapter_found">No chapter found</div></li>
+                           @endif 
                           @endif
 
 
@@ -75,6 +83,10 @@
 
                   </div>
                 </li>
+                <?php
+                  $i++;
+                ?>
+                @endif
                 @endforeach
 
 

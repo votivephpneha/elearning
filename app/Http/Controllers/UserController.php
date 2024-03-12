@@ -25,16 +25,18 @@ class UserController extends Controller
         $groupedData = DB::table('courses')
                         ->join('topics', 'courses.course_id', '=', 'topics.course_id')
                         ->leftJoin('subtopics', 'topics.topic_id', '=', 'subtopics.topic_id')
-                        ->select('topics.topic_id', 'topics.course_id', 'topics.title AS topic_title', 'courses.title AS course_title')
+                        ->select('topics.topic_id', 'topics.course_id', 'topics.title AS topic_title', 'courses.title AS course_title','topics.status as status','topics.deleted_at as deleted_at')
                         ->selectRaw('GROUP_CONCAT(subtopics.st_id ORDER BY subtopics.st_id ASC) AS chapter_id')
                         ->selectRaw('GROUP_CONCAT(topics.topic_id) AS topics_id_list')
                         ->selectRaw('GROUP_CONCAT(subtopics.st_id ORDER BY subtopics.st_id ASC) AS subtopics_list')
                         ->where('topics.course_id', $id)
+                        
                         ->groupBy('topics.topic_id', 'topics.course_id', 'topics.title', 'courses.title')
                         ->orderBy('topics.ordering_id')
                         ->orderBy('subtopics.ordering_id', 'asc') // assuming subtopics.ordering_id exists
                         ->get();
-                        //print_r($groupedData);die;
+                        // echo "<pre>";
+                        // print_r($groupedData);die;
         $course_title = !empty($groupedData->toArray()) ? $groupedData[0]->course_title : "No Data Found";
         return view('Front.course_view', compact('groupedData','course_title'));
     }

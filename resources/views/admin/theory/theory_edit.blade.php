@@ -41,7 +41,13 @@
                   <div class="input-group">
                     <div class="input-group-prepend">
                     </div>
-                    <input type="text" class="form-control" name="title"   value="@if($id>0){{trim($theory_detail[0]->title)}}@endif">                  </div>
+                    <input type="text" class="form-control" name="title"   value="@if($id>0){{trim($theory_detail[0]->title)}}@endif"> 
+                      @if ($errors->has('title'))
+                      <span class="" style="color:red">
+                        {{ $errors->first('title') }}
+                      </span>
+                @endif
+                                    </div>
                   <!-- /.input group -->
                 </div>
               </div>

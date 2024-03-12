@@ -139,6 +139,11 @@ Route::post('/user/change_password', [UserController::class, 'change_password'])
     Route::get('/admin/question_delete/{id}', [AdminquesController1::class, 'question_delete'])->name("question.delete");
     Route::post('/admin/question_status', [AdminquesController1::class, 'question_status'])->name("question.status");
 
+    Route::get('/admin/question-form/{id}', [AdminquesController1::class, 'edit_questions_bank'])->name("question.edit");
+
+    Route::post('/admin/post_questions_bank_edit', [AdminquesController1::class, 'post_questions_bank_edit'])->name('post_questions_bank_edit');
+
+   
 
 
 

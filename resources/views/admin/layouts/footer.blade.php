@@ -70,6 +70,12 @@
         rowReorder: true,
         buttons: ['csv', 'excel']
     });
+    $('#question_list').DataTable({
+        dom: 'Bfrtip',
+        responsive: true,
+        rowReorder: true,
+        buttons: ['csv', 'excel']
+    });
 
     $("#courseBodyContents").sortable({
         items: "tr",

@@ -49,7 +49,7 @@
 <div class="fielxi">
 <div class="sub-name-about">
 <h5>{{ $c_data->title }}</h5>
-<p class="dash_con">{!! $c_data->description !!}</p>
+<div class="dash_con">{!! $c_data->description !!}</div>
 </div>
 
 <div class="btm-btn">
