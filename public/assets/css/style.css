@@ -558,7 +558,9 @@ background-color: #FFF;
     margin-bottom: 0px;
     line-height: 18px;
 }
-
+.dash_con{
+      height: 76px;
+}
 .btm-btn {
     display: flex;
     justify-content: space-between;
@@ -637,7 +639,7 @@ background-color: #FFF;
     padding: 8px 0px;
 }
 .topics .accordion-list .course-ilsit ul{
-padding: 3px 0px !important;
+padding: 3px 26px !important;
 }
 
 .course-ilsit h3 {
@@ -1173,7 +1175,7 @@ color: #000;
   background: #2571d6;
 }
 .main-quest{
-    display: flex;
+  /*  display: flex;*/
     justify-content: center;
     align-items: center;
     vertical-align: middle;
@@ -2006,7 +2008,16 @@ justify-content: space-between;
     top: 5px;
         font-size: 15px;
 }
+
 @media (min-width: 768px) and (max-width: 1024px) {
+
+.main-quest{
+display: initial;
+}
+
+#main {
+     margin-left: 8px !important;
+    }
 
 .elepsed-time {
     background-color: #FFF;
@@ -2070,6 +2081,7 @@ border-radius: 3px;
 }
 .chart-box .cirle{
     padding-left: 20px;
+
 }
 .semi-donut:after {
     content: "";
@@ -2108,11 +2120,48 @@ border-radius: 3px;
 
 
 @media (min-width: 320px) and (max-width: 767px) {
+
 .add-box {
     height: 122px;
     background-size: cover;
     border-radius: 11px;
     padding: 10px;
+}
+
+.staus-que{
+      flex-wrap: wrap;
+}
+
+.submit-btn{
+      padding: 7px 50px !important;
+}
+
+.quiz_questions{
+    padding-top: 1px !important;
+    display: flex;
+    flex-direction: column-reverse;
+}
+.elepsed-time div{
+  width: 100%;
+}
+.main-quest .col-md-11{
+  width: 100%;
+}
+.profle-c {
+    height: 73px;
+    width: 97px !important;
+    }
+
+.elepsed-time {
+    background-color: #FFF;
+    height: 47vh;
+    padding: 12px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    border-radius: 11px;
+    padding-top: 15px;
+    margin-bottom: 16px;
 }
 .img-subject img {
     width: 100%;
@@ -2122,6 +2171,24 @@ border-radius: 3px;
 .sub-name-about p{
       height: 83px;
 }
+
+.top-header ul li a {
+  
+    position: relative;
+    top: 8px;
+}
+.top-header .navbar .dropdown ul a {
+    padding: 4px 8px;
+    }
+
+.top-header .navbar .dropdown:hover>ul {
+    opacity: 1;
+    top: 100%;
+    visibility: visible;
+    width: 167px;
+    overflow: hidden;
+}
+
 .sidebar {
      width: 55px !important;
      padding-left: 1px;
@@ -2154,6 +2221,7 @@ border-radius: 3px;
 }
 .chart-box .cirle{
     padding-left: 20px;
+    margin: auto;
 }
 .semi-donut:after {
     content: "";
@@ -2185,6 +2253,7 @@ border-radius: 3px;
 }
 .tick-box{
       padding: 11px;
+      border-radius: 12px;
 }
 .tick-radio label {
     font-size: 12px;
@@ -2201,43 +2270,49 @@ border-radius: 3px;
     padding: 4px 11px;
 }
 .chose-q h4 b {
-    font-size: 16px !important;
-    
+    font-size: 17px !important;
+    font-weight: 500;
 }
-
 .chose-q .mt-4{
     margin-top: 10px !important;
 }
 
 .tick-radio input {
-    width: 37px;
+    width: 20px;
     height: 14px;
     }
     .tick-radio small {
     color: #7c7c7c;
     font-size: 10px;
 }
+
 .chose-q .mb-4{
   margin-bottom: 10px !important; 
 }
+
 .select-difi .btn-outline-success{
   margin-bottom: 7px;
 }
+
 .main-quest{
   height: inherit !important;
+      padding: 0;
 }
+
 .topics .accordion-list p {
    
     font-size: 12px;
 }
+
 .topics .accordion-list i {
     font-size: 19px;
     }
+
     .qustion-box-one {
     border-radius: 14px;
-    padding: 21px 17px;
-   
+    padding: 21px 17px; 
 }
+
 .theory-box {
     padding-top: 10px;
 }
@@ -2324,6 +2399,7 @@ border-radius: 3px;
     top: 74px;
     margin-bottom: 130px;
     float: left;
+    width: 100%;
 }
 
 }

@@ -16,13 +16,13 @@ keyboard_backspace
 <img src="{{ url('/public') }}/assets/img/ellipse.png">
  </div> -->
  <div class="text-quize">
-<h5> Maths 101</h5>
+<h5>{{ $course_title->title }}</h5>
 <p>Function</p>
-<p>Total marks <b>100 Marks</b></p>
-<p class="alrm-ct"><b><i class='bx bx-alarm' style="font-size: 21px;position: relative;top: 2px;"></i> 30 mins <i class='bx bxs-circle' style="font-size: 8px;"></i></b> Total Question: <strong>16</strong> </p>
+<p>Total marks <b>{{ $marks }} Marks</b></p>
+<p class="alrm-ct"><b><i class='bx bx-alarm' style="font-size: 21px;position: relative;top: 2px;"></i> {{ $total_time }} mins <i class='bx bxs-circle' style="font-size: 8px;"></i></b> Total Question: <strong>{{ $question_count }}</strong> </p>
 
 </div>
-<a href="{{ url('/user/quiz') }}/{{ $st_id }}" class="start-quz">Start Quiz </a>
+<a href="{{ url('/user/quiz') }}/{{ $course_id }}/{{ $topic_id }}/{{ $st_id }}" class="start-quz">Start Quiz </a>
 </div>
           </div>
 

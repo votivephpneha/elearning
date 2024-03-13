@@ -16,6 +16,7 @@ use Hash;
 use Session;
 use DB;
 use Auth;
+use App\Models\QuestionBank;
 
 class UserController extends Controller
 {
@@ -38,7 +39,8 @@ class UserController extends Controller
                         // echo "<pre>";
                         // print_r($groupedData);die;
         $course_title = !empty($groupedData->toArray()) ? $groupedData[0]->course_title : "No Data Found";
-        return view('Front.course_view', compact('groupedData','course_title'));
+        $course_id = $id;
+        return view('Front.course_view', compact('groupedData','course_title','course_id'));
     }
 
     public function theory(Request $request){
@@ -57,13 +59,44 @@ class UserController extends Controller
     }
 
     public function start_quiz(Request $request){
-
+        $course_id = base64_decode($request->course_id);
+        $topic_id = base64_decode($request->topic_id);
+        $st_id = base64_decode($request->st_id);
+        $data['course_id'] = $request->course_id;
+        $data['topic_id'] = $request->topic_id;
         $data['st_id'] = $request->st_id;
+        $quiz = QuestionBank::where("course_id",$course_id)->where("topic_id",$topic_id)->where("chapter_id",$st_id)->where("status",1)->where("deleted_at",NULL)->groupBy('q_id')->get();
+        //print_r($quiz);die;
+        $i = 0;
+        $marks = 0;
+        $total_time = 0;
+        foreach($quiz as $q){
+            if($q->quiz_exam == "Quiz" || $q->quiz_exam == "Both"){
+                $i = $i+1;
+                $marks = $marks+$q->marks;
+                $total_time = $total_time + $q->time_length;
+            }
+        }
+
+        $min = $total_time/60;
+        $mins = number_format($min, 2, '.', '');
+        $data['question_count'] = $i;
+        $data['marks'] = $marks;
+        $data['total_time'] = $mins;
+
+        $data['course_title'] = DB::table("courses")->where("course_id",$course_id)->first();
+
     	return view("Front.start-quiz")->with($data);
     }
 
-    public function quiz(){
-    	return view("Front.quiz");
+    public function quiz(Request $request){
+        $course_id = base64_decode($request->course_id);
+        $topic_id = base64_decode($request->topic_id);
+        $st_id = base64_decode($request->st_id);
+        $data['quiz'] = QuestionBank::where("course_id",$course_id)->where("topic_id",$topic_id)->where("chapter_id",$st_id)->groupBy('q_id')->get();
+        // echo "<pre>";
+        // print_r($data['quiz']);die;
+    	return view("Front.quiz")->with($data);
     }
 
     public function session_analysis(){

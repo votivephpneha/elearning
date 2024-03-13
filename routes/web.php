@@ -43,8 +43,8 @@ Route::group(['prefix' => 'user', 'middleware' => 'user_auth:customer'], functio
 	Route::get('/user_dashboard', [HomeController::class, 'user_dashboard'])->name("user_dashboard");
 	Route::get('/course_view/{id}', [UserController::class, 'course_view'])->name("course_view");
 	Route::get('/theory/{id}', [UserController::class, 'theory'])->name("theory");
-	Route::get('/start_quiz/{st_id}', [UserController::class, 'start_quiz'])->name("start_quiz");
-	Route::get('/quiz/{st_id}', [UserController::class, 'quiz'])->name("quiz");
+	Route::get('/start_quiz/{course_id}/{topic_id}/{st_id}', [UserController::class, 'start_quiz'])->name("start_quiz");
+	Route::get('/quiz/{course_id}/{topic_id}/{st_id}', [UserController::class, 'quiz'])->name("quiz");
 	Route::get('/session_analysis', [UserController::class, 'session_analysis'])->name("session_analysis");
 	Route::get('/exam_builder', [UserController::class, 'exam_builder'])->name("exam_builder");
 	Route::get('/exam_builder_view', [UserController::class, 'exam_builder_view'])->name("exam_builder_view");

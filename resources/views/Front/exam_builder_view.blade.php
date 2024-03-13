@@ -176,7 +176,7 @@
 
 </div>
 
-<a href="{{ url('/user/start_quiz') }}" class="next-chose"> Next </a>
+<a href="{{ url('/user/start_quiz') }}/4" class="next-chose"> Next </a>
 
 
             </div>

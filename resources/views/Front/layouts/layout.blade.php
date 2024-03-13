@@ -64,7 +64,7 @@
 
 <?php
   
-  if($_SERVER['REQUEST_URI'] != "/dev/" and $_SERVER['REQUEST_URI'] != "/dev/register" and $_SERVER['REQUEST_URI'] != "/dev/user/start_quiz" and $_SERVER['REQUEST_URI'] != "/dev/user/quiz"){
+  if($_SERVER['REQUEST_URI'] != "/dev/" and $_SERVER['REQUEST_URI'] != "/dev/register" and !strpos($_SERVER['REQUEST_URI'],'start_quiz') and !strpos($_SERVER['REQUEST_URI'],'quiz')){
     ?>
     @include('Front.layouts.header')
     <?php if($_SERVER['REQUEST_URI'] != "/dev/user/user_status" and $_SERVER['REQUEST_URI'] != "/dev/user/settings" and $_SERVER['REQUEST_URI'] != "/dev/user/change_password"){ ?>
@@ -77,7 +77,7 @@
 ?>
 @yield('content')
 <?php
-  if($_SERVER['REQUEST_URI'] != "/dev/" and $_SERVER['REQUEST_URI'] != "/dev/register" and $_SERVER['REQUEST_URI'] != "/dev/user/start_quiz" and $_SERVER['REQUEST_URI'] != "/dev/user/quiz"){
+  if($_SERVER['REQUEST_URI'] != "/dev/" and $_SERVER['REQUEST_URI'] != "/dev/register" and !strpos($_SERVER['REQUEST_URI'],'start_quiz') and !strpos($_SERVER['REQUEST_URI'],'quiz')){
     ?>
     @include('Front.layouts.sidebar')
     <?php if($_SERVER['REQUEST_URI'] != "/dev/user/user_status"  and $_SERVER['REQUEST_URI'] != "/dev/user/settings" and $_SERVER['REQUEST_URI'] != "/dev/user/change_password"){ ?>

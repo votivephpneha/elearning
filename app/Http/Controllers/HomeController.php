@@ -68,9 +68,9 @@ class HomeController extends Controller
         $user = User::where('email', '=', $request->email)->first();
         //print_r($user);die;
         //echo Auth::guard("customer")->attempt($user_data);die;
-        if(Auth::guard("customer")->attempt($user_data) and $user->status == 1)
+        if(Auth::guard("customer")->attempt($user_data) and $user->status == 1 and $user->deleted_at == NULL)
         {
-            
+            //echo Auth::guard("customer")->user()->name;
             return redirect()->route('user_dashboard');
             
         }

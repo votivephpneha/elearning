@@ -12,8 +12,9 @@
      <div class="mr-1z"> <label>
        <?php
           $user = Auth::guard("customer")->user();
+          //echo $user->name;die;
           $user_name = explode(" ",$user->name);
-          //print_r($user_name);
+          //print_r($user);die;
           if(count($user_name)>1){
             echo strtoupper($user_name[0][0])."".strtoupper($user_name[1][0]);
           }else{
