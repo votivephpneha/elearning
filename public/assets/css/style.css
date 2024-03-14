@@ -493,6 +493,14 @@ background-color: #FFF;
   }
 }
 
+ul.subtopics_li li{
+border-bottom: 0px !important;
+padding: 6px 0px !important;
+}
+
+ul.subtopics_li li a{
+font-size: 14px !important;
+}
 
 .subject-box {
     /* border: 1px solid #ccc; */
@@ -634,13 +642,15 @@ background-color: #FFF;
 }
 
 .topics .accordion-list li {
-  
     border-radius: 4px;
-    padding: 8px 0px;
+    padding: 11px 0px;
+    border-bottom: 1px solid #eeecec;
+    border-radius: 0;
 }
 .topics .accordion-list .course-ilsit ul{
 padding: 3px 26px !important;
 }
+
 
 .course-ilsit h3 {
     font-size: 16px;

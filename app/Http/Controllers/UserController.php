@@ -8,6 +8,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Routing\Controller as BaseController;
 use App\Models\User;
+use App\Models\SessionAnalysis;
 use Response;
 use App\Models\Courses;
 use App\Models\Topics;
@@ -80,9 +81,11 @@ class UserController extends Controller
 
         $min = $total_time/60;
         $mins = number_format($min, 2, '.', '');
+        $mins1 = str_replace(".",":",$mins);
+        Session::put("timer", $mins1);
         $data['question_count'] = $i;
         $data['marks'] = $marks;
-        $data['total_time'] = $mins;
+        $data['total_time'] = $mins1;
 
         $data['course_title'] = DB::table("courses")->where("course_id",$course_id)->first();
 
@@ -93,10 +96,26 @@ class UserController extends Controller
         $course_id = base64_decode($request->course_id);
         $topic_id = base64_decode($request->topic_id);
         $st_id = base64_decode($request->st_id);
+        $data['course_id'] = base64_decode($request->course_id);
+        $data['topic_id'] = base64_decode($request->topic_id);
+        $data['st_id'] = base64_decode($request->st_id);
+        $data['timer'] = Session::get("timer");
         $data['quiz'] = QuestionBank::where("course_id",$course_id)->where("topic_id",$topic_id)->where("chapter_id",$st_id)->groupBy('q_id')->get();
         // echo "<pre>";
         // print_r($data['quiz']);die;
     	return view("Front.quiz")->with($data);
+    }
+
+    public function submit_quiz(Request $request){
+        $session_analysis = new SessionAnalysis();
+        $session_analysis->student_id = $request->student_id;
+        $session_analysis->course_id = $request->course_id;
+        $session_analysis->topic_id = $request->topic_id;
+        $session_analysis->subtopic_id = $request->subtopic_id;
+        $session_analysis->total_questions = $request->total_questions;
+        $session_analysis->attempted_questions = $request->attempted;
+        $session_analysis->quiz_json = $request->quiz_json;
+        return $session_analysis->save();
     }
 
     public function session_analysis(){

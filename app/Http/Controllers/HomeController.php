@@ -65,10 +65,10 @@ class HomeController extends Controller
           'email'  => $request->get('email'),
           'password' => $request->get('password')
         );
-        $user = User::where('email', '=', $request->email)->first();
+        $user = User::where('email', '=', $request->email)->where("role","student")->first();
         //print_r($user);die;
         //echo Auth::guard("customer")->attempt($user_data);die;
-        if(Auth::guard("customer")->attempt($user_data) and $user->status == 1 and $user->deleted_at == NULL)
+        if(Auth::guard("customer")->attempt($user_data) and $user->status == 1 and $user->deleted_at == NULL and !empty($user_data))
         {
             //echo Auth::guard("customer")->user()->name;
             return redirect()->route('user_dashboard');

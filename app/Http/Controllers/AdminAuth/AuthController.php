@@ -4,7 +4,7 @@ namespace App\Http\Controllers\AdminAuth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use App\Models\Admin;
+use App\Models\User;
 use Hash;
 use Redirect;
 use Session;
@@ -88,16 +88,18 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate([
 
-            "email" => "required",
+        // $request->validate([
 
-            "password" => "required"
+        //     "email" => "required",
 
-        ]);
+        //     "password" => "required"
+
+        // ]);
         $remember = $request->remember;
-
-        if (Auth::guard("admin")->attempt(["email" => $request->email,"password" => $request->password])) {
+        $user_data = User::where("email",$request->email)->where("role","admin")->first();
+        //print_r($user_data);die;
+        if (Auth::guard("admin")->attempt(["email" => $request->email,"password" => $request->password]) and !empty($user_data)) {
             
 
             if (Auth::guard("admin")->user()->status==0) {

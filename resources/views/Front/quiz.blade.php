@@ -3,8 +3,15 @@
 
 @section("current_page_js")
 <script type="text/javascript">
-  var total_div1 = $('.qustion-box-one').length;
+  var total_questions = $(".pallate").length;
+  $(".attempted").html("0/"+total_questions);
+  $(".remaining_questions").html(total_questions);
+  
 
+
+  var quiz = [];
+  var session_quiz_array1 = JSON.stringify(quiz);
+  sessionStorage.setItem("quiz_json", session_quiz_array1);
   function next_btn(i){
     //alert(i);
     var total_div = $('.qustion-box-one').length;
@@ -15,11 +22,27 @@
       $(".qustion-box-one").hide();
       $(".qustion-box-one-"+next_box).show();
     }
-    //alert(i);
+
+    var question_title = $(".question_title-"+i).text();
+    //alert(question_title);
+
     if($("input:radio[name='question_options-"+i+"']").is(":checked")) {
-      $(".pallate-color-"+i).removeClass("not-atempt");
-      $(".pallate-color-"+i).addClass("active-q");
+      
+      var j;
+      var answer_val = $("input:radio[name='question_options-"+i+"']:checked").val();
+      var session_quiz_json = sessionStorage.getItem("quiz_json");
+      console.log("quiz",session_quiz_json);
+      var session_quiz_array1 = JSON.parse(session_quiz_json);
+      session_quiz_array1.push({"question":question_title,"answer":answer_val});
+      var quiz1 = JSON.stringify(session_quiz_array1);
+      sessionStorage.setItem("quiz_json", quiz1);
+      
     }
+    
+    
+
+    
+    
 
     
   }
@@ -35,10 +58,88 @@
     
   }
 
+  function submit_quiz(){
+    var question_title = $(".question_title").last().text();
+    var total_div = $('.qustion-box-one').length;
+    var answer_val = $("input:radio[name='question_options-"+total_div+"']:checked").val();
+    var session_quiz_json = sessionStorage.getItem("quiz_json");
+    console.log("quiz",total_div);
+    var session_quiz_array1 = JSON.parse(session_quiz_json);
+    if(answer_val != undefined){
+      session_quiz_array1.push({"question":question_title,"answer":answer_val});
+      var quiz1 = JSON.stringify(session_quiz_array1);
+    }else{
+      var quiz1 = session_quiz_json;
+    }
+    
+    console.log("quiz1",quiz1);
+    var total_div = $('.qustion-box-one').length;
+    var student_id = "<?php echo Auth::guard('customer')->user()->id; ?>";
+    var course_id = "<?php echo $course_id; ?>";
+    var topic_id = "<?php echo $topic_id; ?>";
+    var subtopic_id = "<?php echo $st_id; ?>";
+    
+    var active_div = $('.qust-no .active-q').length;
+    
+    var data = {"student_id":student_id,"course_id":course_id,"topic_id":topic_id,"subtopic_id":subtopic_id,"total_questions":total_div,"attempted":active_div,"quiz_json":quiz1,"_token":"{{ csrf_token() }}"};
+    //console.log("data",data);
+    $.ajax({
+      type: "post",
+      url: "{{ url('/user/submit_quiz') }}",
+      data: data,
+      cache: false,
+      success: function(data){
+         if(data == 1){
+           window.location.href = "{{ url('/user/session_analysis') }}";
+         }
+      }
+    });
+  }
+
+  function answerClick(i){
+    //alert(i);
+    if($("input:radio[name='question_options-"+i+"']").is(":checked")) {
+      $(".pallate-color-"+i).removeClass("not-atempt");
+      $(".pallate-color-"+i).addClass("active-q");
+      var active_div = $('.qust-no .active-q').length;
+      var total_questions = $(".pallate").length;
+      var attempted_div = active_div+"/"+total_questions;
+      var remaining_questions = $('.qust-no .not-atempt').length;
+      $(".attempted").html(attempted_div);
+      $(".remaining_questions").html(remaining_questions);
+    }
+
+  }
+
   function question_pallate(i){
     $(".qustion-box-one").hide();
     $(".qustion-box-one-"+i).show();
   }
+
+  var timer2 = "<?php echo $timer; ?>";
+  console.log("timer2",timer2);
+  var interval = setInterval(function() {
+
+
+    var timer = timer2.split(':');
+    //by parsing integer, I avoid all extra string processing
+    var minutes = parseInt(timer[0], 10);
+    var seconds = parseInt(timer[1], 10);
+
+    --seconds;
+    minutes = (seconds < 0) ? --minutes : minutes;
+    if (minutes < 0) clearInterval(interval);
+    seconds = (seconds < 0) ? 59 : seconds;
+    seconds = (seconds < 10) ? '0' + seconds : seconds;
+    //minutes = (minutes < 10) ?  minutes : minutes;
+    $('.countdown').html(minutes + ':' + seconds);
+    timer2 = minutes + ':' + seconds;
+    console.log("timer2",timer2);
+    if(timer2 == "0:00"){
+      submit_quiz();
+      window.location.href = "{{ url('/user/session_analysis') }}";
+    }
+  }, 1000);
 </script>
 @endsection
 
@@ -50,7 +151,7 @@
     <div class="col-md-11 m-auto ">
       <div class="d-flex justify-content-between align-content-center func-tn">
         <h5 class="funt-far"> Functions</h5>
-        <p class="m-0 fiv-con"><i class='bx bx-time-five'></i> 10:15:45</p>
+        <p class="m-0 fiv-con"><i class='bx bx-time-five'></i><span class="countdown"></span></p>
     </div>
         <?php
             $i = 1;
@@ -63,7 +164,7 @@
         <div class="question-main">
       <div class="title mb-3 mt-2">
         <h6 class="tp-q">Question {{ $i }}</h6>
-        <span>{!! $qu->title !!}</span>
+        <span class="question_title question_title-{{ $i }}">{!! $qu->title !!}</span>
         <!-- <div class="q-img">
         <img src="https://mathifyhsc.com/dev/public/assets/img/image 318.png">
       </div> -->
@@ -75,7 +176,7 @@
         <div class="col-md-12">
             @foreach($options as $op)
             <label class="customradio"><span class="radiotextsty">{!! $op->Options !!}</span>
-            <input type="radio" name="question_options-{{ $i }}">
+            <input type="radio" name="question_options-{{ $i }}" value="{!! $op->Options !!}" onclick="answerClick({{ $i }})">
             <span class="checkmark"></span>
             </label>
             @endforeach
@@ -154,8 +255,8 @@
 
       ?>
       <h5>{{ $user->name }}</h5>
-      <p> Attempted: <b> 3/16</b></p>
-       <p> Remaining: <b> 13</b></p>
+      <p> Attempted: <b class="attempted"> 3/16</b></p>
+       <p> Remaining: <b class="remaining_questions"> 13</b></p>
 
     </div>
 
@@ -182,7 +283,7 @@
           @foreach($quiz as $qu)
           @if($qu->status == 1 && $qu->deleted_at == NULL)
           @if($qu->quiz_exam == "Quiz" || $qu->quiz_exam == "Both")
-      <a style="cursor: pointer;" class="pallate-color-{{ $i }} not-atempt" onclick="question_pallate({{ $i }})">{{ $i }}</a>
+      <a style="cursor: pointer;" class="pallate pallate-color-{{ $i }} not-atempt" onclick="question_pallate({{ $i }})">{{ $i }}</a>
       <?php
       $i++;
     ?>
@@ -200,7 +301,7 @@
                <a href="#" class="not-atempt">10</a> -->
                
 </div>
-<center><a href="{{ url('/user/session_analysis') }}" class="submit-btn"> Submit</a></center>
+<center><a href="#" class="submit-btn" onclick="submit_quiz()"> Submit</a></center>
 
          </div>
 </div>

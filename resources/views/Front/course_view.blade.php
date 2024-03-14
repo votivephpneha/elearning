@@ -53,7 +53,7 @@
                          ?> 
                          <!-- - Basic Trigonometry Ratios & Revisions (I) -->
                           </a></h3>
-                      <ul> 
+                      <ul class="subtopics_li"> 
                         <?php $subtopics_list = explode(",",$course->subtopics_list);?>
                           <?php $subtopics_list = explode(",",$course->subtopics_list);?>
                           @foreach($subtopics_list as $list)
