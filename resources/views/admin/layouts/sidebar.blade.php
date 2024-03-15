@@ -1,3 +1,10 @@
+<style type="text/css">
+  .main-sidebar {
+    height: 100vh;
+    overflow-y: inherit;
+    z-index: 1038;
+}
+</style>
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
@@ -6,7 +13,7 @@
       <span class="brand-text font-weight-light">Mathify</span>
     </a>
 
-    <div class="sidebar">
+    <div class="sidebar" style="float:left;">
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">

@@ -136,21 +136,61 @@
 
 </div>
 </div>
-
+<?php
+  $i = 1;
+?>
+@foreach($questions as $qu)
+@if($qu->status == 1 && $qu->deleted_at == NULL)
+@if($qu->quiz_exam == "Quiz" || $qu->quiz_exam == "Both")
 <div class="attempt-quesa">
   <div class="rel-funct">
     <p class="atmpt"> Attempted </p>
-<h3>Question 1 - Which is Real Function ? </h3>
+<h3>Question {{ $i }} - <span>{!! $qu->title !!}</span> </h3>
 
+<?php
+  $quiz_array = json_decode($session_analysis->quiz_json);
+  //print_r($quiz_array);
+?>
 <div class="color-bx"> <label> Average Time: 1.0 seconds</label> <label> 100% got it correct</label> <label> You spent : 5 seconds</label>  </div>
 </div>
+<?php
+  $options = DB::table("question_bank")->where("course_id",$qu->course_id)->where("topic_id",$qu->topic_id)->where("chapter_id",$qu->chapter_id)->where("topic_id",$qu->topic_id)->where("q_id",$qu->q_id)->get();
+  
+?>
+<!-- @foreach($quiz_array as $q_array)
+  @foreach($options as $op)
+    @if($op->correct_answer == "correct")
+      @if($q_array->answer == $op->Options)
+        <div class="correct-ans">
+        <p><i class="bx bxs-check-circle clr"></i> <label>{!! $op->Options !!}</label></p>
+        <p style="color: #00BD65;"><i class="bx bx-check-double clr"></i> Correct</p>
+      </div>
+      @endif
+    @endif
+  @endforeach
+@endforeach -->
+@foreach($options as $op)
+  
+    @if($op->correct_answer == "correct")
+      <div class="correct-ans">
+        <p><i class="bx bxs-check-circle clr"></i> <label>{!! $op->Options !!}</label></p>
+        <p style="color: #00BD65;"><i class="bx bx-check-double clr"></i> Correct</p>
+      </div>
+    @else
+        <div class="correct-ans-incor">
+        <p><i class="bx bx-radio-circle blscr"></i> <label>{!! $op->Options !!} </label></p>
 
-<div class="correct-ans">
-<p><i class='bx bxs-check-circle clr'></i> <label> X = Y </label></p>
-<p style="color: #00BD65;"><i class='bx bx-check-double clr'></i> Correct</p>
-</div>
+        </div>
+    @endif
+  
 
-<div class="correct-ans-incor">
+
+<!-- <div class="correct-ans-incor">
+<p><i class="bx bx-radio-circle blscr"></i> <label>{!! $op->Options !!}</label></p>
+
+</div> -->
+@endforeach
+<!-- <div class="correct-ans-incor">
 <p><i class='bx bx-radio-circle blscr'></i> <label> X = Y </label></p>
 
 </div>
@@ -161,15 +201,20 @@
 <div class="correct-ans-incor">
 <p><i class='bx bx-radio-circle blscr'></i> <label> X = Y </label></p>
 
-</div>
+</div> -->
 <p class="mt-2 f-p"><b> Explanation :</b> <br>
-  Lorem ipsum dolor sit amet consectetur. Lacinia pulvinar semper orci neque sit ac vitae. Quis risus placerat justo amet commodo molestie congue. Fringilla malesuada id eu sed fermentum. Elit eu at neque velit in faucibus tortor eu nunc.
+  {!! $qu->correct_answer_explanation !!}
 
 </p>
 </div>
+<?php
+  $i++;
+?>
+@endif
+@endif
+@endforeach
 
-
-
+<!-- 
 <div class="attempt-quesa">
   <div class="rel-funct">
     <p class="atmpt"> Attempted </p>
@@ -199,7 +244,7 @@
   We follow product rule 𝑑𝑑𝑥 (f.g) = g.𝑑𝑑𝑥 (f) + f.𝑑𝑑𝑥 (g) Here, f = sin⁡ x and g = tan⁡ x 𝑑𝑑𝑥 (sin⁡ x tan⁡ x) = cos⁡ x tan⁡ x + sec2⁡ x sinx 𝑑𝑑𝑥 (sin⁡ x tan⁡ x) = sin⁡ x + tan⁡ x sec⁡ x
 
 </p>
-</div>
+</div> -->
 
 </div>
 </div>

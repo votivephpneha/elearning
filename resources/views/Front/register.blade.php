@@ -24,12 +24,21 @@ $(function() {
       // The key name on the left side is the name attribute
       // of an input field. Validation rules are defined
       // on the right side
-      name: "required",
+      name:{
+        required:true,
+        normalizer: function( value ) {
+          return $.trim( value );
+        }
+      },
       
       email: {
         required: true,
         // Specify that email should be validated
         // by the built-in "email" rule
+        normalizer: function( value ) {
+          return $.trim( value );
+        },
+        
         email: true
       },
       password: {

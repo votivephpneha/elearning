@@ -100,7 +100,7 @@ class UserController extends Controller
         $data['topic_id'] = base64_decode($request->topic_id);
         $data['st_id'] = base64_decode($request->st_id);
         $data['timer'] = Session::get("timer");
-        $data['quiz'] = QuestionBank::where("course_id",$course_id)->where("topic_id",$topic_id)->where("chapter_id",$st_id)->groupBy('q_id')->get();
+        $data['quiz'] = QuestionBank::where("course_id",$course_id)->where("topic_id",$topic_id)->where("chapter_id",$st_id)->orderBy('ordering_id', 'ASC')->groupBy('q_id')->get();
         // echo "<pre>";
         // print_r($data['quiz']);die;
     	return view("Front.quiz")->with($data);
@@ -108,6 +108,8 @@ class UserController extends Controller
 
     public function submit_quiz(Request $request){
         $session_analysis = new SessionAnalysis();
+        $reference_id = "quiz-".rand(10000,99999);
+        Session::put("reference_id",$reference_id);
         $session_analysis->student_id = $request->student_id;
         $session_analysis->course_id = $request->course_id;
         $session_analysis->topic_id = $request->topic_id;
@@ -115,11 +117,20 @@ class UserController extends Controller
         $session_analysis->total_questions = $request->total_questions;
         $session_analysis->attempted_questions = $request->attempted;
         $session_analysis->quiz_json = $request->quiz_json;
+        $session_analysis->reference_id = $reference_id;
+        
         return $session_analysis->save();
     }
 
-    public function session_analysis(){
-    	return view("Front.session_analysis");
+    public function session_analysis(Request $request){
+        $course_id = base64_decode($request->course_id);
+        $topic_id = base64_decode($request->topic_id);
+        $st_id = base64_decode($request->st_id);
+        $data['reference_id'] = Session::get("reference_id");
+        $data['questions'] = QuestionBank::where("course_id",$course_id)->where("topic_id",$topic_id)->where("chapter_id",$st_id)->groupBy('q_id')->get();
+        $data['session_analysis'] = SessionAnalysis::where("course_id",$course_id)->where("topic_id",$topic_id)->where("subtopic_id",$st_id)->where("reference_id",$data['reference_id'])->first();
+        //print_r($data['session_analysis']);die;
+    	return view("Front.session_analysis")->with($data);
     }
 
     public function exam_builder(){

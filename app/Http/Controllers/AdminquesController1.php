@@ -128,7 +128,7 @@ class AdminquesController1 extends Controller{
 	}
 
 	public function show_questions(){
-		$data['questions_data'] = DB::table("question_bank")->orderBy('title')
+		$data['questions_data'] = DB::table("question_bank")->orderBy('ordering_id', 'ASC')
             ->groupBy('q_id')->get();
 
 		return view("admin.show_questions")->with($data);
@@ -200,5 +200,24 @@ public function post_questions_bank_edit(Request $request){
     Session::flash('message', 'Question updated successfully');
     return redirect()->to('/admin/show_questions');
 }
+
+public function update_questionorder(Request $request)
+    {    
+        $questions = QuestionBank::all();
+    
+
+        foreach ($questions as $questionsVal) {
+
+            foreach ($request->order as $order) {
+
+                if ($order['question_id'] == $questionsVal->question_id) {
+
+                    $questionsVal->update(['ordering_id' => $order['ordering_id']]);
+                }
+            }
+        }
+
+        return response(['message' => 'Update Successfully'], 200);
+    }
 
 }	

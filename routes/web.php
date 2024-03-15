@@ -46,7 +46,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'user_auth:customer'], functio
 	Route::get('/start_quiz/{course_id}/{topic_id}/{st_id}', [UserController::class, 'start_quiz'])->name("start_quiz");
 	Route::get('/quiz/{course_id}/{topic_id}/{st_id}', [UserController::class, 'quiz'])->name("quiz");
 	Route::post('/submit_quiz', [UserController::class, 'submit_quiz'])->name("submit_quiz");
-	Route::get('/session_analysis', [UserController::class, 'session_analysis'])->name("session_analysis");
+	Route::get('/session_analysis/{course_id}/{topic_id}/{st_id}', [UserController::class, 'session_analysis'])->name("session_analysis");
 	Route::get('/exam_builder', [UserController::class, 'exam_builder'])->name("exam_builder");
 	Route::get('/exam_builder_view', [UserController::class, 'exam_builder_view'])->name("exam_builder_view");
 	Route::get('/user_status', [UserController::class, 'user_status'])->name("user_status");
@@ -92,6 +92,7 @@ Route::post('/student/student_status', [StudentController::class, 'student_statu
 Route::post('/admin/fetch-topics', [CoursesController::class, 'fetch_topics'])->name("fetch.topics");
 Route::post('/admin/update-order', [CoursesController::class, 'update_order'])->name("update.order");
 Route::post('/admin/update_chapterorder', [TopicController::class, 'update_chapterorder'])->name("update.chapter.order");
+Route::post('/admin/update-questionorder', [AdminquesController1::class, 'update_questionorder'])->name("update.questionorder");
 
 
 

@@ -72,10 +72,10 @@
                     <th>Action</th>
                   </tr>
                   </thead>
-                  <tbody>
+                  <tbody id="questionBodyContents">
                   <?php $i=1; ?>
                   @foreach ($questions_data as $list)
-                  <tr class="tableRow" data-course_id="{{ $list->question_id }}">
+                  <tr class="tableRow" data-question_id="{{ $list->question_id }}">
                     <td class="serial-number"> {{ $i }}</td>
                     <td>{!! $list->title !!}</td>
                     <td>{{ $list->quiz_exam }}</td>

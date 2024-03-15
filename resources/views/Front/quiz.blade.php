@@ -31,9 +31,10 @@
       var j;
       var answer_val = $("input:radio[name='question_options-"+i+"']:checked").val();
       var session_quiz_json = sessionStorage.getItem("quiz_json");
+      var question_id = $(".question_id-"+i).val();
       console.log("quiz",session_quiz_json);
       var session_quiz_array1 = JSON.parse(session_quiz_json);
-      session_quiz_array1.push({"question":question_title,"answer":answer_val});
+      session_quiz_array1.push({"question_id":question_id,"question":question_title,"answer":answer_val});
       var quiz1 = JSON.stringify(session_quiz_array1);
       sessionStorage.setItem("quiz_json", quiz1);
       
@@ -61,12 +62,13 @@
   function submit_quiz(){
     var question_title = $(".question_title").last().text();
     var total_div = $('.qustion-box-one').length;
+    var question_id = $(".question_id-"+total_div).val();
     var answer_val = $("input:radio[name='question_options-"+total_div+"']:checked").val();
     var session_quiz_json = sessionStorage.getItem("quiz_json");
     console.log("quiz",total_div);
     var session_quiz_array1 = JSON.parse(session_quiz_json);
     if(answer_val != undefined){
-      session_quiz_array1.push({"question":question_title,"answer":answer_val});
+      session_quiz_array1.push({"question_id":question_id,"question":question_title,"answer":answer_val});
       var quiz1 = JSON.stringify(session_quiz_array1);
     }else{
       var quiz1 = session_quiz_json;
@@ -90,7 +92,7 @@
       cache: false,
       success: function(data){
          if(data == 1){
-           window.location.href = "{{ url('/user/session_analysis') }}";
+           window.location.href = "{{ url('/user/session_analysis') }}/{{ base64_encode($course_id) }}/{{ base64_encode($topic_id) }}/{{ base64_encode($st_id) }}";
          }
       }
     });
@@ -137,7 +139,7 @@
     console.log("timer2",timer2);
     if(timer2 == "0:00"){
       submit_quiz();
-      window.location.href = "{{ url('/user/session_analysis') }}";
+      window.location.href = "{{ url('/user/session_analysis') }}/{{ $course_id }}/{{ $topic_id }}}/{{ $st_id }}";
     }
   }, 1000);
 </script>
@@ -163,6 +165,7 @@
           
         <div class="question-main">
       <div class="title mb-3 mt-2">
+        <input type="hidden" name="question_id" class="question_id-{{ $i }}" value="{{ $qu->q_id }}">
         <h6 class="tp-q">Question {{ $i }}</h6>
         <span class="question_title question_title-{{ $i }}">{!! $qu->title !!}</span>
         <!-- <div class="q-img">

@@ -70,12 +70,7 @@
         rowReorder: true,
         buttons: ['csv', 'excel']
     });
-    $('#question_list').DataTable({
-        dom: 'Bfrtip',
-        responsive: true,
-        rowReorder: true,
-        buttons: ['csv', 'excel']
-    });
+    
 
     $("#courseBodyContents").sortable({
         items: "tr",
@@ -122,7 +117,64 @@
 });
 
 </script>
+<script type="text/javascript">
 
+
+  
+    $(function () {
+    
+    $('#question_list').DataTable({
+        dom: 'Bfrtip',
+        responsive: true,
+        rowReorder: true,
+        buttons: ['csv', 'excel']
+    });
+
+    $("#questionBodyContents").sortable({
+        items: "tr",
+        cursor: 'move',
+        opacity: 0.6,
+        update: function () {
+            sendOrderToServer();
+        }
+    });
+
+    function sendOrderToServer() {
+        var order = [];
+        var token = $('meta[name="csrf-token"]').attr('content');
+
+        $('tr.tableRow').each(function (index, element) {
+            order.push({
+                question_id: $(this).attr('data-question_id'),
+                ordering_id: index + 1
+            });
+
+            // Update serial number in the table
+            $(this).find('td.serial-number').text(index + 1);
+        });
+
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "{{ route('update.questionorder') }}",
+            data: {
+                order: order,
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (response) {
+                if (response.status == "success") {
+                    console.log(response);
+                } else {
+                    console.log(response);
+                }
+            }
+        });
+    }
+});
+
+</script>
 <script type="text/javascript">
         $(function () {
 

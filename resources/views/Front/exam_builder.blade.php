@@ -16,8 +16,9 @@
 </div>
 
 </div>
-</div>
 
+</div>
+<h5 class="exam_builder_heading"> Exam Builder </h5>
 
 <?php
   $i = 1;
