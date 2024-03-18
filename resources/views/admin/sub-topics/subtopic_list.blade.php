@@ -32,7 +32,7 @@
               <div class="card-header">
                 <h1 class="card-title">Chapter List</h1>
                 <div style="float:right; margin-right:10px; margin-top:10px;">
-                  <a href="{{ url('/admin/subtopic-form') }}" class="btn btn-primary" style="color:#FFFFFF"> Add New Chapter</a>
+                  <a href="{{ url('/admin/subtopic-form1') }}/{{ $course_id }}/{{ $topic_id }}" class="btn btn-primary" style="color:#FFFFFF"> Add New Chapter</a>
                 </div>
               </div>
 
@@ -83,7 +83,8 @@
 
                     <a href="{{ route('subtopic.edit', base64_encode($list->st_id)) }}"><i class="fa fa-edit"></i></a>
                       
-                      <a title="Delete Topic" href="{{ route('subtopic.delete', base64_encode($list->st_id)) }}" onclick="return confirm('Are you sure you want to delete this record?')"><i class="fa fa-trash"></i></a>
+                      
+                      <a title="Delete Topic" href="{{ url('/admin/subtopic-delete/') }}/{{base64_encode($list->st_id)}} }}/{{$topic_id }}" onclick="return confirm('Are you sure you want to delete this record?')"><i class="fa fa-trash"></i></a>
                     </td>
                   </tr>
                                        <?php $i++; ?>

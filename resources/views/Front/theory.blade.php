@@ -14,11 +14,13 @@ keyboard_backspace
 <div class="theory-box">
 
   <div class="pdf-line">
- 
-  <p>  Theory - Basic Trigonometry Ratios & Revisions (I)</p>
+ 	<?php
+ 		$theory = DB::table("subtopics")->where("st_id",$queries->st_id)->first();
+ 	?>
+  <p>  Theory - {{ $theory->title }}</p>
 
  <center> 
-         <embed src="{{ url('/public') }}/assets/img/Einstein_Relativity.pdf#toolbar=0" width="100%" height="500"> 
+         <embed src="{{ url('/public') }}/assets/img/{{ $queries->theory_pdf }}#toolbar=0" width="100%" height="500"> 
         </embed> 
     </center> 
 

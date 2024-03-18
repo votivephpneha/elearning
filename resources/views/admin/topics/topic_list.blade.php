@@ -82,6 +82,7 @@
                     <a href="{{ route('topic.edit', base64_encode($list->topic_id)) }}"><i class="fa fa-edit"></i></a>
                       
                       <a title="Delete Topic" href="{{ route('topic.delete', base64_encode($list->topic_id)) }}" onclick="return confirm('Are you sure you want to delete this record?')"><i class="fa fa-trash"></i></a>
+                      <a href="{{ url('/admin/subtopiclist1/') }}/{{ base64_encode($list->course_id) }}/{{ base64_encode($list->topic_id) }}"><i class="fa fa-eye"></i></a>
                     </td>
                   </tr>
                      <?php $i++; ?>

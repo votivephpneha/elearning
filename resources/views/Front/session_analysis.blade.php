@@ -1,5 +1,13 @@
 @extends('Front.layouts.layout')
 @section('title', 'Session Analysis')
+@section('current_page_js')
+<script type="text/javascript">
+  var correct_answer = $(".correct_answer").val();
+  var correct_ans = correct_answer/"<?php echo $session_analysis1->total_questions; ?>";
+  console.log("correct_answer",correct_ans);
+  $(".correct_answer_session").html(correct_ans+"%");
+</script>
+@endsection
 
 @section('content')
 	<div class="col-md-12">
@@ -13,7 +21,7 @@
 <label> <i class='bx bx-task'></i></label>
 </div>
 <div class="tex-bk">
-<h5> 5/10</h5>
+<h5> {{ $session_analysis1->attempted_questions}}/{{ $session_analysis1->total_questions}}</h5>
 <p>Completed</p>
 </div>
 </div>
@@ -27,7 +35,14 @@
 </div>
 
 <div class="tex-bk">
-<h5> 8%</h5>
+<h5 class="correct_answer_session">
+  <?php
+    $attempted_questions = $session_analysis1->attempted_questions;
+    $total_questions = $session_analysis1->total_questions;
+    $correct_answers = $attempted_questions/$total_questions * 100;
+    echo $correct_answers."%";
+  ?>
+</h5>
 <p>Correct</p>
 </div>
 </div>
@@ -40,7 +55,10 @@
 </div>
 
 <div class="tex-bk">
-<h5> 10 <small>Seconds</small></h5>
+  <?php $avg_mins = $session_analysis1->time_spent_seconds /$session_analysis1->total_questions;
+    $mins1 = $avg_mins/60;
+  ?>
+<h5> {{ $mins1 }} <small>minutes</small></h5>
 <p>Avg. Time per Questions</p>
 </div>
 </div>
@@ -53,7 +71,8 @@
 </div>
 
 <div class="tex-bk">
-<h5>10 <small>minutes</small></h5>
+  <?php $mins = $session_analysis1->time_spent_seconds /60 ?>
+<h5>{{ $mins }} <small>minutes</small></h5>
 <p>Total Time Spent</p>
 </div>
 </div>
@@ -138,58 +157,68 @@
 </div>
 <?php
   $i = 1;
+  $j = 1;
+  $correct_answer = array();
 ?>
-@foreach($questions as $qu)
-@if($qu->status == 1 && $qu->deleted_at == NULL)
-@if($qu->quiz_exam == "Quiz" || $qu->quiz_exam == "Both")
+@foreach($session_analysis as $qu)
+<?php
+
+  $options = DB::table("question_analysis")->where("course_id",$qu->course_id)->where("topic_id",$qu->topic_id)->where("chapter_id",$qu->chapter_id)->where("question_id",$qu->question_id)->where("student_id",Auth::guard("customer")->user()->id)->where("reference_id",$reference_id)->get();
+  
+?>
 <div class="attempt-quesa">
   <div class="rel-funct">
-    <p class="atmpt"> Attempted </p>
-<h3>Question {{ $i }} - <span>{!! $qu->title !!}</span> </h3>
+    
+    <p class="atmpt"> @if($qu->attempted_status != NULL)
+     Attempted 
+     @else
+      Not Attempted 
+    @endif</p>
+<h3>Question {{ $i }} - <span>{!! $qu->questions !!}</span> </h3>
 
-<?php
-  $quiz_array = json_decode($session_analysis->quiz_json);
-  //print_r($quiz_array);
-?>
-<div class="color-bx"> <label> Average Time: 1.0 seconds</label> <label> 100% got it correct</label> <label> You spent : 5 seconds</label>  </div>
-</div>
-<?php
-  $options = DB::table("question_bank")->where("course_id",$qu->course_id)->where("topic_id",$qu->topic_id)->where("chapter_id",$qu->chapter_id)->where("topic_id",$qu->topic_id)->where("q_id",$qu->q_id)->get();
-  
-?>
-<!-- @foreach($quiz_array as $q_array)
-  @foreach($options as $op)
-    @if($op->correct_answer == "correct")
-      @if($q_array->answer == $op->Options)
-        <div class="correct-ans">
-        <p><i class="bx bxs-check-circle clr"></i> <label>{!! $op->Options !!}</label></p>
-        <p style="color: #00BD65;"><i class="bx bx-check-double clr"></i> Correct</p>
-      </div>
-      @endif
-    @endif
-  @endforeach
-@endforeach -->
+<div class="color-bx"> <label> Average Time: 1.0 seconds</label>
 @foreach($options as $op)
+  @if($op->correct_answer == "correct" && $op->student_answer == $op->option_id)
+     <label> 100% got it Correct</label> 
+     <?php
+      $correct_answer[$j] = "correct";
+      $j++;
+     ?> 
+  @endif
   
+@endforeach
+
+<label> You spent : 5 seconds</label>  </div>
+</div>
+
+
+@foreach($options as $op)
+    
     @if($op->correct_answer == "correct")
-      <div class="correct-ans">
-        <p><i class="bx bxs-check-circle clr"></i> <label>{!! $op->Options !!}</label></p>
+      <div class="correct-ans"> <div class="d-flex">
+        <p><i class="bx bxs-check-circle clr"></i> <label>{!! $op->options !!}</label></p></div>
         <p style="color: #00BD65;"><i class="bx bx-check-double clr"></i> Correct</p>
       </div>
     @else
+      @if($op->option_id == $op->student_answer)
+      <div class="incore-ans">
+       <div class="d-flex"> <p><i class="bx bxs-check-circle clrpx"></i> <label>{!! $op->options !!}</label></p>
+       </div>
+        <p style="color: #F44336;"><i class="bx bx-x clr-cancel"></i> Incorrect</p>
+      </div>
+      @else
         <div class="correct-ans-incor">
-        <p><i class="bx bx-radio-circle blscr"></i> <label>{!! $op->Options !!} </label></p>
+           <div class="d-flex">
+          <p><i class="bx bx-radio-circle blscr"></i> <label>{!! $op->options !!}</label></p>
+        </div>
 
         </div>
+      @endif
     @endif
   
 
-
-<!-- <div class="correct-ans-incor">
-<p><i class="bx bx-radio-circle blscr"></i> <label>{!! $op->Options !!}</label></p>
-
-</div> -->
 @endforeach
+
 <!-- <div class="correct-ans-incor">
 <p><i class='bx bx-radio-circle blscr'></i> <label> X = Y </label></p>
 
@@ -202,18 +231,21 @@
 <p><i class='bx bx-radio-circle blscr'></i> <label> X = Y </label></p>
 
 </div> -->
+<?php
+  $questions_data = DB::table("question_bank")->where("course_id",$qu->course_id)->where("topic_id",$qu->topic_id)->where("chapter_id",$qu->chapter_id)->where("q_id",$qu->question_id)->groupBy('q_id')->first();
+?>
 <p class="mt-2 f-p"><b> Explanation :</b> <br>
-  {!! $qu->correct_answer_explanation !!}
+  {!! $questions_data->correct_answer_explanation !!}
 
 </p>
 </div>
 <?php
   $i++;
 ?>
-@endif
-@endif
+
 @endforeach
 
+<input type="hidden" name="correct_answer" class="correct_answer" value="<?php echo count($correct_answer); ?>">
 <!-- 
 <div class="attempt-quesa">
   <div class="rel-funct">

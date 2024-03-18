@@ -35,7 +35,7 @@
 
 
             <div class="row">
-              <div class="col-md-4">
+              <!-- <div class="col-md-4">
                 <div class="form-group">
                   <label>Title<span class="mandatory" style="color:red"> *</span></label>
                   <div class="input-group">
@@ -48,10 +48,10 @@
                       </span>
                 @endif
                   </div>
-                  <!-- /.input group -->
+                  
                 </div>
-              </div>
-              <div class="col-md-4">
+              </div> -->
+              <div class="col-md-6">
                 <div class="form-group">
                   <label>Courses<span class="mandatory" style="color:red"> *</span></label>
                   <div class="input-group">
@@ -79,7 +79,7 @@
                   <!-- /.input group -->
                 </div>
               </div>
-              <div class="col-md-4">
+              <div class="col-md-6">
                 <div class="form-group">
                   <label>Topics<span class="mandatory" style="color:red"> *</span></label>
                   <div class="input-group">

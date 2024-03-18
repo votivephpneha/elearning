@@ -57,14 +57,14 @@
               </p>
             </a>
           </li>
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a href="{{ url('/admin/subtopiclist') }}" class="nav-link">
               <i class="nav-icon fas fa-copy"></i>
               <p>
                 Chapter Management
               </p>
             </a>
-          </li> 
+          </li>  -->
           <li class="nav-item">
             <a href="{{ url('/admin/show_questions') }}" class="nav-link">
               <i class="nav-icon fas fa-question"></i>

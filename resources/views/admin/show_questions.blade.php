@@ -63,7 +63,7 @@
                   <thead>
                   <tr>
                     <th>ID</th>
-                    <th>Title</th>
+                    <th>Question Content</th>
                     <th>Question Available In</th>
                     <th>Course</th>
                     <th>Topic</th>

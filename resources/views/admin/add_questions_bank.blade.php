@@ -362,6 +362,7 @@ var span = document.getElementsByClassName("close")[0];
 // When the user clicks the button, open the modal 
 btn.onclick = function() {
   var editor_value = CKEDITOR.instances['question_content'].getData();
+  console.log("editor_value",editor_value);
   if(editor_value != ""){
     modal.style.display = "block";
   }else{
@@ -389,19 +390,19 @@ window.onclick = function(event) {
 }
 
         // Get the modal
-var modal = document.getElementById("myModal_ans");
+var modal24 = document.getElementById("myModal_ans");
 
 // Get the button that opens the modal
-var btn = document.getElementById("myBtn_ans");
+var btn24 = document.getElementById("myBtn_ans");
 
 // Get the <span> element that closes the modal
 var span1 = document.getElementsByClassName("close_ans")[0];
 
 // When the user clicks the button, open the modal 
-btn.onclick = function() {
+btn24.onclick = function() {
   var editor_value = CKEDITOR.instances['answer_explanation'].getData();
   if(editor_value != ""){
-    modal.style.display = "block";
+    modal24.style.display = "block";
   }else{
     $(".preview_latex_error_ans").text("Please add the content");
   }
@@ -417,30 +418,30 @@ btn.onclick = function() {
 // When the user clicks on <span> (x), close the modal
 span1.onclick = function() {
   
-  modal.style.display = "none";
+  modal24.style.display = "none";
 }
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
+  if (event.target == modal24) {
+    modal24.style.display = "none";
   }
 }
 
         // Get the modal
-var modal = document.getElementById("myModal_options");
+var modal23 = document.getElementById("myModal_options");
 
 // Get the button that opens the modal
-var btn = document.getElementById("myBtn_options");
+var btn23 = document.getElementById("myBtn_options");
 
 // Get the <span> element that closes the modal
 var span2 = document.getElementsByClassName("close_options")[0];
 
 // When the user clicks the button, open the modal 
-btn.onclick = function() {
+btn23.onclick = function() {
   var editor_value = CKEDITOR.instances['options'].getData();
   if(editor_value != ""){
-    modal.style.display = "block";
+    modal23.style.display = "block";
   }else{
 
     $(".preview_latex_error_options").text("Please add the content");
@@ -462,8 +463,8 @@ span2.onclick = function() {
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
+  if (event.target == modal23) {
+    modal23.style.display = "none";
   }
 }
 

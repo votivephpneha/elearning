@@ -165,17 +165,34 @@ class TopicController extends Controller
 
     // Sub Topic Management 
 
-    public function subtopic_list(){
+    public function subtopic_list(Request $request){
 
         $topic_list = DB::table('subtopics')
         ->select('subtopics.*', 'courses.title as course_title', 'topics.title as topic_title')
         ->leftJoin('courses', 'subtopics.course_id', '=', 'courses.course_id')
         ->leftJoin('topics','subtopics.topic_id', '=' , 'topics.topic_id')
         ->whereNull('subtopics.deleted_at') 
+        
         ->orderBy('subtopics.ordering_id', 'ASC')
         ->get();
 
         $data_onview = array('topic_list' =>$topic_list );
+        return View('admin.sub-topics.subtopic_list')->with($data_onview);
+
+    }
+
+    public function subtopic_list1(Request $request){
+
+        $topic_list = DB::table('subtopics')
+        ->select('subtopics.*', 'courses.title as course_title', 'topics.title as topic_title')
+        ->leftJoin('courses', 'subtopics.course_id', '=', 'courses.course_id')
+        ->leftJoin('topics','subtopics.topic_id', '=' , 'topics.topic_id')
+        ->whereNull('subtopics.deleted_at') 
+        ->where('subtopics.topic_id',base64_decode($request->topic_id)) 
+        ->orderBy('subtopics.ordering_id', 'ASC')
+        ->get();
+
+        $data_onview = array('topic_list' =>$topic_list,'topic_id'=> $request->topic_id,'course_id'=> $request->course_id);
         return View('admin.sub-topics.subtopic_list')->with($data_onview);
 
     }
@@ -205,6 +222,35 @@ class TopicController extends Controller
         }
     }
 
+    public function subtopic_form1(Request $request){
+
+
+        $id = base64_decode($request->id);
+        $topic_id = base64_decode($request->topic_id);
+        $course_id = base64_decode($request->course_id);
+        $course_list  = DB::table('courses')->whereNull('courses.deleted_at')->get();
+        $topic_list  = DB::table('topics')->whereNull('topics.deleted_at')->get();
+
+        if($id){
+
+        $subtopic_detail  = DB::table('subtopics')->where('st_id', '=' ,$id)->get();
+        $subtopic_list  = DB::table('subtopics')->where('st_id', '!=' ,$id)->get();
+        $data_onview = array('subtopic_detail' =>$subtopic_detail,'id'=>$id,'course_list'=>$course_list,'subtopic_list'=>$subtopic_list,'topic_list'=>$topic_list,'topic_id'=>$topic_id);
+        return View('admin.sub-topics.subtopic_form')->with($data_onview);
+
+        }else{
+
+        $id =0;
+        $course_title = DB::table("courses")->where("course_id",$course_id)->first();
+        $topic_title = DB::table("topics")->where("topic_id",$topic_id)->first();
+        $subtopic_list  = DB::table('subtopics')->where('topic_id', '!=' ,$id)->get();
+        $data_onview = array('id'=>$id,'subtopic_list'=>$subtopic_list,'course_list'=>$course_list,'topic_list'=>$topic_list,'topic_id'=>$topic_id,'course_title'=>$course_title,'topic_title'=>$topic_title);
+         
+        return View('admin.sub-topics.subtopic_form')->with($data_onview);
+
+        }
+    }
+
 
     public function subtopic_delete($id){
 
@@ -225,6 +271,8 @@ class TopicController extends Controller
     {
 
         $id = $request->id;
+        $topic_id = base64_encode($request->topic_id);
+        $course_id = base64_encode($request->course_id);
        
 
       
@@ -236,6 +284,9 @@ class TopicController extends Controller
                $validatedData = $request->validate([
             'title' => 'required|unique:subtopics,title,NULL,id,deleted_at,NULL|max:255'
         ]);
+            $type = $request->type;
+            
+            $ty = implode(",", $type);   
                
             $subtopics = new Subtopics;
             $subtopics->title = trim($request->title);
@@ -243,10 +294,11 @@ class TopicController extends Controller
             $subtopics->topic_id = trim($request->topic_id);
             $subtopics->slug = $slug;
             $subtopics->status = "1";
+            $subtopics->type = $ty;
             $subtopics->save();
             $st_id = $subtopics->st_id;
             Session::flash('message', 'Sub-topic Inserted Sucessfully!');
-            return redirect()->to('/admin/subtopiclist');
+            return redirect()->to('/admin/subtopiclist1/'.$course_id."/".$topic_id);
 
         }else
         {
@@ -268,7 +320,7 @@ class TopicController extends Controller
 
                 ]);
             Session::flash('message', 'Sub-topic Updated Sucessfully!');
-            return redirect()->to('/admin/subtopiclist');
+            return redirect()->to('/admin/subtopiclist1/'.$course_id."/".$topic_id);
         }
 
 

@@ -12,7 +12,7 @@
   var quiz = [];
   var session_quiz_array1 = JSON.stringify(quiz);
   sessionStorage.setItem("quiz_json", session_quiz_array1);
-  function next_btn(i){
+  function next_btn(i,q_id){
     //alert(i);
     var total_div = $('.qustion-box-one').length;
     if(i == total_div){
@@ -39,6 +39,26 @@
       sessionStorage.setItem("quiz_json", quiz1);
       
     }
+
+    //alert(q_id);
+    var answer_val1 = $("input:radio[name='question_options-"+i+"']:checked").val();
+    var course_id = "<?php echo $course_id; ?>";
+    var topic_id = "<?php echo $topic_id; ?>";
+    var subtopic_id = "<?php echo $st_id; ?>";
+    var active_div = $('.qust-no .active-q').length;
+    var total_questions = $(".pallate").length;
+    var total_time = $(".timer").val();
+    $.ajax({
+      type: "post",
+      url: "{{ url('/user/submit_question_answer') }}",
+      data: {"q_id":q_id,"answer_val1":answer_val1,"reference_id":'{{ $reference_id }}',"attempted_questions":active_div,"total_questions":total_questions,"course_id":course_id,"topic_id":topic_id,"subtopic_id":subtopic_id,"total_time":total_time,"_token":"{{ csrf_token() }}"},
+      cache: false,
+      success: function(data){
+         // if(data == 1){
+         //   window.location.href = "{{ url('/user/session_analysis') }}/{{ base64_encode($course_id) }}/{{ base64_encode($topic_id) }}/{{ base64_encode($st_id) }}";
+         // }
+      }
+    });
     
     
 
@@ -98,6 +118,34 @@
     });
   }
 
+  function submit_quiz1(){
+    var total_div = $('.qustion-box-one').length;
+    var answer_val1 = $("input:radio[name='question_options-"+total_div+"']:checked").val();
+    var q_id = $(".question_id-"+total_div).val();
+    var active_div = $('.qust-no .active-q').length;
+    
+    var total_questions = $(".pallate").length;
+    var total_time = $(".timer").val();
+    var timer2 = "<?php echo $timer; ?>";
+    var time_spend = timer2-total_time;
+    var time_spent = time_spend.toFixed(2);
+    //alert(timer2-total_time);
+    var course_id = "<?php echo $course_id; ?>";
+    var topic_id = "<?php echo $topic_id; ?>";
+    var subtopic_id = "<?php echo $st_id; ?>";
+    $.ajax({
+      type: "post",
+      url: "{{ url('/user/submit_quiz') }}",
+      data: {"q_id":q_id,"answer_val1":answer_val1,"attempted_questions":active_div,"total_questions":total_questions,"course_id":course_id,"topic_id":topic_id,"subtopic_id":subtopic_id,"total_time":time_spent,"_token":"{{ csrf_token() }}"},
+      cache: false,
+      success: function(data){
+         
+           window.location.href = "{{ url('/user/session_analysis') }}/{{ base64_encode($course_id) }}/{{ base64_encode($topic_id) }}/{{ base64_encode($st_id) }}";
+         
+      }
+    });
+  }
+
   function answerClick(i){
     //alert(i);
     if($("input:radio[name='question_options-"+i+"']").is(":checked")) {
@@ -123,7 +171,7 @@
   var interval = setInterval(function() {
 
 
-    var timer = timer2.split(':');
+    var timer = timer2.split('.');
     //by parsing integer, I avoid all extra string processing
     var minutes = parseInt(timer[0], 10);
     var seconds = parseInt(timer[1], 10);
@@ -134,12 +182,22 @@
     seconds = (seconds < 0) ? 59 : seconds;
     seconds = (seconds < 10) ? '0' + seconds : seconds;
     //minutes = (minutes < 10) ?  minutes : minutes;
-    $('.countdown').html(minutes + ':' + seconds);
-    timer2 = minutes + ':' + seconds;
+    $('.countdown').html(minutes + '.' + seconds);
+    timer2 = minutes + '.' + seconds;
     console.log("timer2",timer2);
-    if(timer2 == "0:00"){
-      submit_quiz();
-      window.location.href = "{{ url('/user/session_analysis') }}/{{ $course_id }}/{{ $topic_id }}}/{{ $st_id }}";
+    $(".timer").val(timer2);
+
+    if(timer2 == "0.00"){
+      var total_questions = $(".pallate").length;
+      for(var i = 1;i<=total_questions;i++){
+        var q_id = $(".question_id-"+i).val();
+        if(i != total_questions){
+          next_btn(i,q_id);
+        }
+        
+      }
+      submit_quiz1();
+      window.location.href = "{{ url('/user/session_analysis') }}/{{ $course_id }}/{{ $topic_id }}/{{ $st_id }}";
     }
   }, 1000);
 </script>
@@ -154,6 +212,7 @@
       <div class="d-flex justify-content-between align-content-center func-tn">
         <h5 class="funt-far"> Functions</h5>
         <p class="m-0 fiv-con"><i class='bx bx-time-five'></i><span class="countdown"></span></p>
+        <input type="hidden" name="timer" class="timer" value="">
     </div>
         <?php
             $i = 1;
@@ -166,6 +225,7 @@
         <div class="question-main">
       <div class="title mb-3 mt-2">
         <input type="hidden" name="question_id" class="question_id-{{ $i }}" value="{{ $qu->q_id }}">
+
         <h6 class="tp-q">Question {{ $i }}</h6>
         <span class="question_title question_title-{{ $i }}">{!! $qu->title !!}</span>
         <!-- <div class="q-img">
@@ -179,7 +239,7 @@
         <div class="col-md-12">
             @foreach($options as $op)
             <label class="customradio"><span class="radiotextsty">{!! $op->Options !!}</span>
-            <input type="radio" name="question_options-{{ $i }}" value="{!! $op->Options !!}" onclick="answerClick({{ $i }})">
+            <input type="radio" name="question_options-{{ $i }}" value="{!! $op->option_id !!}" onclick="answerClick({{ $i }})">
             <span class="checkmark"></span>
             </label>
             @endforeach
@@ -205,7 +265,7 @@
 </div> -->   
 <div class="nex-pre-btn">
 <a style="cursor: pointer;" class="pre-btn" onclick="prev_btn({{ $i }})"> Previous</a>
-<a style="cursor: pointer;" class="next-btn next-btn-{{ $i }}" onclick="next_btn({{$i }})"> Next</a>
+<a style="cursor: pointer;" class="next-btn next-btn-{{ $i }}" onclick="next_btn({{$i }},{{ $qu->q_id }})"> Next</a>
 </div>
 
 
@@ -304,7 +364,7 @@
                <a href="#" class="not-atempt">10</a> -->
                
 </div>
-<center><a href="#" class="submit-btn" onclick="submit_quiz()"> Submit</a></center>
+<center><a href="#" class="submit-btn" onclick="submit_quiz1()"> Submit</a></center>
 
          </div>
 </div>

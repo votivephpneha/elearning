@@ -105,6 +105,7 @@ class AdminquesController1 extends Controller{
 			$questions_model = new QuestionBank();
 
 			$questions_model->q_id = $new_q_id; 
+			$questions_model->option_id = $i+1; 
 			$questions_model->title = $question_title; 
 			$questions_model->quiz_exam = $question_exam; 
 			$questions_model->course_id = $course; 

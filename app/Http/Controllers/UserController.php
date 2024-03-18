@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Routing\Controller as BaseController;
 use App\Models\User;
 use App\Models\SessionAnalysis;
+use App\Models\NewSessionAnalysis;
 use Response;
 use App\Models\Courses;
 use App\Models\Topics;
@@ -44,19 +45,30 @@ class UserController extends Controller
         return view('Front.course_view', compact('groupedData','course_title','course_id'));
     }
 
+    public function course_view1(Request $request){
+        $id = base64_decode($request->id);
+        $data['topics'] = DB::table("topics")->where("course_id",$id)->orderBy('topic_id','asc')->get();
+        $data['course_title'] = DB::table("courses")->where("course_id",$id)->first();
+        //print_r($data['course_title']);die;
+
+        return view('Front.course_view1')->with($data);
+    }
+
     public function theory(Request $request){
         $id =base64_decode($request->id);
-         $queries = DB::table('theory')
+         $data['queries'] = DB::table('theory')
         ->where('st_id', '=', $id)
-        ->get();
-        // print_r($queries);die;
+        ->where('status', '=', 1)
+        ->where('deleted_at', '=', NULL)
+        ->first();
+        //print_r($data['queries']);die;
        
-        $pdfUrl = Storage::url('uploads/{{$queries->theory_pdf}}');
-        // echo $pdfUrl;die;
-        $pdfContent = Storage::url('uploads/{{$queries->theory_pdf}}'); // Get the 
-        $headers = ['Content-Type' => 'application/pdf']; // Set the response headers
-        $pdfResponse = new Response($pdfContent, 200, $headers); // Create the PDF 
-        return view("Front.theory", ['pdfResponse' => $pdfResponse]);
+        // $pdfUrl = Storage::url('uploads/{{$queries->theory_pdf}}');
+        // // echo $pdfUrl;die;
+        // $pdfContent = Storage::url('uploads/{{$queries->theory_pdf}}'); // Get the 
+        // $headers = ['Content-Type' => 'application/pdf']; // Set the response headers
+        // $pdfResponse = new Response($pdfContent, 200, $headers); // Create the PDF 
+        return view("Front.theory")->with($data);
     }
 
     public function start_quiz(Request $request){
@@ -82,7 +94,7 @@ class UserController extends Controller
         $min = $total_time/60;
         $mins = number_format($min, 2, '.', '');
         $mins1 = str_replace(".",":",$mins);
-        Session::put("timer", $mins1);
+        Session::put("timer", $mins);
         $data['question_count'] = $i;
         $data['marks'] = $marks;
         $data['total_time'] = $mins1;
@@ -96,6 +108,9 @@ class UserController extends Controller
         $course_id = base64_decode($request->course_id);
         $topic_id = base64_decode($request->topic_id);
         $st_id = base64_decode($request->st_id);
+        $reference_id = "quiz-".rand(10000,99999);
+        $data['reference_id'] = $reference_id;
+        Session::put("reference_id",$reference_id);
         $data['course_id'] = base64_decode($request->course_id);
         $data['topic_id'] = base64_decode($request->topic_id);
         $data['st_id'] = base64_decode($request->st_id);
@@ -107,20 +122,119 @@ class UserController extends Controller
     }
 
     public function submit_quiz(Request $request){
-        $session_analysis = new SessionAnalysis();
-        $reference_id = "quiz-".rand(10000,99999);
-        Session::put("reference_id",$reference_id);
-        $session_analysis->student_id = $request->student_id;
-        $session_analysis->course_id = $request->course_id;
-        $session_analysis->topic_id = $request->topic_id;
-        $session_analysis->subtopic_id = $request->subtopic_id;
-        $session_analysis->total_questions = $request->total_questions;
-        $session_analysis->attempted_questions = $request->attempted;
-        $session_analysis->quiz_json = $request->quiz_json;
-        $session_analysis->reference_id = $reference_id;
-        
-        return $session_analysis->save();
+        $reference_id = $request->reference_id;
+        $q_id = $request->q_id;
+        //echo $request->total_time;die;
+        $questions_data = QuestionBank::where("q_id",$q_id)->orderBy('ordering_id', 'ASC')->get();
+        $session_data = NewSessionAnalysis::where("question_id",$q_id)->where("reference_id",$reference_id)->get();
+        // echo count($session_data);die;
+        // print_r($session_data);
+        $reference_id = Session::get("reference_id");
+        if(count($session_data) == 0){
+            foreach($questions_data as $q_data){
+                $new_session_analysis = new NewSessionAnalysis();
+                $new_session_analysis->student_id = Auth::guard("customer")->user()->id;
+                $new_session_analysis->course_id = $q_data->course_id;
+                $new_session_analysis->question_id = $q_data->q_id;
+                $new_session_analysis->option_id = $q_data->option_id;
+                $new_session_analysis->course_id = $q_data->course_id;
+                $new_session_analysis->topic_id = $q_data->topic_id;
+                $new_session_analysis->chapter_id = $q_data->chapter_id;
+                $new_session_analysis->questions = $q_data->title;
+                $new_session_analysis->options = $q_data->Options;
+                $new_session_analysis->correct_answer = $q_data->correct_answer;
+                $new_session_analysis->student_answer = $request->answer_val1;
+                $new_session_analysis->attempted_status = $request->answer_val1;
+                $new_session_analysis->reference_id = $reference_id;
+                $new_session_analysis->save();
+            }
+
+            $session_analysis = new SessionAnalysis();
+            $session_analysis->student_id = Auth::guard("customer")->user()->id;
+            $session_analysis->course_id = $request->course_id;
+            $session_analysis->topic_id = $request->topic_id;
+            $session_analysis->subtopic_id = $request->subtopic_id;
+            $session_analysis->total_questions = $request->total_questions;
+            $session_analysis->attempted_questions = $request->attempted_questions;
+            //$session_analysis->quiz_json = $request->quiz_json;
+            $session_analysis->reference_id = $reference_id;
+            $session_analysis->time_spent_seconds = $request->total_time;
+            $session_analysis->save();
+        }else{
+            
+            foreach($session_data as $s_data){
+                $new_session_analysis = NewSessionAnalysis::find($s_data->analysis_id);
+                
+                
+                $new_session_analysis->student_answer = $request->answer_val1;
+                $new_session_analysis->attempted_status = $request->answer_val1;
+
+                $new_session_analysis->save();
+                
+            }
+             
+        }
     }
+
+    public function submit_question_answer(Request $request){
+        $reference_id = $request->reference_id;
+        $q_id = $request->q_id;
+        //echo $request->answer_val1;die;
+        $questions_data = QuestionBank::where("q_id",$q_id)->orderBy('ordering_id', 'ASC')->get();
+        $session_data = NewSessionAnalysis::where("question_id",$q_id)->where("reference_id",$reference_id)->get();
+        // echo count($session_data);die;
+        // print_r($session_data);
+        $reference_id = Session::get("reference_id");
+        if(count($session_data) == 0){
+            foreach($questions_data as $q_data){
+                $new_session_analysis = new NewSessionAnalysis();
+                $new_session_analysis->student_id = Auth::guard("customer")->user()->id;
+                $new_session_analysis->course_id = $q_data->course_id;
+                $new_session_analysis->question_id = $q_data->q_id;
+                $new_session_analysis->option_id = $q_data->option_id;
+                $new_session_analysis->course_id = $q_data->course_id;
+                $new_session_analysis->topic_id = $q_data->topic_id;
+                $new_session_analysis->chapter_id = $q_data->chapter_id;
+                $new_session_analysis->questions = $q_data->title;
+                $new_session_analysis->options = $q_data->Options;
+                $new_session_analysis->correct_answer = $q_data->correct_answer;
+                $new_session_analysis->student_answer = $request->answer_val1;
+                $new_session_analysis->attempted_status = $request->answer_val1;
+                $new_session_analysis->reference_id = $reference_id;
+                $new_session_analysis->save();
+            }
+
+            // $session_analysis = new SessionAnalysis();
+            // $session_analysis->student_id = Auth::guard("customer")->user()->id;
+            // $session_analysis->course_id = $request->course_id;
+            // $session_analysis->topic_id = $request->topic_id;
+            // $session_analysis->subtopic_id = $request->subtopic_id;
+            // $session_analysis->total_questions = $request->total_questions;
+            // $session_analysis->attempted_questions = $request->attempted_questions;
+            // //$session_analysis->quiz_json = $request->quiz_json;
+            // $session_analysis->reference_id = $reference_id;
+            // $session_analysis->time_spent_seconds = $request->total_time;
+            // $session_analysis->save();
+        }else{
+            
+            foreach($session_data as $s_data){
+                $new_session_analysis = NewSessionAnalysis::find($s_data->analysis_id);
+                
+                
+                $new_session_analysis->student_answer = $request->answer_val1;
+                $new_session_analysis->attempted_status = $request->answer_val1;
+
+                $new_session_analysis->save();
+                
+            }
+             
+        }
+
+        
+
+    }
+
+
 
     public function session_analysis(Request $request){
         $course_id = base64_decode($request->course_id);
@@ -128,8 +242,10 @@ class UserController extends Controller
         $st_id = base64_decode($request->st_id);
         $data['reference_id'] = Session::get("reference_id");
         $data['questions'] = QuestionBank::where("course_id",$course_id)->where("topic_id",$topic_id)->where("chapter_id",$st_id)->groupBy('q_id')->get();
-        $data['session_analysis'] = SessionAnalysis::where("course_id",$course_id)->where("topic_id",$topic_id)->where("subtopic_id",$st_id)->where("reference_id",$data['reference_id'])->first();
-        //print_r($data['session_analysis']);die;
+        $data['session_analysis'] = NewSessionAnalysis::where("course_id",$course_id)->where("topic_id",$topic_id)->where("chapter_id",$st_id)->where("reference_id",$data['reference_id'])->where("student_id",Auth::guard("customer")->user()->id)->orderBy('analysis_id', 'ASC')->groupBy('question_id')->get();
+        $data['session_analysis1'] = SessionAnalysis::where("course_id",$course_id)->where("topic_id",$topic_id)->where("subtopic_id",$st_id)->where("reference_id",$data['reference_id'])->where("student_id",Auth::guard("customer")->user()->id)->first();
+
+        
     	return view("Front.session_analysis")->with($data);
     }
 

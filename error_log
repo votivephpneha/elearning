@@ -49,3 +49,15 @@
 [11-Mar-2024 13:02:38 UTC] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 266342400 bytes) in /home2/eicyjdte/public_html/dev/app/Http/Controllers/AdminquesController1.php on line 77
 [12-Mar-2024 09:39:22 UTC] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 266342400 bytes) in /home2/eicyjdte/public_html/dev/app/Http/Controllers/UserController.php on line 73
 [14-Mar-2024 12:59:51 UTC] PHP Fatal error:  Trait "App\Models\SoftDeletes" not found in /home2/eicyjdte/public_html/dev/app/Models/QuestionBank.php on line 7
+[16-Mar-2024 06:26:51 UTC] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 266342400 bytes) in /home2/eicyjdte/public_html/dev/storage/framework/views/bdcc971041063350248a4b8a2c2f27e87c3eaa8a.php on line 36
+[18-Mar-2024 00:26:10 America/Chicago] PHP Warning:  Undefined variable $Ah in /home2/eicyjdte/public_html/dev/adminer-4.8.1.php on line 1787
+[18-Mar-2024 00:26:10 America/Chicago] PHP Warning:  Undefined variable $Ah in /home2/eicyjdte/public_html/dev/adminer-4.8.1.php on line 1787
+[18-Mar-2024 00:26:10 America/Chicago] PHP Warning:  Undefined variable $Ah in /home2/eicyjdte/public_html/dev/adminer-4.8.1.php on line 1787
+[18-Mar-2024 00:26:10 America/Chicago] PHP Warning:  Undefined variable $Ah in /home2/eicyjdte/public_html/dev/adminer-4.8.1.php on line 1787
+[18-Mar-2024 00:26:10 America/Chicago] PHP Warning:  Undefined variable $Ah in /home2/eicyjdte/public_html/dev/adminer-4.8.1.php on line 1787
+[18-Mar-2024 00:26:10 America/Chicago] PHP Warning:  Undefined variable $Ah in /home2/eicyjdte/public_html/dev/adminer-4.8.1.php on line 1787
+[18-Mar-2024 00:26:10 America/Chicago] PHP Warning:  Undefined variable $Ah in /home2/eicyjdte/public_html/dev/adminer-4.8.1.php on line 1787
+[18-Mar-2024 00:26:10 America/Chicago] PHP Warning:  Undefined variable $Ah in /home2/eicyjdte/public_html/dev/adminer-4.8.1.php on line 1787
+[18-Mar-2024 00:26:10 America/Chicago] PHP Warning:  Undefined variable $Ah in /home2/eicyjdte/public_html/dev/adminer-4.8.1.php on line 1787
+[18-Mar-2024 00:26:10 America/Chicago] PHP Warning:  Undefined variable $Ah in /home2/eicyjdte/public_html/dev/adminer-4.8.1.php on line 1787
+[18-Mar-2024 00:26:10 America/Chicago] PHP Warning:  Undefined variable $Ah in /home2/eicyjdte/public_html/dev/adminer-4.8.1.php on line 1787

@@ -46,6 +46,7 @@
                       <!-- <h3><a href="{{ url('/user/theory/') }}/{{ base64_encode(1) }}" class="d-flex align-items-center">  -->
                         <!-- <span class="material-symbols-outlined">menu_book</span>   -->
                         <?php $subtopics_id = explode(",",$course->chapter_id);
+                        
                         foreach($subtopics_id as $st_id){
                           $result = app()->call('App\Http\Controllers\UserController@theoryOrnot', ['course_id' => $course->course_id, 'topic_id' => $course->topic_id , 'st_id' => $st_id  ]);
                           

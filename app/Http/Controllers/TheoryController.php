@@ -83,7 +83,7 @@ class TheoryController extends Controller
     public function fetch_chapters(Request $request)
     {
 
-        $data['chapters'] = Subtopics::where("topic_id", $request->topic_id)
+        $data['chapters'] = Subtopics::where("topic_id", $request->topic_id)->where("type", "Theory")
                                 ->get(["st_id","title"]);
         return response()->json($data);
     }
@@ -105,10 +105,12 @@ class TheoryController extends Controller
                  'title' => 'required|unique:theory,title,NULL,id,deleted_at,NULL|max:255'
             ]);
             $fileName = $request->theory_pdf->getClientOriginalName();
-            $filePath = 'uploads/' . $fileName;
-            $path = Storage::disk('public')->put($filePath, file_get_contents($request->theory_pdf));
-            $path = Storage::disk('public')->url($path);
-            $slug = Str::slug($title);
+            $file = $request->file('theory_pdf');
+            $filePath = base_path() .'/public/assets/img/';
+            // $path = Storage::disk('public')->put($filePath, file_get_contents($request->theory_pdf));
+            // $path = Storage::disk('public')->url($path);
+            // $slug = Str::slug($title);
+            $file->move($filePath,$fileName);
 
             $theory = new Theory;
             $theory->title = trim($request->title);
@@ -117,7 +119,7 @@ class TheoryController extends Controller
             $theory->st_id = trim($request->st_id);
             $theory->slug = $slug;
             $theory->theory_pdf = $fileName;
-            $theory->pdf_path = $path ;
+            $theory->pdf_path = $fileName ;
             $theory->status = "1";
             $theory->save();
             $theory_id = $theory->theory_id;
@@ -133,14 +135,22 @@ class TheoryController extends Controller
                 'theory_pdf' => 'required|mimes:pdf,xlxs,xlx,docx,doc,csv,txt,png,gif,jpg,jpeg',
             ]);
                 $fileName = $request->theory_pdf->getClientOriginalName();
-                $filePath = 'uploads/' . $fileName;
-                $path = Storage::disk('public')->put($filePath, file_get_contents($request->theory_pdf));
-                $path = Storage::disk('public')->url($path);
+            $file = $request->file('theory_pdf');
+            $filePath = base_path() .'/public/assets/img/';
+            // $path = Storage::disk('public')->put($filePath, file_get_contents($request->theory_pdf));
+            // $path = Storage::disk('public')->url($path);
+            // $slug = Str::slug($title);
+            $file->move($filePath,$fileName);
         }
         else{
             $theory_detail  = DB::table('theory')->where('theory_id', '=' ,$id)->first();
-            $fileName = $theory_detail->theory_pdf;
-            $path     = $theory_detail->pdf_path;
+            $fileName = $request->theory_pdf->getClientOriginalName();
+            $file = $request->file('theory_pdf');
+            $filePath = base_path() .'/public/assets/img/';
+            // $path = Storage::disk('public')->put($filePath, file_get_contents($request->theory_pdf));
+            // $path = Storage::disk('public')->url($path);
+            // $slug = Str::slug($title);
+            $file->move($filePath,$fileName);
         }
          DB::table('theory')
                 ->where('theory_id', $id)
@@ -150,7 +160,7 @@ class TheoryController extends Controller
                     'topic_id' =>trim($request->topic_id),
                     'st_id' =>trim($request->st_id),
                     'theory_pdf'=> $fileName,
-                    'pdf_path' => $path
+                    'pdf_path' => $fileName
 
                     ]);
 

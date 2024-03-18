@@ -7,7 +7,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Sub-topic Form</h1>
+            <h1>Chapter Form</h1>
           </div>
         </div>
       </div><!-- /.container-fluid -->
@@ -19,7 +19,7 @@
         <!-- SELECT2 EXAMPLE -->
         <div class="card card-default">
           <div class="card-header">
-            <h3 class="card-title" style="2.0rem !important;">Add Sub-topic</h3>
+            <h3 class="card-title" style="2.0rem !important;">Add Chapter</h3>
           </div>
           <!-- /.card-header -->
           <div class="card-body">
@@ -29,29 +29,16 @@
 
 
             <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label>Title<span class="mandatory" style="color:red"> *</span></label>
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                    </div>
-                    <input type="text" class="form-control" name="title"   value="@if($id>0){{trim($subtopic_detail[0]->title)}}@endif">
-                     @if ($errors->has('title'))
-                      <span class="" style="color:red">
-                        {{ $errors->first('title') }}
-                      </span>
-                @endif
-                  </div>
-                  <!-- /.input group -->
-                </div>
-              </div>
+              
               <div class="col-md-6">
                 <div class="form-group">
                   <label>Courses<span class="mandatory" style="color:red"> *</span></label>
                   <div class="input-group">
                     <div class="input-group-prepend">
                     </div>
-                    <select class="form-select form-control" id="course-dropdown" name="course_id">
+                    <input type="hidden" class="form-control" name="course_id" value="{{ $course_title->course_id }}" readonly="">
+                    <input type="text" class="form-control" name="title" value="{{ $course_title->title }}" readonly="">
+                    <!-- <select class="form-select form-control" id="course-dropdown" name="course_id">
                       <option value="">Select Course</option>
                       <?php if($id>0){
                      
@@ -68,18 +55,19 @@
                       </option>
 
                     <?php   } }
-                      ?></select>
+                      ?></select> -->
                   </div>
                   <!-- /.input group -->
                 </div>
               </div>
                             <div class="col-md-6">
-                <div class="form-group">
+                
                   <label>Topics<span class="mandatory" style="color:red"> *</span></label>
                   <div class="input-group">
                     <div class="input-group-prepend">
                     </div>
-                    <select class="form-select form-control" id="topic-dropdown" name="topic_id">
+                    <input type="text" class="form-control" name="title" value="{{ $topic_title->title }}" readonly="">
+                   <!--  <select class="form-select form-control" id="topic-dropdown" name="topic_id">
                       <option value="">Select Topics</option>
                       <?php if($id>0){
                        foreach($topic_list as $topic){?>
@@ -93,11 +81,54 @@
                       </option>
 
                     <?php   } }
-                      ?></select>
+                      ?></select> -->
+                  </div>
+                  <!-- /.input group -->
+                </div>
+                <div class="col-md-6">
+                <div class="form-group">
+                  <label>Title<span class="mandatory" style="color:red"> *</span></label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                    </div>
+                    <input type="hidden" name="topic_id" value="{{ $topic_id }}">
+                    <input type="text" class="form-control" name="title"   value="@if($id>0){{trim($subtopic_detail[0]->title)}}@endif">
+                     @if ($errors->has('title'))
+                      <span class="" style="color:red">
+                        {{ $errors->first('title') }}
+                      </span>
+                @endif
                   </div>
                   <!-- /.input group -->
                 </div>
               </div>
+              <div class="col-md-6">
+                <label>Type<span class="mandatory" style="color:red"> *</span></label>
+                <div class="form-group">
+                  
+                  <!-- <div class="custom-control custom-checkbox">
+                    <input class="" type="checkbox" id="customCheckbox1" checked="" value="Theory">
+                    <label for="customCheckbox1" class="custom-control-label">Theory</label>
+                    <input class="" type="checkbox" id="customCheckbox2" checked="" value="Quiz">
+                    <label for="customCheckbox2" class="custom-control-label">Quiz</label>
+                  </div> -->
+                  <div class="icheck-primary d-inline">
+                    <input type="checkbox" name="type[]" id="checkboxPrimary1" value="Theory">
+                    <label for="checkboxPrimary1">
+                      Theory
+                    </label>
+                  </div>
+                  <div class="icheck-primary d-inline">
+                    <input type="checkbox" name="type[]" id="checkboxPrimary2" value="Quiz">
+                    <label for="checkboxPrimary2">
+                      Quiz
+                    </label>
+                  </div>
+                </div>
+              </div>
+              </div>
+              
+              
             </div>
 
         
