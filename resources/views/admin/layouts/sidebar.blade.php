@@ -65,22 +65,22 @@
               </p>
             </a>
           </li>  -->
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a href="{{ url('/admin/show_questions') }}" class="nav-link">
               <i class="nav-icon fas fa-question"></i>
               <p>
                 Question Management
               </p>
             </a>
-          </li> 
-            <li class="nav-item">
+          </li>  -->
+            <!-- <li class="nav-item">
             <a href="{{ url('/admin/theorylist') }}" class="nav-link">
               <i class="nav-icon fas fa-book-open"></i>
               <p>
                 Theory Management
               </p>
             </a>
-          </li> 
+          </li>  -->
 
 
 

@@ -232,10 +232,12 @@ class TopicController extends Controller
         $topic_list  = DB::table('topics')->whereNull('topics.deleted_at')->get();
 
         if($id){
-
+           
         $subtopic_detail  = DB::table('subtopics')->where('st_id', '=' ,$id)->get();
+        $course_title = DB::table("courses")->where("course_id",$subtopic_detail[0]->course_id)->first();
+        $topic_title = DB::table("topics")->where("topic_id",$subtopic_detail[0]->topic_id)->first();
         $subtopic_list  = DB::table('subtopics')->where('st_id', '!=' ,$id)->get();
-        $data_onview = array('subtopic_detail' =>$subtopic_detail,'id'=>$id,'course_list'=>$course_list,'subtopic_list'=>$subtopic_list,'topic_list'=>$topic_list,'topic_id'=>$topic_id);
+        $data_onview = array('subtopic_detail' =>$subtopic_detail,'id'=>$id,'course_list'=>$course_list,'subtopic_list'=>$subtopic_list,'topic_list'=>$topic_list,'topic_id'=>$topic_id,'course_title'=>$course_title,'topic_title'=>$topic_title);
         return View('admin.sub-topics.subtopic_form')->with($data_onview);
 
         }else{
@@ -256,6 +258,8 @@ class TopicController extends Controller
 
         $id = base64_decode($id);
 
+        $sub_topic = DB::table("subtopics")->where("st_id",$id)->first(); 
+
         $subtopics = Subtopics::find($id);
         $subtopics->delete();
         $subtopic = Subtopics::find($id);
@@ -264,7 +268,7 @@ class TopicController extends Controller
         } else {
             Session::flash('error', 'Chapter not found or could not be deleted!');
         }
-        return Redirect('/admin/subtopiclist');
+        return Redirect('/admin/subtopiclist1/'.base64_encode($sub_topic->course_id)."/".base64_encode($sub_topic->topic_id));
     }
 
     public function subtopic_action(Request $request)
@@ -286,7 +290,7 @@ class TopicController extends Controller
         ]);
             $type = $request->type;
             
-            $ty = implode(",", $type);   
+            
                
             $subtopics = new Subtopics;
             $subtopics->title = trim($request->title);
@@ -294,10 +298,10 @@ class TopicController extends Controller
             $subtopics->topic_id = trim($request->topic_id);
             $subtopics->slug = $slug;
             $subtopics->status = "1";
-            $subtopics->type = $ty;
+            $subtopics->type = $type;
             $subtopics->save();
             $st_id = $subtopics->st_id;
-            Session::flash('message', 'Sub-topic Inserted Sucessfully!');
+            Session::flash('message', 'Chapter Inserted Sucessfully!');
             return redirect()->to('/admin/subtopiclist1/'.$course_id."/".$topic_id);
 
         }else
@@ -306,21 +310,22 @@ class TopicController extends Controller
                     ->where('title', $request->title)
                     ->where('st_id', '!=', $request->id)
                     ->count();
-            if($count_subtopic > 0){
-                 $validatedData = $request->validate([
-                 'title' => 'required|unique:subtopics|max:255'
-             ]);
-            }
+            // if($count_subtopic > 0){
+            //      $validatedData = $request->validate([
+            //      'title' => 'required|unique:subtopics|max:255'
+            //  ]);
+            // }
             DB::table('subtopics')
                 ->where('st_id', $id)
                 ->update(['title' => trim($request->title),
                     'slug'=>  $slug,
+                    'type'=>  $request->type,
                     'course_id'=> trim($request->course_id),
                     'topic_id'=> trim($request->topic_id),
 
                 ]);
-            Session::flash('message', 'Sub-topic Updated Sucessfully!');
-            return redirect()->to('/admin/subtopiclist1/'.$course_id."/".$topic_id);
+            Session::flash('message', 'Chapter Updated Sucessfully!');
+            return redirect()->to('/admin/subtopiclist1/'.base64_encode($request->course_id)."/".base64_encode($request->topic_id));
         }
 
 

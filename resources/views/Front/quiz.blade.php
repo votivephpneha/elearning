@@ -2,6 +2,7 @@
 @section('title', 'Quiz')
 
 @section("current_page_js")
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.0.0/es5/tex-mml-chtml.js"></script>
 <script type="text/javascript">
   var total_questions = $(".pallate").length;
   $(".attempted").html("0/"+total_questions);

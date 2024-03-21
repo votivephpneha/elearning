@@ -1,7 +1,46 @@
 @extends('admin.layouts.layout')
 
 @section('current_page_js')
+<style type="text/css">
+  /* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
 
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+</style>
 @endsection
 
 @section('current_page_css')
@@ -59,6 +98,69 @@
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3.0.0/es5/tex-mml-chtml.js"></script>
 
 <script>
+       $( document ).ready(function() {
+    var question_content1 = "<?php echo $question_details->title; ?>";
+        CKEDITOR.instances['question_content'].setData(question_content1);
+        
+        MathJax.typeset(["#question_content"]);
+});
+        (function() {
+      var mathElements = [
+        'math',
+        'maction',
+        'maligngroup',
+        'malignmark',
+        'menclose',
+        'merror',
+        'mfenced',
+        'mfrac',
+        'mglyph',
+        'mi',
+        'mlabeledtr',
+        'mlongdiv',
+        'mmultiscripts',
+        'mn',
+        'mo',
+        'mover',
+        'mpadded',
+        'mphantom',
+        'mroot',
+        'mrow',
+        'ms',
+        'mscarries',
+        'mscarry',
+        'msgroup',
+        'msline',
+        'mspace',
+        'msqrt',
+        'msrow',
+        'mstack',
+        'mstyle',
+        'msub',
+        'msup',
+        'msubsup',
+        'mtable',
+        'mtd',
+        'mtext',
+        'mtr',
+        'munder',
+        'munderover',
+        'semantics',
+        'annotation',
+        'annotation-xml'
+      ];
+
+      CKEDITOR.plugins.addExternal('ckeditor_wiris', 'https://ckeditor.com/docs/ckeditor4/4.14.0/examples/assets/plugins/ckeditor_wiris/', 'plugin.js');
+
+      CKEDITOR.replace('question_content12', {
+        extraPlugins: 'ckeditor_wiris',
+        // For now, MathType is incompatible with CKEditor file upload plugins.
+        removePlugins: 'uploadimage,uploadwidget,uploadfile,filetools,filebrowser',
+        height: 320,
+        // Update the ACF configuration with MathML syntax.
+        extraAllowedContent: mathElements.join(' ') + '(*)[*]{*};img[data-mathml,data-custom-editor,role](Wirisformula)'
+      });
+    }());
         //$('textarea[name="DSC"]').ckeditor();
         CKEDITOR.replace('question_content', {
         
@@ -98,6 +200,8 @@
         //extraPlugins:'mathjax',
            mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML'
         });
+
+        
         CKEDITOR.replace('answer_explanation', {
         
             toolbarGroups: [
@@ -183,7 +287,9 @@
           $(".preview_latex_error").hide();
         });
         function add_options(){
-          $(".option_answer").append('<input type="hidden" name="correct_answer_check[]" value="incorrect" /><input type="checkbox" name="correct_answer_check[]" class="check-'+counter+'" value="incorrect"> Correct Answer<br><textarea name="options[]" class="materialize-textarea" id="options-'+counter+'"></textarea>');
+          $(".option_answer").append('<input type="hidden" name="ck_count" class="ck_count ck_count-'+counter+'" value="'+counter+'"><input type="hidden" name="correct_answer_check[]" value="incorrect" /><input type="checkbox" name="correct_answer_check[]" class="check-'+counter+'" value="incorrect"> Correct Answer<br><textarea name="options[]" class="materialize-textarea" id="options-'+counter+'"></textarea><br><button type="button" class="btn btn-primary myBtn_options12" id="myBtn_options-'+counter+'">Preview Latex</button><br>');
+
+          $(".option_modal_div").append('<div id="myModal_options-'+counter+'" class="modal"><div class="modal-content"><span class="close close_options-'+counter+'" style="color:black;">×</span><div class="preview_latex_code_options-'+counter+'"></div></div></div>');
           $(".check-"+counter).click(function(){
             $(this).val("correct");
           });
@@ -226,6 +332,66 @@
         //extraPlugins:'mathjax',
            mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML'
         });
+          
+             // Get the modal
+var modal1 = document.getElementById("myModal_options-"+counter);
+
+// Get the button that opens the modal
+var btn1= document.getElementById("myBtn_options-"+counter);
+
+// Get the <span> element that closes the modal
+var span1 = document.getElementsByClassName("close_options-"+counter)[0];
+
+// When the user clicks the button, open the modal 
+var ck_count = $(".ck_count-"+counter).val();
+
+
+$("#myBtn_options-"+ck_count).click(function(){
+   //alert(ck_count);
+   //var counter1 = counter-1;
+    var editor_value = CKEDITOR.instances["options-"+ck_count].getData();
+  if(editor_value != ""){
+    modal1.style.display = "block";
+  }else{
+    $(".preview_latex_error").text("Please add the content");
+  }
+  
+  
+          
+           //var mathml = MathJax.tex2mml(editor_value);
+          
+          $(".preview_latex_code_options-"+ck_count).empty().append("<p>" +editor_value+ "</p>");
+              MathJax.typeset([".preview_latex_code_options-"+ck_count]);
+});
+
+// btn1.onclick = function() {
+
+//   var editor_value = CKEDITOR.instances["options-"+counter].getData();
+//   if(editor_value != ""){
+//     modal.style.display = "block";
+//   }else{
+//     $(".preview_latex_error").text("Please add the content");
+//   }
+  
+  
+          
+//            //var mathml = MathJax.tex2mml(editor_value);
+//           //alert(editor_value);
+//           $(".preview_latex_code").empty().append("<p>" +editor_value+ "</p>");
+//               MathJax.typeset([".preview_latex_code"]);
+//           }
+
+          // When the user clicks on <span> (x), close the modal
+          span1.onclick = function() {
+            modal1.style.display = "none";
+          }
+
+          // When the user clicks anywhere outside of the modal, close it
+          window.onclick = function(event) {
+            if (event.target == modal1) {
+              modal1.style.display = "none";
+            }
+          }
           counter++;
         }
         $("#cke_3_contents").removeAttr("style");
@@ -304,6 +470,7 @@ var span = document.getElementsByClassName("close")[0];
 // When the user clicks the button, open the modal 
 btn.onclick = function() {
   var editor_value = CKEDITOR.instances['question_content'].getData();
+  console.log("editor_value",editor_value);
   if(editor_value != ""){
     modal.style.display = "block";
   }else{
@@ -331,19 +498,19 @@ window.onclick = function(event) {
 }
 
         // Get the modal
-var modal = document.getElementById("myModal_ans");
+var modal24 = document.getElementById("myModal_ans");
 
 // Get the button that opens the modal
-var btn = document.getElementById("myBtn_ans");
+var btn24 = document.getElementById("myBtn_ans");
 
 // Get the <span> element that closes the modal
 var span1 = document.getElementsByClassName("close_ans")[0];
 
 // When the user clicks the button, open the modal 
-btn.onclick = function() {
+btn24.onclick = function() {
   var editor_value = CKEDITOR.instances['answer_explanation'].getData();
   if(editor_value != ""){
-    modal.style.display = "block";
+    modal24.style.display = "block";
   }else{
     $(".preview_latex_error_ans").text("Please add the content");
   }
@@ -359,52 +526,53 @@ btn.onclick = function() {
 // When the user clicks on <span> (x), close the modal
 span1.onclick = function() {
   
-  modal.style.display = "none";
+  modal24.style.display = "none";
 }
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
+  if (event.target == modal24) {
+    modal24.style.display = "none";
   }
 }
 
         // Get the modal
-var modal = document.getElementById("myModal_options");
+var modal23 = document.getElementById("myModal_options");
 
 // Get the button that opens the modal
-var btn = document.getElementById("myBtn_options");
+var btn23 = document.getElementById("myBtn_options");
 
 // Get the <span> element that closes the modal
 var span2 = document.getElementsByClassName("close_options")[0];
 
 // When the user clicks the button, open the modal 
-btn.onclick = function() {
+btn23.onclick = function() {
   var editor_value = CKEDITOR.instances['options'].getData();
   if(editor_value != ""){
-    modal.style.display = "block";
+    modal23.style.display = "block";
   }else{
-    $(".preview_latex_error_ans").text("Please add the content");
+
+    $(".preview_latex_error_options").text("Please add the content");
   }
   
   
           
            //var mathml = MathJax.tex2mml(editor_value);
           //alert(editor_value);
-          $(".preview_latex_code_ans").empty().append("<p>" +editor_value+ "</p>");
-    MathJax.typeset([".preview_latex_code_ans"]);
+          $(".preview_latex_code_options").empty().append("<p>" +editor_value+ "</p>");
+    MathJax.typeset([".preview_latex_code_options"]);
 }
 
 // When the user clicks on <span> (x), close the modal
 span2.onclick = function() {
   
-  modal.style.display = "none";
+  modal23.style.display = "none";
 }
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
+  if (event.target == modal23) {
+    modal23.style.display = "none";
   }
 }
 
@@ -519,17 +687,18 @@ $(function() {
 
 </div>
 <!-- The Modal -->
-<div id="myModal_options" class="modal">
+<div id="myModal_options" class="modal modal_option">
 
   <!-- Modal content -->
   <div class="modal-content">
     <span class="close close_options" style="color:black;">&times;</span>
-    <div class="preview_latex_code_ans">
+    <div class="preview_latex_code_options">
                     
                   </div>
   </div>
 
 </div>
+<div class="option_modal_div"></div>
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
@@ -558,9 +727,8 @@ $(function() {
           <!-- /.card-header -->
           <div class="card-body">
             
-            <form action="{{ url('/admin/post_questions_bank_edit') }}" id="question_form" method="post">
+            <form action="{{ url('/admin/post_questions_bank') }}" id="question_form" method="post">
                       {!! csrf_field() !!}
-                      <input type="text" name="question_id" value="{{$question_details->question_id}}">
                        
 
             <div class="row">
@@ -578,11 +746,12 @@ $(function() {
                   </div>
                 </div>
               </div> -->
+              <textarea name="question_content12" class="materialize-textarea" id="question_content12">{{ $question_details->title }}</textarea>
               <div class="col-md-12">
                 <div class="form-group">
                   <label>Question Content</label>
                   <div class="input-group">
-                    <textarea name="question_title" class="materialize-textarea" id="question_content">{{$question_details->title}}</textarea>
+                    <textarea name="question_title" class="materialize-textarea" id="question_content">{!! $question_details->title !!}</textarea>
                   </div><br>
                   
                   <div class="preview_latex_button">
@@ -596,20 +765,19 @@ $(function() {
                   <label>Questions available in:</label>
                   <div class="input-group questions_available">
                   <div class="icheck-primary d-inline">
-                    <input type="radio" id="radioPrimary1" name="question_exam" value="Quiz" {{ $question_details->quiz_exam == "Quiz" ? 'checked' : '' }}>
+                    <input type="radio" id="radioPrimary1" name="question_exam" value="Quiz">
                     <label for="radioPrimary1">
                       Quiz
                     </label>
                   </div><br><br>
                   <div class="icheck-primary d-inline">
-                    <input type="radio" id="radioPrimary2" name="question_exam" value="Exam Builder" {{ $question_details->quiz_exam == "Exam Builder" ? 'checked' : '' }}>
+                    <input type="radio" id="radioPrimary2" name="question_exam" value="Exam Builder">
                     <label for="radioPrimary2">
                       Exam Builder
                     </label>
                   </div><br><br>
                   <div class="icheck-primary d-inline">
-                   <input type="radio" id="radioPrimary3" name="question_exam" value="Both" {{ $question_details->quiz_exam == "Both" ? 'checked' : '' }}>
-
+                    <input type="radio" id="radioPrimary3" name="question_exam" value="Both">
                     <label for="radioPrimary3">
                       Both
                     </label>
@@ -617,7 +785,10 @@ $(function() {
                   </div>
                 </div>
               </div>
-              <div class="col-md-4">
+              <input type="hidden" name="course" value="{{ $chapter_data->course_id }}">
+              <input type="hidden" name="topics" value="{{ $chapter_data->topic_id }}">
+              <input type="hidden" name="chapter" value="{{ $chapter_data->st_id }}">
+              <!-- <div class="col-md-4">
                 <div class="form-group">
                   <label>Select Course</label>
                   <div class="input-group">
@@ -627,13 +798,7 @@ $(function() {
                     <select class="form-control" name="course" id="course-dropdown">
                       <option value="">Select Course</option>
                       @foreach($course as $cors)
-                      <!-- <option value="{{ $cors->course_id }}">{{ $cors->title }}</option> -->
-                       <option value="{{ $cors->course_id }}" {{ isset($question_details->course_id) && $question_details->course_id == $cors->course_id ? 'selected' : '' }}>
-            {{ $cors->title }}</option>
-
-
-
-
+                      <option value="{{ $cors->course_id }}">{{ $cors->title }}</option>
                       @endforeach
                       
                     </select>
@@ -650,17 +815,6 @@ $(function() {
                     ?>
                     <select class="form-control" name="topics" id="topic-dropdown">
                       <option value="">Select Topics</option>
-
-                      @if(isset($question_details->topic_id))
-                       @foreach($topics as $topic)
-                       <option value="{{ $topic->topic_id }}" {{ isset($question_details->topic_id) && $question_details->topic_id == $topic->topic_id ? 'selected' : 'style="display:none' }}>
-            {{ $topic->title }}</option>
-
-
-
-
-                      @endforeach
-                      @endif
                       
                       
                     </select>
@@ -670,24 +824,14 @@ $(function() {
               </div>
 
               <div class="col-md-4 chapter-dropdown">
-              	<div class="form-group">
+                <div class="form-group">
                   <label>Select Chapter</label>
                   <div class="input-group">
                     <?php
-                      $chapters = DB::table("subtopics")->get();
+                      $topics = DB::table("topics")->get();
                     ?>
                     <select class="form-control" name="chapter" id="subtopic-dropdown">
-                      <option value="">Select Chapter</option>
-                       @if(isset($question_details->topic_id))
-                       @foreach($chapters as $chapter)
-                       <option value="{{ $chapter->st_id }}" {{ isset($question_details->chapter_id) && $question_details->chapter_id == $chapter->st_id ? 'selected' : 'style="display:none' }}>
-            {{ $chapter->title }}</option>
-
-
-
-
-                      @endforeach
-                      @endif
+                      <option value="">Select Topics</option>
                       
                       
                     </select>
@@ -695,13 +839,13 @@ $(function() {
                   </div>
                   
                 </div>
-              </div>
+              </div> -->
               
               <div class="col-md-12">
                 <div class="form-group">
                   <label>Correct Answer Explanation</label>
                   <div class="input-group">
-                    <textarea name="answer_explanation" class="materialize-textarea" id="answer_explanation">{{$question_details->correct_answer_explanation}}</textarea>
+                    <textarea name="answer_explanation" class="materialize-textarea" id="answer_explanation"></textarea>
                   </div><br>
                   <button type="button" class="btn btn-primary" id="myBtn_ans">Preview Latex</button>
                   <div class="preview_latex_error_ans" style="color:red"></div>
@@ -710,22 +854,14 @@ $(function() {
               <div class="col-md-12">
                 <div class="form-group">
                   <label>Add Options</label>
-   @foreach($options as $option)
                   <div class="input-group option_answer">
                     <!-- <input type="hidden" name="correct_answer_check[]" value="incorrect" /> -->
-                                   
-
-                    <input type="checkbox" name="correct_answer_check[]" class="check" value="incorrect" {{ $option->correct_answer == "correct" ? 'checked' : '' }}>
- Correct Answer<br>
-                    <!-- <textarea name="options[]" class="materialize-textarea" id="options" col="10">{{$question_details->correct_answer}}</textarea> -->
-                            {!! '<textarea name="options[]" class="materialize-textarea" id="options" col="10">' .  strip_tags($option->Options) . '</textarea>' !!}
-
-                  </div>
-                                       @endforeach
-
-                 <br>
-                   
-                  <button type="button" class="btn btn-primary" id="myBtn_options">Preview Latex</button><br>
+                    <input type="checkbox" name="correct_answer_check[]" class="check" value="incorrect"> Correct Answer<br>
+                    <textarea name="options[]" class="materialize-textarea" id="options" col="10"></textarea><br>
+                    <button type="button" class="btn btn-primary" id="myBtn_options">Preview Latex</button><br>
+                    <div class="preview_latex_error_options" style="color:red"></div>
+                  </div><br>
+                  
                   <button style="text-align:center" type="button" class="btn btn-primary" onclick="add_options()">Add options</button>
                 </div>
               </div>

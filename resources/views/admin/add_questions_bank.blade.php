@@ -1,7 +1,46 @@
 @extends('admin.layouts.layout')
 
 @section('current_page_js')
+<style type="text/css">
+  /* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
 
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+</style>
 @endsection
 
 @section('current_page_css')
@@ -183,7 +222,7 @@
           $(".preview_latex_error").hide();
         });
         function add_options(){
-          $(".option_answer").append('<input type="hidden" name="correct_answer_check[]" value="incorrect" /><input type="checkbox" name="correct_answer_check[]" class="check-'+counter+'" value="incorrect"> Correct Answer<br><textarea name="options[]" class="materialize-textarea" id="options-'+counter+'"></textarea><br><button type="button" class="btn btn-primary" id="myBtn_options-'+counter+'">Preview Latex</button><br>');
+          $(".option_answer").append('<input type="hidden" name="ck_count" class="ck_count ck_count-'+counter+'" value="'+counter+'"><input type="hidden" name="correct_answer_check[]" value="incorrect" /><input type="checkbox" name="correct_answer_check[]" class="check-'+counter+'" value="incorrect"> Correct Answer<br><textarea name="options[]" class="materialize-textarea" id="options-'+counter+'"></textarea><br><button type="button" class="btn btn-primary myBtn_options12" id="myBtn_options-'+counter+'">Preview Latex</button><br>');
 
           $(".option_modal_div").append('<div id="myModal_options-'+counter+'" class="modal"><div class="modal-content"><span class="close close_options-'+counter+'" style="color:black;">×</span><div class="preview_latex_code_options-'+counter+'"></div></div></div>');
           $(".check-"+counter).click(function(){
@@ -239,10 +278,13 @@ var btn1= document.getElementById("myBtn_options-"+counter);
 var span1 = document.getElementsByClassName("close_options-"+counter)[0];
 
 // When the user clicks the button, open the modal 
+var ck_count = $(".ck_count-"+counter).val();
 
-$("#myBtn_options-"+counter).click(function(){
-   var counter1 = counter-1;
-    var editor_value = CKEDITOR.instances["options-"+counter1].getData();
+
+$("#myBtn_options-"+ck_count).click(function(){
+   //alert(ck_count);
+   //var counter1 = counter-1;
+    var editor_value = CKEDITOR.instances["options-"+ck_count].getData();
   if(editor_value != ""){
     modal1.style.display = "block";
   }else{
@@ -252,10 +294,11 @@ $("#myBtn_options-"+counter).click(function(){
   
           
            //var mathml = MathJax.tex2mml(editor_value);
-          //alert(editor_value);
-          $(".preview_latex_code_options-"+counter1).empty().append("<p>" +editor_value+ "</p>");
-              MathJax.typeset([".preview_latex_code"]);
+          
+          $(".preview_latex_code_options-"+ck_count).empty().append("<p>" +editor_value+ "</p>");
+              MathJax.typeset([".preview_latex_code_options-"+ck_count]);
 });
+
 // btn1.onclick = function() {
 
 //   var editor_value = CKEDITOR.instances["options-"+counter].getData();
@@ -458,7 +501,7 @@ btn23.onclick = function() {
 // When the user clicks on <span> (x), close the modal
 span2.onclick = function() {
   
-  modal.style.display = "none";
+  modal23.style.display = "none";
 }
 
 // When the user clicks anywhere outside of the modal, close it
@@ -676,7 +719,10 @@ $(function() {
                   </div>
                 </div>
               </div>
-              <div class="col-md-4">
+              <input type="hidden" name="course" value="{{ $chapter_data->course_id }}">
+              <input type="hidden" name="topics" value="{{ $chapter_data->topic_id }}">
+              <input type="hidden" name="chapter" value="{{ $chapter_data->st_id }}">
+              <!-- <div class="col-md-4">
                 <div class="form-group">
                   <label>Select Course</label>
                   <div class="input-group">
@@ -727,7 +773,7 @@ $(function() {
                   </div>
                   
                 </div>
-              </div>
+              </div> -->
               
               <div class="col-md-12">
                 <div class="form-group">

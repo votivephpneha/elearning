@@ -40,7 +40,7 @@
               <div class="card-header">
                 <h3 class="card-title">Questions List</h3>
                 <div style="float:right; margin-right:10px; margin-top:10px;">
-                  <a href="{{ url('/admin/add_questions_bank') }}" class="btn btn-primary" style="color:#FFFFFF"> Add New Questions</a>
+                  <a href="{{ url('/admin/add_questions_bank') }}/{{ base64_encode($questions_data[0]->chapter_id) }}" class="btn btn-primary" style="color:#FFFFFF"> Add New Questions</a>
                 </div>
               </div>
 
@@ -176,7 +176,7 @@
 
 
 
-
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.0.0/es5/tex-mml-chtml.js"></script>
 <script>
 
    $('.toggle-class').on("change", function() {

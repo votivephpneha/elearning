@@ -36,8 +36,12 @@
                   <div class="input-group">
                     <div class="input-group-prepend">
                     </div>
+
+                    
                     <input type="hidden" class="form-control" name="course_id" value="{{ $course_title->course_id }}" readonly="">
+                    
                     <input type="text" class="form-control" name="title" value="{{ $course_title->title }}" readonly="">
+
                     <!-- <select class="form-select form-control" id="course-dropdown" name="course_id">
                       <option value="">Select Course</option>
                       <?php if($id>0){
@@ -66,7 +70,9 @@
                   <div class="input-group">
                     <div class="input-group-prepend">
                     </div>
-                    <input type="text" class="form-control" name="title" value="{{ $topic_title->title }}" readonly="">
+                    
+                    <input type="text" class="form-control" name="title" value="@if($topic_title != ''){{ $topic_title->title }}@endif" readonly="">
+
                    <!--  <select class="form-select form-control" id="topic-dropdown" name="topic_id">
                       <option value="">Select Topics</option>
                       <?php if($id>0){
@@ -91,7 +97,7 @@
                   <div class="input-group">
                     <div class="input-group-prepend">
                     </div>
-                    <input type="hidden" name="topic_id" value="{{ $topic_id }}">
+                    <input type="hidden" name="topic_id" value="@if($id>0) {{ $subtopic_detail[0]->topic_id }} @else {{ $topic_id }} @endif">
                     <input type="text" class="form-control" name="title"   value="@if($id>0){{trim($subtopic_detail[0]->title)}}@endif">
                      @if ($errors->has('title'))
                       <span class="" style="color:red">
@@ -113,14 +119,14 @@
                     <label for="customCheckbox2" class="custom-control-label">Quiz</label>
                   </div> -->
                   <div class="icheck-primary d-inline">
-                    <input type="checkbox" name="type[]" id="checkboxPrimary1" value="Theory">
-                    <label for="checkboxPrimary1">
+                    <input type="radio" name="type" id="radioPrimary1" value="Theory" @if($id>0) @if($subtopic_detail[0]->type == 'Theory')checked @endif @endif>
+                    <label for="radioPrimary1">
                       Theory
                     </label>
                   </div>
                   <div class="icheck-primary d-inline">
-                    <input type="checkbox" name="type[]" id="checkboxPrimary2" value="Quiz">
-                    <label for="checkboxPrimary2">
+                    <input type="radio" name="type" id="radioPrimary2" value="Quiz" @if($id>0)@if($subtopic_detail[0]->type == 'Quiz')checked @endif @endif>
+                    <label for="radioPrimary2">
                       Quiz
                     </label>
                   </div>

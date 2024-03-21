@@ -1,6 +1,7 @@
 @extends('Front.layouts.layout')
 @section('title', 'Session Analysis')
 @section('current_page_js')
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.0.0/es5/tex-mml-chtml.js"></script>
 <script type="text/javascript">
   var correct_answer = $(".correct_answer").val();
   var correct_ans = correct_answer/"<?php echo $session_analysis1->total_questions; ?>";

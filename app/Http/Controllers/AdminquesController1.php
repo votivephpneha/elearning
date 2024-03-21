@@ -49,18 +49,26 @@ class AdminquesController1 extends Controller{
 
 	public function add_questions_bank(Request $request){
 
-		return view("admin.add_questions_bank");
+		$chapter_id = base64_decode($request->chapter_id);
+
+		$data['chapter_data'] = DB::table("subtopics")->where("st_id",$chapter_id)->first();
+
+		return view("admin.add_questions_bank")->with($data);
 	}
 
 	public function edit_questions_bank(Request $request){
 		
 
 		$id = base64_decode($request->id);
+		//$chapter_id = base64_decode($request->chapter_id);
+
+		
 
 		if($id){
 		  $question_details  = DB::table("question_bank")->where('question_id','=',$id)->first();
+		  $chapter_data = DB::table("subtopics")->where("st_id",$question_details->chapter_id)->first();
           $options  = DB::table("question_bank")->where('q_id','=',$question_details->q_id)->get();
-          $data_onview = array('id'=>$id,'question_details'=>$question_details,'options'=>$options);
+          $data_onview = array('id'=>$id,'question_details'=>$question_details,'options'=>$options,'chapter_data'=>$chapter_data);
           return view("admin.edit_questions_bank")->with($data_onview);
 		 }
 	}
@@ -75,7 +83,7 @@ class AdminquesController1 extends Controller{
 
 		// echo "<pre>";
 		// dd($request);die;
-
+		$chapter_id = base64_decode($request->chapter_id);
             
 
 		$question_title = $request->question_title;
@@ -123,14 +131,23 @@ class AdminquesController1 extends Controller{
 		}	
 		Session::flash('message', 'Question added successfully');
 		//return route()->redirect("show_questions");
-		return redirect()->to('/admin/show_questions');
+		return redirect()->to('/admin/show_questions/'.base64_encode($request->chapter));
 		
 
 	}
 
-	public function show_questions(){
-		$data['questions_data'] = DB::table("question_bank")->orderBy('ordering_id', 'ASC')
+	public function show_questions(Request $request){
+		$chapter_id = base64_decode($request->chapter_id);
+
+
+		if($chapter_id){
+			$data['questions_data'] = DB::table("question_bank")->where("chapter_id",$chapter_id)->orderBy('ordering_id', 'ASC')
             ->groupBy('q_id')->get();
+		}else{
+			$data['questions_data'] = DB::table("question_bank")->orderBy('ordering_id', 'ASC')
+            ->groupBy('q_id')->get();
+		}
+		
 
 		return view("admin.show_questions")->with($data);
 	}
@@ -145,7 +162,8 @@ class AdminquesController1 extends Controller{
         } else {
             Session::flash('error', 'Question not found or could not be deleted!');
         }
-        return Redirect('/admin/show_questions');
+        $chapter_data = DB::table("subtopics")->where("st_id",$id)->first();
+        return Redirect('/admin/show_questions/'.$request->id);
 
 	}
 

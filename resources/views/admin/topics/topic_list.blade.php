@@ -60,6 +60,7 @@
                     <th>Course</th>
                     <th>Status</th>
                     <th>Action</th>
+                    <th>Another Actions</th>
                   </tr>
                   </thead>
                   <tbody id="topicBodyContents">
@@ -82,7 +83,11 @@
                     <a href="{{ route('topic.edit', base64_encode($list->topic_id)) }}"><i class="fa fa-edit"></i></a>
                       
                       <a title="Delete Topic" href="{{ route('topic.delete', base64_encode($list->topic_id)) }}" onclick="return confirm('Are you sure you want to delete this record?')"><i class="fa fa-trash"></i></a>
-                      <a href="{{ url('/admin/subtopiclist1/') }}/{{ base64_encode($list->course_id) }}/{{ base64_encode($list->topic_id) }}"><i class="fa fa-eye"></i></a>
+                      
+                    </td>
+                    <td>
+                      
+                      <a href="{{ url('/admin/subtopiclist1/') }}/{{ base64_encode($list->course_id) }}/{{ base64_encode($list->topic_id) }}" class="btn btn-success" id="myBtn-{{ $i }}" onclick="addTheory('{{ $i }}')">Add Chapters</a>
                     </td>
                   </tr>
                      <?php $i++; ?>

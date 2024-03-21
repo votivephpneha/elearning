@@ -7,10 +7,13 @@
 @section('content')
 
 <div class="row">
-      <a href="#" class="d-flex key-space" onclick="history.back()"><span class="material-symbols-outlined mr-2">
+      <a href="#" class="d-flex key-space" onclick="history.back()">
+      	
+      	<span class="material-symbols-outlined mr-2">
 keyboard_backspace
 </span> Back </a>
-  <div class="col-md-8 m-auto">
+@if($queries)
+  <div class="col-md-10 m-auto">
 <div class="theory-box">
 
   <div class="pdf-line">
@@ -28,8 +31,21 @@ keyboard_backspace
 
 </div>
           </div>
-
-
+ @else         
+<style type="text/css">
+.chose-q h2 {
+    text-align: center;
+    font-size: 19px;
+}
+</style>
+<div class="col-md-12">
+<div class="chose-q">
+<center><img src="{{ url('/public') }}/assets/img/no_data_found.png" style="width: 150px;" class="mb-3">
+</center>
+   <h2> No Theory found </h2>
+  </div>
+  </div>
+@endif
 
 </div>
 @endsection

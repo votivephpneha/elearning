@@ -61,10 +61,10 @@ Route::group(['prefix' => 'user', 'middleware' => 'user_auth:customer'], functio
 
 Route::get('/admin/add_questions', [AdminquesController1::class, 'index'])->name('add_questions');
 Route::post('/admin/post_questions', [AdminquesController1::class, 'post_questions'])->name('post_questions');
-Route::get('/admin/add_questions_bank', [AdminquesController1::class, 'add_questions_bank'])->name('add_questions_bank');
+Route::get('/admin/add_questions_bank/{chapter_id}', [AdminquesController1::class, 'add_questions_bank'])->name('add_questions_bank');
 Route::post('/admin/post_questions_bank', [AdminquesController1::class, 'post_questions_bank'])->name('post_questions_bank');
 Route::post('/admin/fetch-subtopics', [AdminquesController1::class, 'fetch_subtopics'])->name('fetch-subtopics');
-Route::get('/admin/show_questions', [AdminquesController1::class, 'show_questions'])->name('show_questions');
+Route::get('/admin/show_questions/{chapter_id}', [AdminquesController1::class, 'show_questions'])->name('show_questions');
 Route::get('/admin', [AuthController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/admin/login', [Authcontroller::class, 'login'])->name("login.admin");
 Route::get('/admin/dashboard', [AdminController::class, 'index'])->name("admin.dashboard");
@@ -121,7 +121,7 @@ Route::get('/admin/subtopiclist/', [TopicController::class, 'subtopic_list'])->n
 Route::post('/admin/subtopic_action', [TopicController::class, 'subtopic_action'])->name("subtopic.action");
 Route::get('/admin/subtopic-form', [TopicController::class, 'subtopic_form'])->name("subtopic.form");
 Route::get('/admin/subtopic-form1/{course_id}/{topic_id}', [TopicController::class, 'subtopic_form1'])->name("subtopic.form");
-Route::get('/admin/subtopic-form/{id}', [TopicController::class, 'subtopic_form1'])->name("subtopic.edit");
+Route::get('/admin/subtopic-form1/{id}', [TopicController::class, 'subtopic_form1'])->name("subtopic.edit");
 Route::get('/admin/subtopic-delete/{id}/{topic_id}', [TopicController::class, 'subtopic_delete'])->name("subtopic.delete");
 Route::get('/admin/subtopic_status', [TopicController::class, 'subtopic_status'])->name("subtopic.status");
 

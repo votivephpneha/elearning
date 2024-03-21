@@ -99,11 +99,28 @@ class TheoryController extends Controller
         $title = $request->input('title');
         // Generate slug from the title
         $slug = Str::slug($title);
-        if($id==0){
-            $request->validate([
-                'theory_pdf' => 'required|mimes:pdf,xlxs,xlx,docx,doc,csv,txt,png,gif,jpg,jpeg',
-                 'title' => 'required|unique:theory,title,NULL,id,deleted_at,NULL|max:255'
-            ]);
+        $theory = DB::table("theory")->where("course_id",$request->course_id)->where("topic_id",$request->topic_id)->where("st_id",$request->st_id)->first();
+
+        if(!empty($theory)){
+            $fileName = $request->theory_pdf->getClientOriginalName();
+            $file = $request->file('theory_pdf');
+            $filePath = base_path() .'/public/assets/img/';
+            $file->move($filePath,$fileName);
+            // $path = Storage::disk('public')->put($filePath, file_get_contents($request->theory_pdf));
+            // $path = Storage::disk('public')->url($path);
+            // $slug = Str::slug($title);
+            DB::table('theory')
+                ->where('theory_id', $theory->theory_id)
+                ->update([
+                    'theory_pdf'=> $fileName,
+                    'pdf_path' => $fileName
+
+                    ]);
+
+           
+            Session::flash('message', 'Theory Updated Sucessfully!');
+            return redirect()->to('/admin/subtopiclist1/'.base64_encode($request->course_id)."/".base64_encode($request->topic_id));
+        }else{
             $fileName = $request->theory_pdf->getClientOriginalName();
             $file = $request->file('theory_pdf');
             $filePath = base_path() .'/public/assets/img/';
@@ -113,11 +130,11 @@ class TheoryController extends Controller
             $file->move($filePath,$fileName);
 
             $theory = new Theory;
-            $theory->title = trim($request->title);
+            
             $theory->course_id = trim($request->course_id);
             $theory->topic_id = trim($request->topic_id);
             $theory->st_id = trim($request->st_id);
-            $theory->slug = $slug;
+            //$theory->slug = $slug;
             $theory->theory_pdf = $fileName;
             $theory->pdf_path = $fileName ;
             $theory->status = "1";
@@ -126,51 +143,13 @@ class TheoryController extends Controller
             
                   
             Session::flash('message', 'Theory Inserted Sucessfully!');
-            return redirect()->to('/admin/theorylist');
-
-        }else
-        {
-            if ($request->hasFile('theory_pdf')) {
-                $request->validate([
-                'theory_pdf' => 'required|mimes:pdf,xlxs,xlx,docx,doc,csv,txt,png,gif,jpg,jpeg',
-            ]);
-                $fileName = $request->theory_pdf->getClientOriginalName();
-            $file = $request->file('theory_pdf');
-            $filePath = base_path() .'/public/assets/img/';
-            // $path = Storage::disk('public')->put($filePath, file_get_contents($request->theory_pdf));
-            // $path = Storage::disk('public')->url($path);
-            // $slug = Str::slug($title);
-            $file->move($filePath,$fileName);
+            return redirect()->to('/admin/subtopiclist1/'.base64_encode($request->course_id)."/".base64_encode($request->topic_id));
         }
-        else{
-            $theory_detail  = DB::table('theory')->where('theory_id', '=' ,$id)->first();
-            $fileName = $request->theory_pdf->getClientOriginalName();
-            $file = $request->file('theory_pdf');
-            $filePath = base_path() .'/public/assets/img/';
-            // $path = Storage::disk('public')->put($filePath, file_get_contents($request->theory_pdf));
-            // $path = Storage::disk('public')->url($path);
-            // $slug = Str::slug($title);
-            $file->move($filePath,$fileName);
-        }
-         DB::table('theory')
-                ->where('theory_id', $id)
-                ->update(['title' => trim($request->title),
-                    'slug'=>  $slug,
-                    'course_id' =>trim($request->course_id),
-                    'topic_id' =>trim($request->topic_id),
-                    'st_id' =>trim($request->st_id),
-                    'theory_pdf'=> $fileName,
-                    'pdf_path' => $fileName
-
-                    ]);
-
-           
-            Session::flash('message', 'Theory Updated Sucessfully!');
-            return redirect()->to('/admin/theorylist');
-        }
+        
 
 
     }
+
 
 
 
