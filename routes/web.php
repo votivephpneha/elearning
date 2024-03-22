@@ -61,7 +61,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'user_auth:customer'], functio
 
 Route::get('/admin/add_questions', [AdminquesController1::class, 'index'])->name('add_questions');
 Route::post('/admin/post_questions', [AdminquesController1::class, 'post_questions'])->name('post_questions');
-Route::get('/admin/add_questions_bank/{chapter_id}', [AdminquesController1::class, 'add_questions_bank'])->name('add_questions_bank');
+Route::get('/admin/add_questions_bank/{chapter_id?}', [AdminquesController1::class, 'add_questions_bank'])->name('add_questions_bank');
 Route::post('/admin/post_questions_bank', [AdminquesController1::class, 'post_questions_bank'])->name('post_questions_bank');
 Route::post('/admin/fetch-subtopics', [AdminquesController1::class, 'fetch_subtopics'])->name('fetch-subtopics');
 Route::get('/admin/show_questions/{chapter_id}', [AdminquesController1::class, 'show_questions'])->name('show_questions');

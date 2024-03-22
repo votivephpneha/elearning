@@ -54,7 +54,11 @@
         dom: 'Bfrtip',
         responsive: true,
         rowReorder: true,
-        buttons: ['csv', 'excel']
+        lengthMenu: [
+            [ 10, 25, 50, -1 ],
+            [ '10 rows', '25 rows', '50 rows', 'Show all' ]
+        ],
+        buttons: ['pageLength','csv', 'excel']
     });
 });
 </script>
@@ -68,7 +72,11 @@
         dom: 'Bfrtip',
         responsive: true,
         rowReorder: true,
-        buttons: ['csv', 'excel']
+        lengthMenu: [
+            [ 10, 25, 50, -1 ],
+            [ '10 rows', '25 rows', '50 rows', 'Show all' ]
+        ],
+        buttons: ['pageLength','csv', 'excel']
     });
     
 
@@ -123,11 +131,27 @@
   
     $(function () {
     
-    $('#question_list').DataTable({
+    // $('#question_list1').DataTable( {
+    //     dom: 'Bfrtip',
+    //     // Configure the drop down options.
+    //     lengthMenu: [
+    //         [ 10, 25, 50, -1 ],
+    //         [ '10 rows', '25 rows', '50 rows', 'Show all' ]
+    //     ],
+    //     // Add to buttons the pageLength option.
+    //     buttons: [
+    //         'pageLength','csv','excel'
+    //     ]
+    // });
+    $('#question_list1').DataTable({
         dom: 'Bfrtip',
         responsive: true,
         rowReorder: true,
-        buttons: ['csv', 'excel']
+        lengthMenu: [
+            [ 10, 25, 50, -1 ],
+            [ '10 rows', '25 rows', '50 rows', 'Show all' ]
+        ],
+        buttons: ['pageLength','csv', 'excel']
     });
 
     $("#questionBodyContents").sortable({
@@ -182,9 +206,11 @@
                         dom: 'Bfrtip',
                         responsive: true,
                         rowReorder :true,
-                        buttons: [
-                             'csv', 'excel'
-                        ]
+                        lengthMenu: [
+                            [ 10, 25, 50, -1 ],
+                            [ '10 rows', '25 rows', '50 rows', 'Show all' ]
+                        ],
+                        buttons: ['pageLength','csv', 'excel']
                     });
 
             $("#chapterBodyContents").sortable({
@@ -239,9 +265,11 @@
                         dom: 'Bfrtip',
                         responsive: true,
                         rowReorder :true,
-                        buttons: [
-                             'csv', 'excel'
-                        ]
+                        lengthMenu: [
+                        [ 10, 25, 50, -1 ],
+                        [ '10 rows', '25 rows', '50 rows', 'Show all' ]
+                        ],
+                        buttons: ['pageLength','csv', 'excel']
                     });
 
             $("#topicBodyContents").sortable({

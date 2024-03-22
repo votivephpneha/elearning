@@ -50,7 +50,7 @@ class AdminquesController1 extends Controller{
 	public function add_questions_bank(Request $request){
 
 		$chapter_id = base64_decode($request->chapter_id);
-
+		$data['chapter_id'] = $chapter_id;
 		$data['chapter_data'] = DB::table("subtopics")->where("st_id",$chapter_id)->first();
 
 		return view("admin.add_questions_bank")->with($data);
@@ -65,7 +65,7 @@ class AdminquesController1 extends Controller{
 		
 
 		if($id){
-		  $question_details  = DB::table("question_bank")->where('question_id','=',$id)->first();
+		  $question_details  = DB::table("question_bank")->where('q_id','=',$id)->first();
 		  $chapter_data = DB::table("subtopics")->where("st_id",$question_details->chapter_id)->first();
           $options  = DB::table("question_bank")->where('q_id','=',$question_details->q_id)->get();
           $data_onview = array('id'=>$id,'question_details'=>$question_details,'options'=>$options,'chapter_data'=>$chapter_data);
@@ -131,7 +131,11 @@ class AdminquesController1 extends Controller{
 		}	
 		Session::flash('message', 'Question added successfully');
 		//return route()->redirect("show_questions");
-		return redirect()->to('/admin/show_questions/'.base64_encode($request->chapter));
+		if($request->chapter_text == "chapter_text"){
+			return redirect()->to('/admin/show_questions/'.base64_encode($request->chapter));
+		}else{
+			return redirect()->to('/admin/show_questions/');
+		}
 		
 
 	}
@@ -139,7 +143,7 @@ class AdminquesController1 extends Controller{
 	public function show_questions(Request $request){
 		$chapter_id = base64_decode($request->chapter_id);
 
-
+		$data['chapter_id'] = $chapter_id;
 		if($chapter_id){
 			$data['questions_data'] = DB::table("question_bank")->where("chapter_id",$chapter_id)->orderBy('ordering_id', 'ASC')
             ->groupBy('q_id')->get();
@@ -154,22 +158,30 @@ class AdminquesController1 extends Controller{
 
 	public function question_delete(Request $request){
 		$id = base64_decode($request->id);
-		$question_bank = QuestionBank::find($id);
-        $question_bank->delete();
-        $question = QuestionBank::find($id);
-        if (!$question) {
+		$question_data = QuestionBank::where("q_id",$id)->first();
+		$question_bank = QuestionBank::where("q_id",$id)->delete();
+
+        // $question_bank->delete();
+        // $question = QuestionBank::find($id);
+
+        if ($question_bank) {
             Session::flash('message', 'Question Information Deleted Successfully!');
         } else {
             Session::flash('error', 'Question not found or could not be deleted!');
         }
-        $chapter_data = DB::table("subtopics")->where("st_id",$id)->first();
-        return Redirect('/admin/show_questions/'.$request->id);
+        
+        //echo $question_data->chapter_id;die;
+        if($request->chapter_id){
+        	return redirect()->to('/admin/show_questions/'.base64_encode($question_data->chapter_id));
+        }else{
+        	return redirect()->to('/admin/show_questions/');
+        }
 
 	}
 
 	public function question_status(Request $request){
        $result = DB::table('question_bank')
-                    ->where('question_id', $request->question_id)
+                    ->where('q_id', $request->question_id)
                     ->update(['status' => $request->status]);
                     if ($result) {
                     	return response()->json(['success' => true, 'message' => 'Status updated successfully']);} else {

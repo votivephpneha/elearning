@@ -40,7 +40,7 @@
               <div class="card-header">
                 <h3 class="card-title">Questions List</h3>
                 <div style="float:right; margin-right:10px; margin-top:10px;">
-                  <a href="{{ url('/admin/add_questions_bank') }}/{{ base64_encode($questions_data[0]->chapter_id) }}" class="btn btn-primary" style="color:#FFFFFF"> Add New Questions</a>
+                  <a href="{{ url('/admin/add_questions_bank') }}/@if($chapter_id){{ base64_encode($chapter_id) }}@endif" class="btn btn-primary" style="color:#FFFFFF"> Add New Questions</a>
                 </div>
               </div>
 
@@ -59,7 +59,8 @@
                   {{Session::get('error')}}
                 </div>
                 @endif
-                <table id="question_list" class="table table-bordered table-striped">
+                <div class="table-responsive">
+                <table id="question_list1" class="table table-bordered table-striped">
                   <thead>
                   <tr>
                     <th>ID</th>
@@ -75,6 +76,7 @@
                   <tbody id="questionBodyContents">
                   <?php $i=1; ?>
                   @foreach ($questions_data as $list)
+                  @if($list->deleted_at == NULL)
                   <tr class="tableRow" data-question_id="{{ $list->question_id }}">
                     <td class="serial-number"> {{ $i }}</td>
                     <td>{!! $list->title !!}</td>
@@ -102,16 +104,16 @@
                       ?>
                     </td>
                         <td>
-                    <input data-id="{{$list->question_id}}" class="toggle-class" type="checkbox" data-onstyle="success" data-offstyle="danger" data-toggle="toggle" data-on="Active" data-off="InActive" {{ $list->status ? 'checked' : '' }}>
+                    <input data-id="{{$list->q_id}}" class="toggle-class" type="checkbox" data-onstyle="success" data-offstyle="danger" data-toggle="toggle" data-on="Active" data-off="InActive" {{ $list->status ? 'checked' : '' }}>
                     </td>
                      
                     <td>
 
                       <!-- <a href="{{ route('course.view', base64_encode($list->course_id)) }}"><i class="fa fa-eye"></i></a> -->
 
-                    <a href="{{ route('question.edit', base64_encode($list->question_id)) }}"><i class="fa fa-edit"></i></a>
+                    <a href="{{ route('question.edit', ['id'=>base64_encode($list->q_id),'chapter_id'=>$chapter_id]) }}"><i class="fa fa-edit"></i></a>
                       
-                      <a title="Delete User" href="{{ route('question.delete', base64_encode($list->question_id)) }}" onclick="return confirm('Are you sure you want to delete this record?')"><i class="fa fa-trash"></i></a>
+                      <a title="Delete User" href="{{ route('question.delete',['id'=>base64_encode($list->q_id),'chapter_id'=>$chapter_id] ) }}" onclick="return confirm('Are you sure you want to delete this record?')"><i class="fa fa-trash"></i></a>
                     </td>
                   </tr>
                   
@@ -119,6 +121,7 @@
                  
                  
                      <?php $i++; ?>
+                     @endif
                                     @endforeach            
                   </tbody>
                 <!--   <tfoot>
@@ -131,6 +134,7 @@
                   </tr>
                   </tfoot> -->
                 </table>
+                </div>
               </div>
               <!-- /.card-body -->
             </div>
@@ -181,7 +185,8 @@
 
    $('.toggle-class').on("change", function() {
     var status = $(this).prop('checked') == true ? 1 : 0; 
-    var question_id = $(this).data('id'); 
+    var question_id = $(this).data('id');
+
     $.ajax({
       type: "Post",
       dataType: "json",

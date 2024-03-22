@@ -98,69 +98,6 @@
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3.0.0/es5/tex-mml-chtml.js"></script>
 
 <script>
-       $( document ).ready(function() {
-    var question_content1 = "<?php echo $question_details->title; ?>";
-        CKEDITOR.instances['question_content'].setData(question_content1);
-        
-        MathJax.typeset(["#question_content"]);
-});
-        (function() {
-      var mathElements = [
-        'math',
-        'maction',
-        'maligngroup',
-        'malignmark',
-        'menclose',
-        'merror',
-        'mfenced',
-        'mfrac',
-        'mglyph',
-        'mi',
-        'mlabeledtr',
-        'mlongdiv',
-        'mmultiscripts',
-        'mn',
-        'mo',
-        'mover',
-        'mpadded',
-        'mphantom',
-        'mroot',
-        'mrow',
-        'ms',
-        'mscarries',
-        'mscarry',
-        'msgroup',
-        'msline',
-        'mspace',
-        'msqrt',
-        'msrow',
-        'mstack',
-        'mstyle',
-        'msub',
-        'msup',
-        'msubsup',
-        'mtable',
-        'mtd',
-        'mtext',
-        'mtr',
-        'munder',
-        'munderover',
-        'semantics',
-        'annotation',
-        'annotation-xml'
-      ];
-
-      CKEDITOR.plugins.addExternal('ckeditor_wiris', 'https://ckeditor.com/docs/ckeditor4/4.14.0/examples/assets/plugins/ckeditor_wiris/', 'plugin.js');
-
-      CKEDITOR.replace('question_content12', {
-        extraPlugins: 'ckeditor_wiris',
-        // For now, MathType is incompatible with CKEditor file upload plugins.
-        removePlugins: 'uploadimage,uploadwidget,uploadfile,filetools,filebrowser',
-        height: 320,
-        // Update the ACF configuration with MathML syntax.
-        extraAllowedContent: mathElements.join(' ') + '(*)[*]{*};img[data-mathml,data-custom-editor,role](Wirisformula)'
-      });
-    }());
         //$('textarea[name="DSC"]').ckeditor();
         CKEDITOR.replace('question_content', {
         
@@ -200,8 +137,6 @@
         //extraPlugins:'mathjax',
            mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML'
         });
-
-        
         CKEDITOR.replace('answer_explanation', {
         
             toolbarGroups: [
@@ -240,46 +175,50 @@
         //extraPlugins:'mathjax',
            mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML'
         });
-        CKEDITOR.replace('options', {
-        
-            toolbarGroups: [
-        
-       {
-          "name": "basicstyles",
-          "groups": ["basicstyles"]
-        },
-        {
-          "name": "links",
-          "groups": ["links"]
-        },
-        {
-          "name": "paragraph",
-          "groups": ['list', 'indent', 'blocks', 'align', 'bidi', 'paragraph', 'justify']
-        },
-        {
-          "name": "document",
-          "groups": ["mode"]
-        },
-        {
-          "name": "insert",
-          "groups": ["insert"]
-        },
-        {
-          "name": "styles",
-          "groups": ["styles"]
-        },
-        {
-          "name": "about",
-          "groups": ["about"]
-        }
-        
-      ],
-      // Remove the redundant buttons from toolbar groups defined 
-        //extraPlugins:'mathjax',
-           mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML'
-        });
+        var options_length = $(".options_textarea").length;
+        //console.log("options_text",options_text);
+        for(var i = 1;i<=options_length;i++){
+          CKEDITOR.replace('options-'+i, {
+          
+              toolbarGroups: [
+          
+         {
+            "name": "basicstyles",
+            "groups": ["basicstyles"]
+          },
+          {
+            "name": "links",
+            "groups": ["links"]
+          },
+          {
+            "name": "paragraph",
+            "groups": ['list', 'indent', 'blocks', 'align', 'bidi', 'paragraph', 'justify']
+          },
+          {
+            "name": "document",
+            "groups": ["mode"]
+          },
+          {
+            "name": "insert",
+            "groups": ["insert"]
+          },
+          {
+            "name": "styles",
+            "groups": ["styles"]
+          },
+          {
+            "name": "about",
+            "groups": ["about"]
+          }
+          
+        ],
+        // Remove the redundant buttons from toolbar groups defined 
+          //extraPlugins:'mathjax',
+             mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML'
+          });
+        } 
 
-        var counter = 1;
+        var counter = options_length+1;
         $(".check").click(function(){
             $(this).val("correct");
           });
@@ -746,12 +685,13 @@ $(function() {
                   </div>
                 </div>
               </div> -->
-              <textarea name="question_content12" class="materialize-textarea" id="question_content12">{{ $question_details->title }}</textarea>
               <div class="col-md-12">
                 <div class="form-group">
                   <label>Question Content</label>
                   <div class="input-group">
-                    <textarea name="question_title" class="materialize-textarea" id="question_content">{!! $question_details->title !!}</textarea>
+                    <textarea name="question_title" class="materialize-textarea" id="question_content">
+                      {!! $question_details->title !!}
+                    </textarea>
                   </div><br>
                   
                   <div class="preview_latex_button">
@@ -765,19 +705,19 @@ $(function() {
                   <label>Questions available in:</label>
                   <div class="input-group questions_available">
                   <div class="icheck-primary d-inline">
-                    <input type="radio" id="radioPrimary1" name="question_exam" value="Quiz">
+                    <input type="radio" id="radioPrimary1" name="question_exam" value="Quiz" @if($question_details->quiz_exam == "Quiz") checked @endif>
                     <label for="radioPrimary1">
                       Quiz
                     </label>
                   </div><br><br>
                   <div class="icheck-primary d-inline">
                     <input type="radio" id="radioPrimary2" name="question_exam" value="Exam Builder">
-                    <label for="radioPrimary2">
+                    <label for="radioPrimary2" @if($question_details->quiz_exam == "Exam Builder") checked @endif>
                       Exam Builder
                     </label>
                   </div><br><br>
                   <div class="icheck-primary d-inline">
-                    <input type="radio" id="radioPrimary3" name="question_exam" value="Both">
+                    <input type="radio" id="radioPrimary3" name="question_exam" value="Both" @if($question_details->quiz_exam == "Both") checked @endif>
                     <label for="radioPrimary3">
                       Both
                     </label>
@@ -845,7 +785,9 @@ $(function() {
                 <div class="form-group">
                   <label>Correct Answer Explanation</label>
                   <div class="input-group">
-                    <textarea name="answer_explanation" class="materialize-textarea" id="answer_explanation"></textarea>
+                    <textarea name="answer_explanation" class="materialize-textarea" id="answer_explanation">
+                      {!! $question_details->correct_answer_explanation !!}
+                    </textarea>
                   </div><br>
                   <button type="button" class="btn btn-primary" id="myBtn_ans">Preview Latex</button>
                   <div class="preview_latex_error_ans" style="color:red"></div>
@@ -856,10 +798,16 @@ $(function() {
                   <label>Add Options</label>
                   <div class="input-group option_answer">
                     <!-- <input type="hidden" name="correct_answer_check[]" value="incorrect" /> -->
-                    <input type="checkbox" name="correct_answer_check[]" class="check" value="incorrect"> Correct Answer<br>
-                    <textarea name="options[]" class="materialize-textarea" id="options" col="10"></textarea><br>
+                    <?php
+                      $i = 1;
+                    ?>
+                    @foreach($options as $op)
+                    <input type="checkbox" name="correct_answer_check[]" class="check" value="incorrect" @if($op->correct_answer == "correct") checked @endif> Correct Answer<br>
+                    <textarea name="options[]" class="materialize-textarea options_textarea" id="options-{{ $i }}" col="10">{!! $op->Options !!}</textarea><br>
                     <button type="button" class="btn btn-primary" id="myBtn_options">Preview Latex</button><br>
                     <div class="preview_latex_error_options" style="color:red"></div>
+                    <?php $i++; ?>
+                    @endforeach
                   </div><br>
                   
                   <button style="text-align:center" type="button" class="btn btn-primary" onclick="add_options()">Add options</button>
@@ -869,7 +817,7 @@ $(function() {
                 <div class="form-group">
                   <label>Time Length(Seconds)</label>
                   <div class="input-group">
-                    <input type="text" name="time_length" class="form-control">
+                    <input type="text" name="time_length" class="form-control" value="{{ $question_details->time_length }}">
                   </div>
                 </div>
               </div>
@@ -880,9 +828,9 @@ $(function() {
                     
                     <select class="form-control" name="difficulty_level" id="difficulty_level">
                       <option value="">Select Difficulty Level</option>
-                      <option>Easy</option>
-                      <option>Medium</option>
-                      <option>Hard</option>
+                      <option value="Easy" @if($question_details->difficulty_level == "Easy") selected @endif>Easy</option>
+                      <option value="Medium" @if($question_details->difficulty_level == "Medium") selected @endif>Medium</option>
+                      <option value="Hard" @if($question_details->difficulty_level == "Hard") selected @endif>Hard</option>
                     </select>
                     
                   </div>
@@ -893,7 +841,7 @@ $(function() {
                 <div class="form-group">
                   <label>Marks</label>
                   <div class="input-group">
-                    <input type="text" name="marks" class="form-control">
+                    <input type="text" name="marks" class="form-control" value="{{ $question_details->marks }}">
                   </div>
                   
                 </div>

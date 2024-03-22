@@ -719,10 +719,15 @@ $(function() {
                   </div>
                 </div>
               </div>
+              @if($chapter_id)
+              <input type="hidden" name="chapter_text" value="chapter_text">
               <input type="hidden" name="course" value="{{ $chapter_data->course_id }}">
               <input type="hidden" name="topics" value="{{ $chapter_data->topic_id }}">
               <input type="hidden" name="chapter" value="{{ $chapter_data->st_id }}">
-              <!-- <div class="col-md-4">
+              @else
+
+              
+              <div class="col-md-4">
                 <div class="form-group">
                   <label>Select Course</label>
                   <div class="input-group">
@@ -773,8 +778,8 @@ $(function() {
                   </div>
                   
                 </div>
-              </div> -->
-              
+              </div>
+              @endif
               <div class="col-md-12">
                 <div class="form-group">
                   <label>Correct Answer Explanation</label>
