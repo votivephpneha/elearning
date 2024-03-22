@@ -111,7 +111,7 @@
 
                       <!-- <a href="{{ route('course.view', base64_encode($list->course_id)) }}"><i class="fa fa-eye"></i></a> -->
 
-                    <a href="{{ route('question.edit', ['id'=>base64_encode($list->q_id),'chapter_id'=>$chapter_id]) }}"><i class="fa fa-edit"></i></a>
+                    <a href="{{ route('question.edit', ['id'=>base64_encode($list->q_id),'chapter_id'=>base64_encode($chapter_id)]) }}"><i class="fa fa-edit"></i></a>
                       
                       <a title="Delete User" href="{{ route('question.delete',['id'=>base64_encode($list->q_id),'chapter_id'=>$chapter_id] ) }}" onclick="return confirm('Are you sure you want to delete this record?')"><i class="fa fa-trash"></i></a>
                     </td>

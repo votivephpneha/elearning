@@ -87,7 +87,7 @@ class TopicController extends Controller
             $topics->status = "1";
             $topics->save();
             $topic_id = $topics->topic_id;
-            Session::flash('message', 'Course Inserted Sucessfully!');
+            Session::flash('message', 'Topic Inserted Sucessfully!');
             return redirect()->to('/admin/topiclist');
 
         }else
@@ -290,7 +290,11 @@ class TopicController extends Controller
         ]);
             $type = $request->type;
             
-            
+            if($type == "Quiz"){
+                $timer = $request->timer_type;
+            }else{
+                $timer = "";
+            }
                
             $subtopics = new Subtopics;
             $subtopics->title = trim($request->title);
@@ -299,10 +303,14 @@ class TopicController extends Controller
             $subtopics->slug = $slug;
             $subtopics->status = "1";
             $subtopics->type = $type;
+            $subtopics->timer = $timer;
             $subtopics->save();
             $st_id = $subtopics->st_id;
             Session::flash('message', 'Chapter Inserted Sucessfully!');
             return redirect()->to('/admin/subtopiclist1/'.$course_id."/".$topic_id);
+            
+            
+            
 
         }else
         {
@@ -315,11 +323,17 @@ class TopicController extends Controller
             //      'title' => 'required|unique:subtopics|max:255'
             //  ]);
             // }
+            if($request->type == "Quiz"){
+                $timer = $request->timer_type;
+            }else{
+                $timer = "";
+            }
             DB::table('subtopics')
                 ->where('st_id', $id)
                 ->update(['title' => trim($request->title),
                     'slug'=>  $slug,
                     'type'=>  $request->type,
+                    'timer'=>  $timer,
                     'course_id'=> trim($request->course_id),
                     'topic_id'=> trim($request->topic_id),
 

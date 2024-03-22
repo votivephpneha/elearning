@@ -661,12 +661,12 @@ $(function() {
         <!-- SELECT2 EXAMPLE -->
         <div class="card card-default">
           <div class="card-header">
-            <h3 class="card-title">Add Questions</h3>
+            <h3 class="card-title">Edit Questions</h3>
           </div>
           <!-- /.card-header -->
           <div class="card-body">
             
-            <form action="{{ url('/admin/post_questions_bank') }}" id="question_form" method="post">
+            <form action="{{ url('/admin/post_questions_bank_edit') }}" id="question_form" method="post">
                       {!! csrf_field() !!}
                        
 
@@ -689,6 +689,8 @@ $(function() {
                 <div class="form-group">
                   <label>Question Content</label>
                   <div class="input-group">
+                    <input type="hidden" name="question_id" value="{{ $id }}">
+                    <input type="hidden" name="chapter_id" value="{{ $chapter_id }}">
                     <textarea name="question_title" class="materialize-textarea" id="question_content">
                       {!! $question_details->title !!}
                     </textarea>
@@ -711,8 +713,8 @@ $(function() {
                     </label>
                   </div><br><br>
                   <div class="icheck-primary d-inline">
-                    <input type="radio" id="radioPrimary2" name="question_exam" value="Exam Builder">
-                    <label for="radioPrimary2" @if($question_details->quiz_exam == "Exam Builder") checked @endif>
+                    <input type="radio" id="radioPrimary2" name="question_exam" value="Exam Builder" @if($question_details->quiz_exam == "Exam Builder") checked @endif>
+                    <label for="radioPrimary2" >
                       Exam Builder
                     </label>
                   </div><br><br>
@@ -725,39 +727,29 @@ $(function() {
                   </div>
                 </div>
               </div>
-              <input type="hidden" name="course" value="{{ $chapter_data->course_id }}">
-              <input type="hidden" name="topics" value="{{ $chapter_data->topic_id }}">
-              <input type="hidden" name="chapter" value="{{ $chapter_data->st_id }}">
-              <!-- <div class="col-md-4">
+              
+              
+              
+              <div class="col-md-4">
                 <div class="form-group">
-                  <label>Select Course</label>
+                  <label>Course</label>
                   <div class="input-group">
                     <?php
-                      $course = DB::table("courses")->get();
+                      $course = DB::table("courses")->where("course_id",$chapter_data->course_id)->first();
                     ?>
-                    <select class="form-control" name="course" id="course-dropdown">
-                      <option value="">Select Course</option>
-                      @foreach($course as $cors)
-                      <option value="{{ $cors->course_id }}">{{ $cors->title }}</option>
-                      @endforeach
-                      
-                    </select>
+                    <input type="text" class="form-control" name="course" value="{{ $course->title }}" readonly="">
                     
                   </div>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="form-group">
-                  <label>Select Topics</label>
+                  <label>Topics</label>
                   <div class="input-group">
                     <?php
-                      $topics = DB::table("topics")->get();
+                      $topics = DB::table("topics")->where("topic_id",$chapter_data->topic_id)->first();
                     ?>
-                    <select class="form-control" name="topics" id="topic-dropdown">
-                      <option value="">Select Topics</option>
-                      
-                      
-                    </select>
+                    <input type="text" class="form-control" name="topics" value="{{ $topics->title }}" readonly="">
                     
                   </div>
                 </div>
@@ -765,21 +757,17 @@ $(function() {
 
               <div class="col-md-4 chapter-dropdown">
                 <div class="form-group">
-                  <label>Select Chapter</label>
+                  <label>Chapter</label>
                   <div class="input-group">
                     <?php
-                      $topics = DB::table("topics")->get();
+                      $chapter = DB::table("subtopics")->where("st_id",$chapter_data->st_id)->first();
                     ?>
-                    <select class="form-control" name="chapter" id="subtopic-dropdown">
-                      <option value="">Select Topics</option>
-                      
-                      
-                    </select>
+                    <input type="text" class="form-control" name="chapter" value="{{ $chapter->title }}" readonly="">
                     
                   </div>
                   
                 </div>
-              </div> -->
+              </div>
               
               <div class="col-md-12">
                 <div class="form-group">
@@ -802,6 +790,7 @@ $(function() {
                       $i = 1;
                     ?>
                     @foreach($options as $op)
+                    <input type="hidden" name="correct_answer_check[]" value="{{ $op->correct_answer }}" />
                     <input type="checkbox" name="correct_answer_check[]" class="check" value="incorrect" @if($op->correct_answer == "correct") checked @endif> Correct Answer<br>
                     <textarea name="options[]" class="materialize-textarea options_textarea" id="options-{{ $i }}" col="10">{!! $op->Options !!}</textarea><br>
                     <button type="button" class="btn btn-primary" id="myBtn_options">Preview Latex</button><br>

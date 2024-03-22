@@ -112,12 +112,6 @@
                 <label>Type<span class="mandatory" style="color:red"> *</span></label>
                 <div class="form-group">
                   
-                  <!-- <div class="custom-control custom-checkbox">
-                    <input class="" type="checkbox" id="customCheckbox1" checked="" value="Theory">
-                    <label for="customCheckbox1" class="custom-control-label">Theory</label>
-                    <input class="" type="checkbox" id="customCheckbox2" checked="" value="Quiz">
-                    <label for="customCheckbox2" class="custom-control-label">Quiz</label>
-                  </div> -->
                   <div class="icheck-primary d-inline">
                     <input type="radio" name="type" id="radioPrimary1" value="Theory" @if($id>0) @if($subtopic_detail[0]->type == 'Theory')checked @endif @endif>
                     <label for="radioPrimary1">
@@ -128,6 +122,26 @@
                     <input type="radio" name="type" id="radioPrimary2" value="Quiz" @if($id>0)@if($subtopic_detail[0]->type == 'Quiz')checked @endif @endif>
                     <label for="radioPrimary2">
                       Quiz
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 quiz_timer" @if($id == 0)style="display: none;"@endif>
+                <label>Timer for quiz<span class="mandatory" style="color:red"> *</span></label>
+                <div class="form-group">
+                  
+                  
+
+                  <div class="icheck-primary d-inline">
+                    <input type="radio" name="timer_type" id="radioPrimary3" value="Timed" @if($id>0) @if($subtopic_detail[0]->timer == 'Timed')checked @endif @endif>
+                    <label for="radioPrimary3">
+                      Timed
+                    </label>
+                  </div>
+                  <div class="icheck-primary d-inline">
+                    <input type="radio" name="timer_type" id="radioPrimary4" value="Not Timed" @if($id>0)@if($subtopic_detail[0]->timer == 'Not Timed')checked @endif @endif>
+                    <label for="radioPrimary4">
+                      Not Timed
                     </label>
                   </div>
                 </div>
@@ -232,6 +246,18 @@ window.addEventListener('load', function() {
         }
     });
 });
+
+$("#radioPrimary1").click(function(){
+  if ($("#radioPrimary1").prop("checked")) {
+   $(".quiz_timer").hide();
+  }
+});
+$("#radioPrimary2").click(function(){
+  if ($("#radioPrimary2").prop("checked")) {
+   $(".quiz_timer").show();
+  }
+});
+
 </script>
 @stop
 

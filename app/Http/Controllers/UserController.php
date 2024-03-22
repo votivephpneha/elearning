@@ -100,6 +100,7 @@ class UserController extends Controller
         $data['total_time'] = $mins1;
 
         $data['course_title'] = DB::table("courses")->where("course_id",$course_id)->first();
+        $data['subtopic_data'] = DB::table("subtopics")->where("st_id",$st_id)->first();
 
     	return view("Front.start-quiz")->with($data);
     }
@@ -116,6 +117,7 @@ class UserController extends Controller
         $data['st_id'] = base64_decode($request->st_id);
         $data['timer'] = Session::get("timer");
         $data['quiz'] = QuestionBank::where("course_id",$course_id)->where("topic_id",$topic_id)->where("chapter_id",$st_id)->orderBy('ordering_id', 'ASC')->groupBy('q_id')->get();
+        $data['subtopic_data'] = DB::table("subtopics")->where("st_id",$st_id)->first();
         // echo "<pre>";
         // print_r($data['quiz']);die;
     	return view("Front.quiz")->with($data);

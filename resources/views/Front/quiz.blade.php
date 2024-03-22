@@ -167,6 +167,9 @@
     $(".qustion-box-one-"+i).show();
   }
 
+  <?php
+    if($subtopic_data->timer != "Not Timed"){
+      ?>
   var timer2 = "<?php echo $timer; ?>";
   console.log("timer2",timer2);
   var interval = setInterval(function() {
@@ -201,6 +204,9 @@
       window.location.href = "{{ url('/user/session_analysis') }}/{{ $course_id }}/{{ $topic_id }}/{{ $st_id }}";
     }
   }, 1000);
+   <?php
+    }
+  ?>
 </script>
 @endsection
 
@@ -212,7 +218,9 @@
     <div class="col-md-11 m-auto ">
       <div class="d-flex justify-content-between align-content-center func-tn">
         <h5 class="funt-far"> Functions</h5>
+        @if($subtopic_data->timer != "Not Timed")
         <p class="m-0 fiv-con"><i class='bx bx-time-five'></i><span class="countdown"></span></p>
+        @endif
         <input type="hidden" name="timer" class="timer" value="">
     </div>
         <?php
