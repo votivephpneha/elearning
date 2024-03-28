@@ -92,7 +92,9 @@
 
     if(total_div == (i+1)){
       $(".next-btn-"+(i+1)).removeAttr("onclick");
+      $(".submit-btn").attr("onclick","submit_quiz1()");
     }
+
     
     
 
@@ -305,8 +307,12 @@
         <input type="hidden" name="ans_time" class="ans_time-{{ $i }}" value="">
         <div class="question_marks_title">
         <h6 class="tp-q">Question {{ $i }}</h6>
-        
-          <span class="question_marks question_marks-{{ $i }}">[{{ $qu->marks }} mark]</span>
+          @if($qu->marks <= 1)
+            <span class="question_marks question_marks-{{ $i }}">[{{ $qu->marks }} mark]</span>
+          @else
+            <span class="question_marks question_marks-{{ $i }}">[{{ $qu->marks }} marks]</span>
+          @endif
+          
         </div>  
         <span class="question_title question_title-{{ $i }}">{!! $qu->title !!}</span>
         
@@ -373,7 +379,7 @@
 
           </div>
 
-           <div class="col-md-3 p-0">
+           <div class="col-md-3">
            <div class="elepsed-time">
             <div>
              <div class="watch-box">
@@ -448,7 +454,7 @@
                <a href="#" class="not-atempt">10</a> -->
                
 </div>
-<center><a href="#" class="submit-btn" onclick="submit_quiz1()"> Submit</a></center>
+<center><a href="#" class="submit-btn"> Submit</a></center>
 
          </div>
 </div>

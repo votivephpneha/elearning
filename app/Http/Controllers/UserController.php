@@ -14,6 +14,7 @@ use Response;
 use App\Models\Courses;
 use App\Models\Topics;
 use App\Models\Subtopics;
+use App\Models\Exambuilder;
 use Hash;
 use Session;
 use DB;
@@ -106,6 +107,65 @@ class UserController extends Controller
         $data['subtopic_data'] = DB::table("subtopics")->where("st_id",$st_id)->first();
 
     	return view("Front.start-quiz")->with($data);
+    }
+
+    public function start_quiz_exam(Request $request){
+        
+        $reference_id = base64_decode($request->reference_id);
+
+        $exam_data = DB::table("exam_builder")->where("reference_id",$reference_id)->first();
+
+        $get_exam_data = $exam_data->topics_id;
+
+        $topic_ids = explode(",",$get_exam_data);
+
+        $question_array = array();
+        $i = 0;
+        foreach($topic_ids as $topic_id){
+
+            $question_data = DB::table("question_bank")->where("course_id",$exam_data->course_id)->where("topic_id",$topic_id)->where("difficulty_level",$exam_data->difficulty_level)->inRandomOrder()->get();
+            if(!empty($question_data[$i])){
+            $question_array = array_merge((array)$question_data[$i]);
+            }
+            $i++;
+            
+        }
+        print_r($question_array);
+        die;
+        $new_array = array();
+        
+        foreach($question_array as $q_array){
+            if(!empty($q_array)){
+                
+                $new_array = array($new_array,(array)$q_array);
+                
+            }
+        }
+        print_r($new_array);
+        die;
+        //echo count($question_array[1]);
+        $question_count = 0;
+        $question_time = 0;
+        $i = 0;
+        foreach($question_array as $q_array){
+            if(!empty($q_array[$i])){
+                $question_count = $question_count + count($q_array);
+
+                foreach($q_array as $q_arr){
+                    $question_time = $question_time + $q_arr->time_length;
+                }
+                
+                //echo count($q_array)."<br>";
+                $i++;
+            }
+        }
+        echo $question_time/3600;
+        // echo "<pre>";
+        // print_r($question_array[0]);
+        $data['course_title'] = DB::table("courses")->where("course_id",$exam_data->course_id)->first();
+        die;
+        return view("Front.start-quiz")->with($data);
+
     }
 
     public function quiz(Request $request){
@@ -272,7 +332,30 @@ class UserController extends Controller
     public function exam_builder_view(Request $request){
         $course_id = base64_decode($request->course_id);
         $data['topic_data'] = DB::table("topics")->where("course_id",$course_id)->orderBy('ordering_id', 'ASC')->get();
+        $data['course_id'] = $course_id;
         return view("Front.exam_builder_view")->with($data);
+    }
+
+    public function submit_exam_builder(Request $request){
+        $course_id = $request->course_id;
+        $topics = implode(",",json_decode($request->topics));
+        $question_type = $request->question_type;
+        $difficulty_level = $request->difficulty_level;
+        $session_length = $request->session_length;
+        $reference_id = "exam-".rand(10000,99999);
+
+        $exambuilder = new Exambuilder();
+        $exambuilder->course_id = $course_id;
+        $exambuilder->topics_id = $topics;
+        $exambuilder->question_type = $question_type;
+        $exambuilder->difficulty_level = $difficulty_level;
+        $exambuilder->session_length = $session_length;
+        $exambuilder->reference_id = $reference_id;
+        $exambuilder->quiz_type = "exam";
+        $exambuilder->save();
+        
+        return base64_encode($reference_id);
+        
     }
 
     public function user_status(){

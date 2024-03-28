@@ -13,12 +13,14 @@
        <?php
           $user = Auth::guard("customer")->user();
           //echo $user->name;die;
-          $user_name = explode(" ",$user->name);
-          //print_r($user);die;
-          if(count($user_name)>1){
-            echo strtoupper($user_name[0][0])."".strtoupper($user_name[1][0]);
-          }else{
-            echo strtoupper($user_name[0][0]);
+          if($user){
+            $user_name = explode(" ",$user->name);
+            //print_r($user);die;
+            if(count($user_name)>1){
+              echo strtoupper($user_name[0][0])."".strtoupper($user_name[1][0]);
+            }else{
+              echo strtoupper($user_name[0][0]);
+            }
           }
           
        ?>
@@ -27,7 +29,9 @@
      <?php
         $user = Auth::guard("customer")->user();
      ?>
-   <p>{{ $user->name }} <br><small>{{ $user->email }}</small></p> 
+     @if($user)
+   <p>{{ $user->name }} <br><small>{{ $user->email }}</small></p>
+   @endif 
     </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item" href="{{ url('/user/settings') }}">Profile</a></li>

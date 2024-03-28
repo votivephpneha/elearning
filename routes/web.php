@@ -44,7 +44,8 @@ Route::group(['prefix' => 'user', 'middleware' => 'user_auth:customer'], functio
 	Route::get('/course_view/{id}', [UserController::class, 'course_view1'])->name("course_view");
 	Route::get('/course_views/{id}', [UserController::class, 'course_view1'])->name("course_view1");
 	Route::get('/theory/{id}', [UserController::class, 'theory'])->name("theory");
-	Route::get('/start_quiz/{course_id}/{topic_id}/{st_id}', [UserController::class, 'start_quiz'])->name("start_quiz");
+	Route::get('/start_quiz/{course_id}/{topic_id}/{st_id}/{reference_id?}', [UserController::class, 'start_quiz'])->name("start_quiz");
+	Route::get('/start_quiz/{reference_id}', [UserController::class, 'start_quiz_exam'])->name("start_quiz_exam");
 	Route::get('/quiz/{course_id}/{topic_id}/{st_id}', [UserController::class, 'quiz'])->name("quiz");
 	Route::post('/submit_quiz', [UserController::class, 'submit_quiz'])->name("submit_quiz");
 	Route::post('/submit_question_answer', [UserController::class, 'submit_question_answer'])->name("submit_question_answer");
@@ -52,6 +53,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'user_auth:customer'], functio
 	Route::get('/session_analysis/{course_id}/{topic_id}/{st_id}', [UserController::class, 'session_analysis'])->name("session_analysis");
 	Route::get('/exam_builder', [UserController::class, 'exam_builder'])->name("exam_builder");
 	Route::get('/exam_builder_view/{course_id}', [UserController::class, 'exam_builder_view'])->name("exam_builder_view");
+	Route::post('/submit_exam_builder', [UserController::class, 'submit_exam_builder'])->name("submit_exam_builder");
 	Route::get('/user_status', [UserController::class, 'user_status'])->name("user_status");
 	Route::get('/settings', [UserController::class, 'settings'])->name("settings");
 	Route::get('/change_password', [HomeController::class, 'change_password'])->name("change_password");

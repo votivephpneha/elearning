@@ -41,12 +41,20 @@
   var correct_answer = $(".correct_answer").val();
   var correct_ans = correct_answer/"<?php echo $session_analysis1->total_questions; ?>";
   console.log("correct_answer",correct_ans.toFixed(2));
-  $(".correct_answer_session").html(correct_ans.toFixed(2)+"%");
+  $(".correct_answer_session").html(correct_ans.toFixed(2)*100+"%");
+  // $(".label_incorrect").show();
+  // $(".label_incorrect").siblings().remove();
+  var questions_length = $(".attempt-quesa").length;
+  for(var i = 1;i<=questions_length;i++){
+    if ($('.label_correct-'+i).length){
+        $(".label_incorrect-"+i).remove();
+    }
+  }
 </script>
 @endsection
 
 @section('content')
-	<div class="col-md-12">
+  <div class="col-md-12">
    <div class="class-box-se" style="background-color: inherit;">
     <h3 class="setion-ana">Session Analysis </h3>
 
@@ -170,30 +178,13 @@
 
 
 
-<div class="col-md-12 mt-4">
+<!-- <div class="col-md-12 mt-4">
 <div class="recomend-topic">
 <h5 class="pb-2 pt-2"> Recommended topics to study</h5>
 
 <div class="topic-bar">
 
-<!-- <div class="chepter-box">
-  <a href="#">
-  <div class="box1 bx1-c">
-<h2><img src="{{ url('/public') }}/assets/img/folder-open.png"> Functions </h2>
 
-<p class="m-0"><i class="bx bx-chevron-right"></i> </p>
-</div>
-</a>
-</div> -->
-<!-- <div class="chepter-box">
-  <a href="#">
-  <div class="box1 bx2-c">
-<h2><img src="{{ url('/public') }}/assets/img/folder-openred.png"> Functions </h2>
-
-<p class="m-0"><i class="bx bx-chevron-right"></i> </p>
-</div>
-</a>
-</div> -->
 <div class="chepter-box">
   <a href="#">
   <div class="box1 bx3-c">
@@ -227,7 +218,7 @@
 
 
 </div>
-</div>
+</div> -->
 <?php
   $i = 1;
   $j = 1;
@@ -250,13 +241,16 @@
 <h3>Question {{ $i }} - <span>{!! $qu->questions !!}</span> </h3>
 
 <div class="color-bx"> <label class="label_one"> Average Time: {{ $qu->time_spent_seconds }} seconds</label>
+<label class="label_two label_incorrect-{{ $i }}">Incorrect Answer</label>  
 @foreach($options as $op)
   @if($op->correct_answer == "correct" && $op->student_answer == $op->option_id)
-     <label class="label_two"> 100% got it Correct</label> 
+     <label class="label_two label_correct-{{ $i }}"> 100% got it Correct</label> 
      <?php
       $correct_answer[$j] = "correct";
       $j++;
      ?> 
+  @else
+
   @endif
   
 @endforeach
