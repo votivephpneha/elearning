@@ -38,7 +38,7 @@
 </div>
 
 <div class="btm-btn">
-<a href="<?php if($i == 1){ ?>{{ url('/user/exam_builder_view') }}<?php }else{ echo "#"; } ?>">View</a> <p>23,350+ Enrolled </p>
+<a href="{{ url('/user/exam_builder_view') }}/{{ base64_encode($c_data->course_id) }}">View</a> <p>23,350+ Enrolled </p>
   </div>
 </div>
 </div>

@@ -48,7 +48,7 @@
           <div class="course-ilsit chapter_list">
             <?php
 
-              $chapter = DB::table("subtopics")->where("topic_id",$topic->topic_id)->get();
+              $chapter = DB::table("subtopics")->where("topic_id",$topic->topic_id)->orderBy("ordering_id","ASC")->get();
 
               //print_r($chapter);
             ?>

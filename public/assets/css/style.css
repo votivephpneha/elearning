@@ -54,6 +54,17 @@ section {
     width: 100%;
 }
 
+.question_marks_title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+/*.question_marks_title span{
+  font-weight: 600;
+}*/
+
+
+
 .login-screen h3 {
     padding-bottom: 17px;
 }

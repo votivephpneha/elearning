@@ -146,6 +146,15 @@
                   </div>
                 </div>
               </div>
+              <div class="col-md-6 time_for_quiz" @if($id == 0)style="display:none;@endif">
+                <div class="form-group">
+                  <label>Time for quiz<span class="mandatory" style="color:red"> *</span></label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" name="quiz_time" value="@if($id>0){{trim($subtopic_detail[0]->quiz_time)}}@endif">
+                  </div>
+                </div>
+                
+              </div>
               </div>
               
               
@@ -250,11 +259,23 @@ window.addEventListener('load', function() {
 $("#radioPrimary1").click(function(){
   if ($("#radioPrimary1").prop("checked")) {
    $(".quiz_timer").hide();
+   $(".time_for_quiz").hide();
   }
 });
 $("#radioPrimary2").click(function(){
   if ($("#radioPrimary2").prop("checked")) {
    $(".quiz_timer").show();
+  }
+});
+
+$("#radioPrimary3").click(function(){
+  if ($("#radioPrimary3").prop("checked")) {
+   $(".time_for_quiz").show();
+  }
+});
+$("#radioPrimary4").click(function(){
+  if ($("#radioPrimary4").prop("checked")) {
+   $(".time_for_quiz").hide();
   }
 });
 

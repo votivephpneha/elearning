@@ -304,6 +304,7 @@ class TopicController extends Controller
             $subtopics->status = "1";
             $subtopics->type = $type;
             $subtopics->timer = $timer;
+            $subtopics->quiz_time = $request->quiz_time;
             $subtopics->save();
             $st_id = $subtopics->st_id;
             Session::flash('message', 'Chapter Inserted Sucessfully!');
@@ -334,7 +335,8 @@ class TopicController extends Controller
                     'slug'=>  $slug,
                     'type'=>  $request->type,
                     'timer'=>  $timer,
-                    'course_id'=> trim($request->course_id),
+                    'timer'=>  $timer,
+                    'quiz_time'=> $request->quiz_time,
                     'topic_id'=> trim($request->topic_id),
 
                 ]);

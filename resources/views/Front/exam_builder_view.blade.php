@@ -13,100 +13,21 @@
             <p class="m-0 p-0"> Tick the Boxes to choose topics</p></div>
 
    <div class="tick-box">
+    @foreach($topic_data as $t_data)
+    <?php
+      $topic_questions = DB::table("question_bank")->where("topic_id",$t_data->topic_id)->get();
+    ?>
    <div class="tick-radio">
     <div>
     <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
-    <label for="vehicle1">  Differentiation (Year 11)</label>
+    <label for="vehicle1">{{ $t_data->title }}</label>
   </div>
-  <small> 200 Questions</small>
+  <small> {{ count($topic_questions) }} Questions</small>
 
    </div>
+   @endforeach
 
-      <div class="tick-radio">
-    <div>
-    <input type="checkbox" id="vehicle6" name="vehicle1" value="Bike">
-    <label for="vehicle6">  Differentiation (Year 11)</label>
-  </div>
-  <small> 125 Questions</small>
-
-   </div>
-      <div class="tick-radio">
-    <div>
-    <input type="checkbox" id="vehicle5" name="vehicle1" value="Bike">
-    <label for="vehicle5">  Differentiation (Year 11)</label>
-  </div>
-  <small> 236 Questions</small>
-
-   </div>
-
-    <div class="tick-radio">
-    <div>
-    <input type="checkbox" id="vehicle4" name="vehicle1" value="Bike">
-    <label for="vehicle4">  Differentiation (Year 11)</label>
-  </div>
-  <small> 200 Questions</small>
-
-   </div>
-
-      <div class="tick-radio">
-    <div>
-    <input type="checkbox" id="vehicle3" name="vehicle1" value="Bike">
-    <label for="vehicle3">  Differentiation (Year 11)</label>
-  </div>
-  <small> 125 Questions</small>
-
-   </div>
-      <div class="tick-radio">
-    <div>
-    <input type="checkbox" id="vehicle2" name="vehicle2" value="Bike">
-    <label for="vehicle2">  Differentiation (Year 11)</label>
-  </div>
-  <small> 236 Questions</small>
-
-   </div>
-
-    <div class="tick-radio">
-    <div>
-    <input type="checkbox" id="vehicle6" name="vehicle1" value="Bike">
-    <label for="vehicle6">  Differentiation (Year 11)</label>
-  </div>
-  <small> 125 Questions</small>
-
-   </div>
-      <div class="tick-radio">
-    <div>
-    <input type="checkbox" id="vehicle5" name="vehicle1" value="Bike">
-    <label for="vehicle5">  Differentiation (Year 11)</label>
-  </div>
-  <small> 236 Questions</small>
-
-   </div>
-
-    <div class="tick-radio">
-    <div>
-    <input type="checkbox" id="vehicle4" name="vehicle1" value="Bike">
-    <label for="vehicle4">  Differentiation (Year 11)</label>
-  </div>
-  <small> 200 Questions</small>
-
-   </div>
-
-      <div class="tick-radio">
-    <div>
-    <input type="checkbox" id="vehicle3" name="vehicle1" value="Bike">
-    <label for="vehicle3">  Differentiation (Year 11)</label>
-  </div>
-  <small> 125 Questions</small>
-
-   </div>
-      <div class="tick-radio">
-    <div>
-    <input type="checkbox" id="vehicle2" name="vehicle2" value="Bike">
-    <label for="vehicle2">  Differentiation (Year 11)</label>
-  </div>
-  <small> 236 Questions</small>
-
-   </div>
+      
 
       </div>
 

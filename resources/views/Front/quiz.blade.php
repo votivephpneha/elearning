@@ -13,6 +13,13 @@
   var quiz = [];
   var session_quiz_array1 = JSON.stringify(quiz);
   sessionStorage.setItem("quiz_json", session_quiz_array1);
+  var timer = $(".ans_time-1");
+  var seconds = 0;
+
+  var q_timer = setInterval(function() {
+    seconds++;
+    timer.val(seconds);
+  }, 1000);
   function next_btn(i,q_id){
     //alert(i);
     var total_div = $('.qustion-box-one').length;
@@ -39,6 +46,12 @@
       var quiz1 = JSON.stringify(session_quiz_array1);
       sessionStorage.setItem("quiz_json", quiz1);
       
+    }else{
+      var ans_time = $(".ans_time-"+i).val();
+      if(ans_time <= 15){
+        $(".pallate-color-"+i).removeClass("not-atempt");
+        $(".pallate-color-"+i).addClass("skiped");
+      }
     }
 
     //alert(q_id);
@@ -49,10 +62,12 @@
     var active_div = $('.qust-no .active-q').length;
     var total_questions = $(".pallate").length;
     var total_time = $(".timer").val();
+    var ans_time = $(".ans_time-"+i).val();
+    //alert(ans_time);
     $.ajax({
       type: "post",
       url: "{{ url('/user/submit_question_answer') }}",
-      data: {"q_id":q_id,"answer_val1":answer_val1,"reference_id":'{{ $reference_id }}',"attempted_questions":active_div,"total_questions":total_questions,"course_id":course_id,"topic_id":topic_id,"subtopic_id":subtopic_id,"total_time":total_time,"_token":"{{ csrf_token() }}"},
+      data: {"q_id":q_id,"answer_val1":answer_val1,"reference_id":'{{ $reference_id }}',"attempted_questions":active_div,"total_questions":total_questions,"course_id":course_id,"topic_id":topic_id,"subtopic_id":subtopic_id,"total_time":total_time,"ans_time":ans_time,"_token":"{{ csrf_token() }}"},
       cache: false,
       success: function(data){
          // if(data == 1){
@@ -60,9 +75,24 @@
          // }
       }
     });
-    
-    
 
+    
+    
+    //clearInterval(q_timer);
+    //alert(".ans_time-"+(i+1));
+    var timer1 = $(".ans_time-"+(i+1));
+    var seconds1 = 0;
+
+    var q_timer1 = setInterval(function() {
+      seconds1++;
+      timer1.val(seconds1);
+    }, 1000);
+
+    //clearInterval(q_timer1);
+
+    if(total_div == (i+1)){
+      $(".next-btn-"+(i+1)).removeAttr("onclick");
+    }
     
     
 
@@ -129,15 +159,25 @@
     var total_time = $(".timer").val();
     var timer2 = "<?php echo $timer; ?>";
     var time_spend = timer2-total_time;
-    var time_spent = time_spend.toFixed(2);
+    
+    var timer_checked = "<?php echo $subtopic_data->timer; ?>";
+
+    if(timer_checked == "Timed"){
+      var time_spent = time_spend.toFixed(2);
+    }else{
+      var minutes = $("#minutes").text();
+      var seconds = $("#seconds").text();
+      var time_spent = minutes+":"+seconds;
+    }
     //alert(timer2-total_time);
     var course_id = "<?php echo $course_id; ?>";
     var topic_id = "<?php echo $topic_id; ?>";
     var subtopic_id = "<?php echo $st_id; ?>";
+    var ans_time = $(".ans_time-"+total_div).val();
     $.ajax({
       type: "post",
       url: "{{ url('/user/submit_quiz') }}",
-      data: {"q_id":q_id,"answer_val1":answer_val1,"attempted_questions":active_div,"total_questions":total_questions,"course_id":course_id,"topic_id":topic_id,"subtopic_id":subtopic_id,"total_time":time_spent,"_token":"{{ csrf_token() }}"},
+      data: {"q_id":q_id,"answer_val1":answer_val1,"attempted_questions":active_div,"total_questions":total_questions,"course_id":course_id,"topic_id":topic_id,"subtopic_id":subtopic_id,"total_time":time_spent,"ans_time":ans_time,"_token":"{{ csrf_token() }}"},
       cache: false,
       success: function(data){
          
@@ -151,6 +191,7 @@
     //alert(i);
     if($("input:radio[name='question_options-"+i+"']").is(":checked")) {
       $(".pallate-color-"+i).removeClass("not-atempt");
+      $(".pallate-color-"+i).removeClass("skiped");
       $(".pallate-color-"+i).addClass("active-q");
       var active_div = $('.qust-no .active-q').length;
       var total_questions = $(".pallate").length;
@@ -201,12 +242,36 @@
         
       }
       submit_quiz1();
-      window.location.href = "{{ url('/user/session_analysis') }}/{{ $course_id }}/{{ $topic_id }}/{{ $st_id }}";
+      //window.location.href = "{{ url('/user/session_analysis') }}/{{ $course_id }}/{{ $topic_id }}/{{ $st_id }}";
     }
   }, 1000);
    <?php
+    }else{
+      ?>
+        var minutesLabel = document.getElementById("minutes");
+        var secondsLabel = document.getElementById("seconds");
+        var totalSeconds = 0;
+        setInterval(setTime, 1000);
+
+        function setTime() {
+          ++totalSeconds;
+          secondsLabel.innerHTML = pad(totalSeconds % 60);
+          minutesLabel.innerHTML = pad(parseInt(totalSeconds / 60));
+        }
+
+        function pad(val) {
+          var valString = val + "";
+          if (valString.length < 2) {
+            return "0" + valString;
+          } else {
+            return valString;
+          }
+        }
+  
+      <?php
     }
   ?>
+ 
 </script>
 @endsection
 
@@ -220,6 +285,9 @@
         <h5 class="funt-far"> Functions</h5>
         @if($subtopic_data->timer != "Not Timed")
         <p class="m-0 fiv-con"><i class='bx bx-time-five'></i><span class="countdown"></span></p>
+        @else
+          <p class="m-0 fiv-con"><i class='bx bx-time-five'></i><span id="minutes">00</span>:<span id="seconds">00</span></p>
+          
         @endif
         <input type="hidden" name="timer" class="timer" value="">
     </div>
@@ -234,9 +302,16 @@
         <div class="question-main">
       <div class="title mb-3 mt-2">
         <input type="hidden" name="question_id" class="question_id-{{ $i }}" value="{{ $qu->q_id }}">
-
+        <input type="hidden" name="ans_time" class="ans_time-{{ $i }}" value="">
+        <div class="question_marks_title">
         <h6 class="tp-q">Question {{ $i }}</h6>
+        
+          <span class="question_marks question_marks-{{ $i }}">[{{ $qu->marks }} mark]</span>
+        </div>  
         <span class="question_title question_title-{{ $i }}">{!! $qu->title !!}</span>
+        
+        
+        
         <!-- <div class="q-img">
         <img src="https://mathifyhsc.com/dev/public/assets/img/image 318.png">
       </div> -->

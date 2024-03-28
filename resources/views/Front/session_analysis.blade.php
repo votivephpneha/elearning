@@ -1,12 +1,47 @@
 @extends('Front.layouts.layout')
 @section('title', 'Session Analysis')
+
+@section('current_page_css')
+<style type="text/css">
+  .label_one{
+    background-color: #4F8AC7 !important;
+    padding: 5px 12px !important;
+    color: #FFF !important;
+    border-bottom-left-radius: 20px !important;
+    border-top-left-radius: 20px !important;
+    font-size: 14px !important;
+  }
+
+  .label_two{
+    background-color: #67AA6F !important;
+    padding: 5px 12px !important;
+    font-size: 15px !important;
+    color: #FFF !important;
+    margin-left: 2px !important;
+    margin-right: 2px !important;
+    font-size: 14px !important;
+  }
+
+  .label_three{
+    background-color: #D9D9D9 !important;
+    padding: 8px !important;
+    color: #FFF !important;
+    padding: 5px 12px !important;
+    border-bottom-right-radius: 20px !important;
+    border-top-right-radius: 20px !important;
+    font-size: 15px !important;
+    font-size: 14px !important;
+  }
+</style>
+@endsection
+
 @section('current_page_js')
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3.0.0/es5/tex-mml-chtml.js"></script>
 <script type="text/javascript">
   var correct_answer = $(".correct_answer").val();
   var correct_ans = correct_answer/"<?php echo $session_analysis1->total_questions; ?>";
-  console.log("correct_answer",correct_ans);
-  $(".correct_answer_session").html(correct_ans+"%");
+  console.log("correct_answer",correct_ans.toFixed(2));
+  $(".correct_answer_session").html(correct_ans.toFixed(2)+"%");
 </script>
 @endsection
 
@@ -38,10 +73,10 @@
 <div class="tex-bk">
 <h5 class="correct_answer_session">
   <?php
-    $attempted_questions = $session_analysis1->attempted_questions;
-    $total_questions = $session_analysis1->total_questions;
-    $correct_answers = $attempted_questions/$total_questions * 100;
-    echo $correct_answers."%";
+    // $attempted_questions = $session_analysis1->attempted_questions;
+    // $total_questions = $session_analysis1->total_questions;
+    // $correct_answers = $attempted_questions/$total_questions * 100;
+    // echo number_format((float)$correct_answers, 2, '.', '')."%";
   ?>
 </h5>
 <p>Correct</p>
@@ -56,11 +91,34 @@
 </div>
 
 <div class="tex-bk">
-  <?php $avg_mins = $session_analysis1->time_spent_seconds /$session_analysis1->total_questions;
+  <?php 
+  $subtopic_data = DB::table("subtopics")->where("st_id",$st_id)->first();
+
+  if($subtopic_data->quiz_time == "Timed"){
+    $avg_mins = $session_analysis1->time_spent_seconds /$session_analysis1->total_questions;
     $mins1 = $avg_mins/60;
+    ?>
+    <h5> {{ $mins1 }} <small>minutes</small></h5>
+    <p>Avg. Time per Questions</p>
+    <?php
+  }else{
+    $sum = 0;
+
+    foreach($session_analysis as $s_an){
+      
+      $sum = $sum + $s_an->time_spent_seconds;
+    }
+
+    $sum1 = $sum/count($session_analysis);
+    ?>
+
+    <h5><?php echo number_format((float)$sum1, 2, '.', ''); ?> Seconds</small></h5>
+    <p>Avg. Time per Questions</p>
+    <?php
+  }  
+  
   ?>
-<h5> {{ $mins1 }} <small>minutes</small></h5>
-<p>Avg. Time per Questions</p>
+
 </div>
 </div>
 </div>
@@ -72,9 +130,23 @@
 </div>
 
 <div class="tex-bk">
-  <?php $mins = $session_analysis1->time_spent_seconds /60 ?>
-<h5>{{ $mins }} <small>minutes</small></h5>
-<p>Total Time Spent</p>
+  <?php
+  if($subtopic_data->quiz_time == "Timed"){
+    $mins = $session_analysis1->time_spent_seconds /60;
+    ?>
+    <h5>{{ $mins }} <small>minutes</small></h5>
+    <p>Total Time Spent</p>
+    <?php
+  }else{
+    ?>
+    <h5><?php echo $session_analysis1->time_spent_seconds; ?> minutes</small></h5>
+    <p>Total Time Spent</p>
+    <?php
+  }  
+  
+  ?>
+  
+
 </div>
 </div>
 </div>
@@ -177,10 +249,10 @@
     @endif</p>
 <h3>Question {{ $i }} - <span>{!! $qu->questions !!}</span> </h3>
 
-<div class="color-bx"> <label> Average Time: 1.0 seconds</label>
+<div class="color-bx"> <label class="label_one"> Average Time: {{ $qu->time_spent_seconds }} seconds</label>
 @foreach($options as $op)
   @if($op->correct_answer == "correct" && $op->student_answer == $op->option_id)
-     <label> 100% got it Correct</label> 
+     <label class="label_two"> 100% got it Correct</label> 
      <?php
       $correct_answer[$j] = "correct";
       $j++;
@@ -189,9 +261,9 @@
   
 @endforeach
 
-<label> You spent : 5 seconds</label>  </div>
+<label class="label_three"> You spent : {{ $qu->time_spent_seconds }} seconds</label>  </div>
 </div>
-
+<br>
 
 @foreach($options as $op)
     
