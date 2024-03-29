@@ -106,6 +106,10 @@ class UserController extends Controller
         $data['course_title'] = DB::table("courses")->where("course_id",$course_id)->first();
         $data['subtopic_data'] = DB::table("subtopics")->where("st_id",$st_id)->first();
 
+        $reference_id = "quiz-".rand(10000,99999);
+        $data['reference_id'] = $reference_id;
+        Session::put("reference_id",$reference_id);
+
     	return view("Front.start-quiz")->with($data);
     }
 
@@ -120,51 +124,69 @@ class UserController extends Controller
         $topic_ids = explode(",",$get_exam_data);
 
         $question_array = array();
-        $i = 0;
-        foreach($topic_ids as $topic_id){
-
-            $question_data = DB::table("question_bank")->where("course_id",$exam_data->course_id)->where("topic_id",$topic_id)->where("difficulty_level",$exam_data->difficulty_level)->inRandomOrder()->get();
-            if(!empty($question_data[$i])){
-            $question_array = array_merge((array)$question_data[$i]);
-            }
-            $i++;
-            
-        }
-        print_r($question_array);
-        die;
-        $new_array = array();
         
-        foreach($question_array as $q_array){
-            if(!empty($q_array)){
-                
-                $new_array = array($new_array,(array)$q_array);
-                
-            }
-        }
-        print_r($new_array);
-        die;
-        //echo count($question_array[1]);
         $question_count = 0;
         $question_time = 0;
-        $i = 0;
-        foreach($question_array as $q_array){
-            if(!empty($q_array[$i])){
-                $question_count = $question_count + count($q_array);
+        foreach($topic_ids as $topic_id){
 
-                foreach($q_array as $q_arr){
-                    $question_time = $question_time + $q_arr->time_length;
+            $question_data = DB::table("question_bank")->where("course_id",$exam_data->course_id)->where("topic_id",$topic_id)->where("difficulty_level",$exam_data->difficulty_level)->get();
+
+            
+            
+            foreach ($question_data as $q_data) {
+                $question_array[] = $q_data;
+            }
+           
+            
+        }
+        shuffle($question_array);
+        $question_time = 0;
+        $marks = 0;
+        $qu_array = array();
+        foreach ($question_array as $q_array) {
+            //echo $q_array->time_length."<br>";
+            $qu_array[] = $q_array; 
+            $question_time = $question_time + $q_array->time_length;
+            $marks = $marks + $q_array->marks;
+            //echo $question_time."<br>";
+            if($exam_data->session_length == "Short"){
+                if($question_time >= 600 && $question_time <= 1200){
+                    break;
                 }
-                
-                //echo count($q_array)."<br>";
-                $i++;
+            }
+            if($exam_data->session_length == "Medium"){
+                if($question_time >= 1800 && $question_time <= 3600){
+                    break;
+                }
+            }
+            if($exam_data->session_length == "Long"){
+                if($question_time >= 7200 && $question_time <= 10800){
+                    break;
+                }
             }
         }
-        echo $question_time/3600;
+        if($exam_data->session_length == "Short"){
+            $total_time = $question_time/60;
+        }
+        if($exam_data->session_length == "Medium"){
+            $total_time = $question_time/60;
+        }
+        if($exam_data->session_length == "Long"){
+            $total_time = $question_time/3600;
+        }
+        $data['total_time'] = $total_time;
+        $data['marks'] = $marks;
+        $data['question_count'] = count($qu_array);
+        
+        
+        
+        // echo $question_count."<br>";
+        // echo $question_time/60;
         // echo "<pre>";
         // print_r($question_array[0]);
         $data['course_title'] = DB::table("courses")->where("course_id",$exam_data->course_id)->first();
-        die;
-        return view("Front.start-quiz")->with($data);
+        
+        return view("Front.start_quiz_exam")->with($data);
 
     }
 
@@ -172,9 +194,9 @@ class UserController extends Controller
         $course_id = base64_decode($request->course_id);
         $topic_id = base64_decode($request->topic_id);
         $st_id = base64_decode($request->st_id);
-        $reference_id = "quiz-".rand(10000,99999);
-        $data['reference_id'] = $reference_id;
-        Session::put("reference_id",$reference_id);
+        
+        $data['reference_id'] = Session::get("reference_id");
+        
         $data['course_id'] = base64_decode($request->course_id);
         $data['topic_id'] = base64_decode($request->topic_id);
         $data['st_id'] = base64_decode($request->st_id);

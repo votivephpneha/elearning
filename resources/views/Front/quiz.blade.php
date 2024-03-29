@@ -95,11 +95,17 @@
       $(".submit-btn").attr("onclick","submit_quiz1()");
     }
 
-    
+    window.history.replaceState(null, null, "?question="+(i+1));
     
 
     
   }
+  var url_string = window.location.href; 
+  var url = new URL(url_string);
+  var c = url.searchParams.get("question");
+  console.log(c);
+  $(".qustion-box-one").hide();
+  $(".qustion-box-one-"+c).show();
   function prev_btn(i){
     //alert(i);
     if(i == 1){
@@ -109,6 +115,8 @@
       $(".qustion-box-one").hide();
       $(".qustion-box-one-"+next_box).show();
     }
+
+    window.history.replaceState(null, null, "?question="+(i-1));
     
   }
 
@@ -324,12 +332,17 @@
       </div>
       <?php
         $options = DB::table("question_bank")->where("course_id",$qu->course_id)->where("topic_id",$qu->topic_id)->where("chapter_id",$qu->chapter_id)->where("topic_id",$qu->topic_id)->where("q_id",$qu->q_id)->get();
+
+        $options_session = DB::table("question_analysis")->where("reference_id",$reference_id)->where("question_id",$qu->q_id)->first();
+        
+       
+        
       ?>
       <div class="row">
         <div class="col-md-12">
             @foreach($options as $op)
             <label class="customradio"><span class="radiotextsty">{!! $op->Options !!}</span>
-            <input type="radio" name="question_options-{{ $i }}" value="{!! $op->option_id !!}" onclick="answerClick({{ $i }})">
+            <input type="radio" name="question_options-{{ $i }}" value="{!! $op->option_id !!}" onclick="answerClick({{ $i }})" @if(!empty($options_session)) @if($op->option_id == $options_session->student_answer) checked @endif @endif>
             <span class="checkmark"></span>
             </label>
             @endforeach

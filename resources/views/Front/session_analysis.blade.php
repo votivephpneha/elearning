@@ -49,6 +49,9 @@
     if ($('.label_correct-'+i).length){
         $(".label_incorrect-"+i).remove();
     }
+    if ($('.label_attempted-'+i).length){
+        $(".label_incorrect-"+i).remove();
+    }
   }
 </script>
 @endsection
@@ -241,7 +244,10 @@
 <h3>Question {{ $i }} - <span>{!! $qu->questions !!}</span> </h3>
 
 <div class="color-bx"> <label class="label_one"> Average Time: {{ $qu->time_spent_seconds }} seconds</label>
-<label class="label_two label_incorrect-{{ $i }}">Incorrect Answer</label>  
+@if($qu->attempted_status == NULL)
+ <label class="label_two label_attempted-{{ $i }}">0% got it Correct</label>  
+@endif  
+<label class="label_two label_incorrect-{{ $i }}">0% got it Correct</label>  
 @foreach($options as $op)
   @if($op->correct_answer == "correct" && $op->student_answer == $op->option_id)
      <label class="label_two label_correct-{{ $i }}"> 100% got it Correct</label> 
