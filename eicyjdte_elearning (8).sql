@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Mar 28, 2024 at 12:11 AM
--- Server version: 5.7.23-23
--- PHP Version: 8.1.27
+-- Host: 127.0.0.1
+-- Generation Time: Mar 28, 2024 at 02:34 PM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.0.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `eicyjdte_elearning`
+-- Database: `eicyjdte_elearning2`
 --
 
 -- --------------------------------------------------------
@@ -29,21 +29,21 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `admins` (
   `id` int(10) NOT NULL,
-  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `lname` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `city` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `zipcoad` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `country` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `postal_address` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `status` varchar(55) COLLATE utf8_unicode_ci NOT NULL,
-  `mobile_no` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `role` varchar(55) COLLATE utf8_unicode_ci NOT NULL COMMENT 'admin=1,sub-admin=2',
-  `wallet_amount` varchar(55) COLLATE utf8_unicode_ci NOT NULL,
-  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `remember_token` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `lname` varchar(255) NOT NULL,
+  `city` varchar(255) NOT NULL,
+  `zipcoad` varchar(255) NOT NULL,
+  `country` varchar(255) NOT NULL,
+  `postal_address` varchar(255) NOT NULL,
+  `status` varchar(55) NOT NULL,
+  `mobile_no` varchar(255) NOT NULL,
+  `role` varchar(55) NOT NULL COMMENT 'admin=1,sub-admin=2',
+  `wallet_amount` varchar(55) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `remember_token` varchar(100) DEFAULT NULL,
   `show_data` int(11) NOT NULL COMMENT '0-all,1-registered',
-  `otp` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `otp` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -64,16 +64,16 @@ INSERT INTO `admins` (`id`, `name`, `lname`, `city`, `zipcoad`, `country`, `post
 CREATE TABLE `courses` (
   `course_id` int(11) NOT NULL,
   `ordering_id` int(11) UNSIGNED ZEROFILL DEFAULT NULL,
-  `course_img` text,
+  `course_img` text DEFAULT NULL,
   `title` varchar(150) NOT NULL,
   `slug` varchar(250) NOT NULL,
   `description` text NOT NULL,
-  `student_enrolled` text,
+  `student_enrolled` text DEFAULT NULL,
   `status` int(11) NOT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `courses`
@@ -95,17 +95,50 @@ INSERT INTO `courses` (`course_id`, `ordering_id`, `course_img`, `title`, `slug`
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `exam_builder`
+--
+
+CREATE TABLE `exam_builder` (
+  `exam_builder_id` int(11) NOT NULL,
+  `course_id` int(11) DEFAULT NULL,
+  `topics_id` text DEFAULT NULL,
+  `question_type` text DEFAULT NULL,
+  `difficulty_level` text DEFAULT NULL,
+  `session_length` text DEFAULT NULL,
+  `reference_id` text DEFAULT NULL,
+  `quiz_type` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `exam_builder`
+--
+
+INSERT INTO `exam_builder` (`exam_builder_id`, `course_id`, `topics_id`, `question_type`, `difficulty_level`, `session_length`, `reference_id`, `quiz_type`, `created_at`, `updated_at`) VALUES
+(2, 5, '29,7,9,8', 'Any Questions', 'Hard', 'Medium', NULL, NULL, '2024-03-28 01:25:33', '2024-03-28 01:25:33'),
+(3, 5, '15,5,12,8', 'Not attempted', 'Medium', 'Medium', 'exam-86600', NULL, '2024-03-28 01:47:19', '2024-03-28 01:47:19'),
+(4, 5, '15,5,12,8', 'Not attempted', 'Medium', 'Medium', 'exam-80827', NULL, '2024-03-28 01:53:50', '2024-03-28 01:53:50'),
+(5, 5, '29,7,9', 'Not attempted', 'Hard', 'Medium', 'exam-98802', 'exam', '2024-03-28 02:41:43', '2024-03-28 02:41:43'),
+(6, 5, '15,29,14', 'Not attempted', 'Hard', 'Short', 'exam-13000', 'exam', '2024-03-28 03:05:04', '2024-03-28 03:05:04'),
+(7, 5, '29', NULL, NULL, NULL, 'exam-16966', 'exam', '2024-03-28 03:14:59', '2024-03-28 03:14:59'),
+(8, 5, '29,5', 'Any Questions', 'Medium', 'Short', 'exam-79301', 'exam', '2024-03-28 03:29:48', '2024-03-28 03:29:48'),
+(9, 5, '29,7,5,10', 'Any Questions', 'Hard', 'Short', 'exam-47604', 'exam', '2024-03-28 03:35:32', '2024-03-28 03:35:32');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `failed_jobs`
 --
 
 CREATE TABLE `failed_jobs` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `uuid` varchar(255) NOT NULL,
+  `connection` text NOT NULL,
+  `queue` text NOT NULL,
+  `payload` longtext NOT NULL,
+  `exception` longtext NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -116,7 +149,7 @@ CREATE TABLE `failed_jobs` (
 
 CREATE TABLE `migrations` (
   `id` int(10) UNSIGNED NOT NULL,
-  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `migration` varchar(255) NOT NULL,
   `batch` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -137,8 +170,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 --
 
 CREATE TABLE `password_resets` (
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `token` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -150,11 +183,11 @@ CREATE TABLE `password_resets` (
 
 CREATE TABLE `personal_access_tokens` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `tokenable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tokenable_type` varchar(255) NOT NULL,
   `tokenable_id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `token` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `abilities` text COLLATE utf8mb4_unicode_ci,
+  `name` varchar(255) NOT NULL,
+  `token` varchar(64) NOT NULL,
+  `abilities` text DEFAULT NULL,
   `last_used_at` timestamp NULL DEFAULT NULL,
   `expires_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -169,18 +202,18 @@ CREATE TABLE `personal_access_tokens` (
 
 CREATE TABLE `questions` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `code` varchar(255) DEFAULT NULL,
   `question_type_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `question` text COLLATE utf8mb4_unicode_ci,
-  `options` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `correct_answer` text COLLATE utf8mb4_unicode_ci,
-  `default_marks` float DEFAULT '1',
-  `default_time` int(11) DEFAULT '60',
+  `question` text DEFAULT NULL,
+  `options` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `correct_answer` text DEFAULT NULL,
+  `default_marks` float DEFAULT 1,
+  `default_time` int(11) DEFAULT 60,
   `skill_id` bigint(20) UNSIGNED DEFAULT NULL,
   `topic_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `difficulty_level_id` bigint(20) UNSIGNED DEFAULT '1',
-  `preferences` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `is_active` tinyint(1) DEFAULT '1',
+  `difficulty_level_id` bigint(20) UNSIGNED DEFAULT 1,
+  `preferences` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT 1,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -206,16 +239,16 @@ CREATE TABLE `question_analysis` (
   `course_id` int(11) NOT NULL,
   `topic_id` int(11) NOT NULL,
   `chapter_id` int(11) NOT NULL,
-  `questions` text COLLATE utf8_unicode_ci NOT NULL,
+  `questions` text NOT NULL,
   `question_id` int(11) NOT NULL,
   `option_id` int(11) NOT NULL,
-  `options` text COLLATE utf8_unicode_ci NOT NULL,
-  `correct_answer` text COLLATE utf8_unicode_ci NOT NULL,
-  `student_answer` text COLLATE utf8_unicode_ci,
-  `attempted_status` text COLLATE utf8_unicode_ci,
-  `reference_id` text COLLATE utf8_unicode_ci NOT NULL,
-  `time_spent_seconds` text COLLATE utf8_unicode_ci,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `options` text NOT NULL,
+  `correct_answer` text NOT NULL,
+  `student_answer` text DEFAULT NULL,
+  `attempted_status` text DEFAULT NULL,
+  `reference_id` text NOT NULL,
+  `time_spent_seconds` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -1070,20 +1103,20 @@ CREATE TABLE `question_bank` (
   `ordering_id` int(11) UNSIGNED ZEROFILL DEFAULT NULL,
   `q_id` int(11) DEFAULT NULL,
   `option_id` int(11) DEFAULT NULL,
-  `title` text COLLATE utf8_unicode_ci NOT NULL,
-  `quiz_exam` text COLLATE utf8_unicode_ci NOT NULL,
+  `title` text NOT NULL,
+  `quiz_exam` text NOT NULL,
   `course_id` int(11) DEFAULT NULL,
   `topic_id` int(11) NOT NULL,
   `chapter_id` int(11) DEFAULT NULL,
-  `correct_answer_explanation` text COLLATE utf8_unicode_ci NOT NULL,
-  `correct_answer` text COLLATE utf8_unicode_ci,
-  `Options` text COLLATE utf8_unicode_ci NOT NULL,
-  `time_length` text COLLATE utf8_unicode_ci NOT NULL,
-  `difficulty_level` text COLLATE utf8_unicode_ci NOT NULL,
-  `marks` text COLLATE utf8_unicode_ci NOT NULL,
-  `status` int(11) NOT NULL DEFAULT '1',
+  `correct_answer_explanation` text NOT NULL,
+  `correct_answer` text DEFAULT NULL,
+  `Options` text NOT NULL,
+  `time_length` text NOT NULL,
+  `difficulty_level` text NOT NULL,
+  `marks` text NOT NULL,
+  `status` int(11) NOT NULL DEFAULT 1,
   `deleted_at` timestamp NULL DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -1761,16 +1794,16 @@ INSERT INTO `question_bank` (`question_id`, `ordering_id`, `q_id`, `option_id`, 
 
 CREATE TABLE `quiz_sessions` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `code` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` char(36) NOT NULL,
   `quiz_id` bigint(20) UNSIGNED NOT NULL,
   `user_id` bigint(20) UNSIGNED NOT NULL,
   `quiz_schedule_id` bigint(20) UNSIGNED DEFAULT NULL,
   `starts_at` datetime NOT NULL,
   `ends_at` datetime NOT NULL,
-  `total_time_taken` int(11) NOT NULL DEFAULT '0',
-  `current_question` int(11) NOT NULL DEFAULT '0',
-  `results` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'started',
+  `total_time_taken` int(11) NOT NULL DEFAULT 0,
+  `current_question` int(11) NOT NULL DEFAULT 0,
+  `results` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `status` varchar(255) NOT NULL DEFAULT 'started',
   `completed_at` datetime DEFAULT NULL,
   `completed_at_utc` datetime DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -1788,17 +1821,17 @@ CREATE TABLE `quiz_session_questions` (
   `quiz_session_id` bigint(20) UNSIGNED NOT NULL,
   `question_id` bigint(20) UNSIGNED NOT NULL,
   `quiz_section_id` bigint(20) DEFAULT NULL,
-  `original_question` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `options` longtext COLLATE utf8mb4_unicode_ci,
-  `user_answer` longtext COLLATE utf8mb4_unicode_ci,
-  `correct_answer` longtext COLLATE utf8mb4_unicode_ci,
-  `audiorecord` varchar(1000) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'unanswered',
-  `teacher_feedback` longtext COLLATE utf8mb4_unicode_ci,
+  `original_question` text NOT NULL,
+  `options` longtext DEFAULT NULL,
+  `user_answer` longtext DEFAULT NULL,
+  `correct_answer` longtext DEFAULT NULL,
+  `audiorecord` varchar(1000) DEFAULT NULL,
+  `status` varchar(255) NOT NULL DEFAULT 'unanswered',
+  `teacher_feedback` longtext DEFAULT NULL,
   `is_correct` tinyint(1) DEFAULT NULL,
-  `time_taken` int(11) NOT NULL DEFAULT '0',
-  `marks_earned` double(5,2) NOT NULL DEFAULT '0.00',
-  `marks_deducted` double(5,2) NOT NULL DEFAULT '0.00',
+  `time_taken` int(11) NOT NULL DEFAULT 0,
+  `marks_earned` double(5,2) NOT NULL DEFAULT 0.00,
+  `marks_deducted` double(5,2) NOT NULL DEFAULT 0.00,
   `section_order` int(11) DEFAULT NULL,
   `quizqunsorder` bigint(20) DEFAULT NULL,
   `sectionqunsorder` bigint(20) DEFAULT NULL
@@ -1818,10 +1851,10 @@ CREATE TABLE `session_analysis` (
   `subtopic_id` int(11) NOT NULL,
   `total_questions` int(11) NOT NULL,
   `attempted_questions` int(11) NOT NULL,
-  `time_spent_seconds` text COLLATE utf8_unicode_ci,
-  `reference_id` text COLLATE utf8_unicode_ci,
-  `quiz_json` text COLLATE utf8_unicode_ci NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `time_spent_seconds` text DEFAULT NULL,
+  `reference_id` text DEFAULT NULL,
+  `quiz_json` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -1888,9 +1921,9 @@ CREATE TABLE `students` (
   `state` varchar(20) NOT NULL,
   `zip_code` varchar(10) NOT NULL,
   `password` varchar(250) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `students`
@@ -1915,14 +1948,14 @@ CREATE TABLE `subtopics` (
   `slug` varchar(250) NOT NULL,
   `course_id` int(11) NOT NULL,
   `topic_id` int(11) NOT NULL,
-  `status` int(11) NOT NULL DEFAULT '1',
-  `type` text,
-  `timer` text,
-  `quiz_time` text,
+  `status` int(11) NOT NULL DEFAULT 1,
+  `type` text DEFAULT NULL,
+  `timer` text DEFAULT NULL,
+  `quiz_time` text DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `subtopics`
@@ -2074,7 +2107,7 @@ INSERT INTO `subtopics` (`st_id`, `ordering_id`, `title`, `slug`, `course_id`, `
 
 CREATE TABLE `theory` (
   `theory_id` int(11) NOT NULL,
-  `ordering_id` int(11) NOT NULL DEFAULT '0',
+  `ordering_id` int(11) NOT NULL DEFAULT 0,
   `title` varchar(200) DEFAULT NULL,
   `course_id` bigint(11) NOT NULL,
   `topic_id` bigint(11) NOT NULL,
@@ -2082,11 +2115,11 @@ CREATE TABLE `theory` (
   `theory_pdf` varchar(200) NOT NULL,
   `pdf_path` varchar(250) NOT NULL,
   `slug` varchar(250) NOT NULL,
-  `status` bigint(11) NOT NULL DEFAULT '1',
+  `status` bigint(11) NOT NULL DEFAULT 1,
   `deleted_at` timestamp NULL DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `theory`
@@ -2125,11 +2158,11 @@ CREATE TABLE `topics` (
   `title` varchar(200) NOT NULL,
   `slug` varchar(200) NOT NULL,
   `course_id` int(11) NOT NULL,
-  `status` int(11) NOT NULL DEFAULT '1',
+  `status` int(11) NOT NULL DEFAULT 1,
   `deleted_at` timestamp NULL DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `topics`
@@ -2174,17 +2207,17 @@ INSERT INTO `topics` (`topic_id`, `ordering_id`, `title`, `slug`, `course_id`, `
 
 CREATE TABLE `users` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `first_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `last_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `first_name` varchar(255) DEFAULT NULL,
+  `last_name` varchar(255) DEFAULT NULL,
+  `email` varchar(255) NOT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
-  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `temp_password` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `role` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `profile_img` text COLLATE utf8mb4_unicode_ci,
+  `password` varchar(255) NOT NULL,
+  `temp_password` varchar(255) DEFAULT NULL,
+  `role` text NOT NULL,
+  `profile_img` text DEFAULT NULL,
   `status` int(11) DEFAULT NULL,
-  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `remember_token` varchar(100) DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -2223,6 +2256,12 @@ ALTER TABLE `admins`
 --
 ALTER TABLE `courses`
   ADD PRIMARY KEY (`course_id`);
+
+--
+-- Indexes for table `exam_builder`
+--
+ALTER TABLE `exam_builder`
+  ADD PRIMARY KEY (`exam_builder_id`);
 
 --
 -- Indexes for table `failed_jobs`
@@ -2315,6 +2354,12 @@ ALTER TABLE `users`
 --
 ALTER TABLE `courses`
   MODIFY `course_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT for table `exam_builder`
+--
+ALTER TABLE `exam_builder`
+  MODIFY `exam_builder_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
