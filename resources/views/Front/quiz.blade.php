@@ -4,9 +4,12 @@
 @section("current_page_js")
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3.0.0/es5/tex-mml-chtml.js"></script>
 <script type="text/javascript">
+
+
   var total_questions = $(".pallate").length;
-  $(".attempted").html("0/"+total_questions);
-  $(".remaining_questions").html(total_questions);
+  $(".attempted").html($(".active-q").length+"/"+total_questions);
+  var remaining_questions = $(".not-atempt,.skiped").length;
+  $(".remaining_questions").html(remaining_questions);
   
 
 
@@ -92,20 +95,22 @@
 
     if(total_div == (i+1)){
       $(".next-btn-"+(i+1)).removeAttr("onclick");
-      $(".submit-btn").attr("onclick","submit_quiz1()");
+      //$(".submit-btn").attr("onclick","submit_quiz1()");
     }
 
-    window.history.replaceState(null, null, "?question="+(i+1));
     
+    window.history.replaceState(null, null, "?question="+(i+1));
 
     
   }
+
   var url_string = window.location.href; 
   var url = new URL(url_string);
   var c = url.searchParams.get("question");
   console.log(c);
   $(".qustion-box-one").hide();
   $(".qustion-box-one-"+c).show();
+
   function prev_btn(i){
     //alert(i);
     if(i == 1){
@@ -197,7 +202,7 @@
     });
   }
 
-  function answerClick(i){
+  function answerClick(i,q_id){
     //alert(i);
     if($("input:radio[name='question_options-"+i+"']").is(":checked")) {
       $(".pallate-color-"+i).removeClass("not-atempt");
@@ -209,6 +214,7 @@
       var remaining_questions = $('.qust-no .not-atempt').length;
       $(".attempted").html(attempted_div);
       $(".remaining_questions").html(remaining_questions);
+      //next_btn(i,q_id);
     }
 
   }
@@ -223,23 +229,34 @@
       ?>
   var timer2 = "<?php echo $timer; ?>";
   console.log("timer2",timer2);
+  
   var interval = setInterval(function() {
 
-
-    var timer = timer2.split('.');
+    var new_time = getCookie("quiz_time_minutes-"+"<?php echo $st_id; ?>");
+    
+    //console.log("quiz_time_minutes",new_time);
+    if(new_time){
+      var timer = new_time.split('.');
+    }else{
+      var timer = timer2.split('.');
+    }
+    
     //by parsing integer, I avoid all extra string processing
     var minutes = parseInt(timer[0], 10);
     var seconds = parseInt(timer[1], 10);
 
     --seconds;
     minutes = (seconds < 0) ? --minutes : minutes;
+    
+    
+    
     if (minutes < 0) clearInterval(interval);
     seconds = (seconds < 0) ? 59 : seconds;
     seconds = (seconds < 10) ? '0' + seconds : seconds;
     //minutes = (minutes < 10) ?  minutes : minutes;
     $('.countdown').html(minutes + '.' + seconds);
     timer2 = minutes + '.' + seconds;
-    console.log("timer2",timer2);
+    
     $(".timer").val(timer2);
 
     if(timer2 == "0.00"){
@@ -254,19 +271,45 @@
       submit_quiz1();
       //window.location.href = "{{ url('/user/session_analysis') }}/{{ $course_id }}/{{ $topic_id }}/{{ $st_id }}";
     }
+    var now = new Date();
+    var minutes1 = 120;
+    now.setTime(now.getTime() + (minutes1 * 60 * 1000));
+    document.cookie="quiz_time_minutes-"+"<?php echo $st_id; ?>"+"="+minutes+"."+seconds;  
+    document.cookie = "expires=" + now.toUTCString() + ";"
   }, 1000);
    <?php
     }else{
       ?>
         var minutesLabel = document.getElementById("minutes");
         var secondsLabel = document.getElementById("seconds");
-        var totalSeconds = 0;
+        var time_value = getCookie("quiz_time-"+"<?php echo $st_id; ?>");
+        //alert(time_value);
+        
+        
+        if(time_value){
+          
+          var totalSeconds = time_value;
+          
+        }else{
+
+          var totalSeconds = 0;
+        }
+        
+        
         setInterval(setTime, 1000);
 
         function setTime() {
           ++totalSeconds;
           secondsLabel.innerHTML = pad(totalSeconds % 60);
           minutesLabel.innerHTML = pad(parseInt(totalSeconds / 60));
+          var min = $("#minutes").text();
+          var sec = $("#seconds").text();
+          //sessionStorage.setItem("quiz_time", totalSeconds);
+          var now = new Date();
+          var minutes = 120;
+          now.setTime(now.getTime() + (minutes * 60 * 1000));
+          document.cookie="quiz_time-"+"<?php echo $st_id; ?>"+"="+totalSeconds;  
+          document.cookie = "expires=" + now.toUTCString() + ";"
         }
 
         function pad(val) {
@@ -281,6 +324,25 @@
       <?php
     }
   ?>
+  function getCookie(name) {
+    // Split cookie string and get all individual name=value pairs in an array
+    let cookieArr = document.cookie.split(";");
+    
+    // Loop through the array elements
+    for(let i = 0; i < cookieArr.length; i++) {
+        let cookiePair = cookieArr[i].split("=");
+        
+        /* Removing whitespace at the beginning of the cookie name
+        and compare it with the given string */
+        if(name == cookiePair[0].trim()) {
+            // Decode the cookie value and return
+            return decodeURIComponent(cookiePair[1]);
+        }
+    }
+    
+    // Return null if not found
+    return null;
+}
  
 </script>
 @endsection
@@ -334,15 +396,13 @@
         $options = DB::table("question_bank")->where("course_id",$qu->course_id)->where("topic_id",$qu->topic_id)->where("chapter_id",$qu->chapter_id)->where("topic_id",$qu->topic_id)->where("q_id",$qu->q_id)->get();
 
         $options_session = DB::table("question_analysis")->where("reference_id",$reference_id)->where("question_id",$qu->q_id)->first();
-        
-       
-        
+
       ?>
       <div class="row">
         <div class="col-md-12">
             @foreach($options as $op)
             <label class="customradio"><span class="radiotextsty">{!! $op->Options !!}</span>
-            <input type="radio" name="question_options-{{ $i }}" value="{!! $op->option_id !!}" onclick="answerClick({{ $i }})" @if(!empty($options_session)) @if($op->option_id == $options_session->student_answer) checked @endif @endif>
+            <input type="radio" name="question_options-{{ $i }}" value="{!! $op->option_id !!}" onclick="answerClick({{ $i }},{{ $qu->q_id }})" @if(!empty($options_session)) @if($op->option_id == $options_session->student_answer) checked @endif @endif>
             <span class="checkmark"></span>
             </label>
             @endforeach
@@ -421,7 +481,7 @@
 
       ?>
       <h5>{{ $user->name }}</h5>
-      <p> Attempted: <b class="attempted"> 3/16</b></p>
+      <p> Attempted: <b class="attempted"><?php echo count($attempt_count);?></b></p>
        <p> Remaining: <b class="remaining_questions"> 13</b></p>
 
     </div>
@@ -449,7 +509,20 @@
           @foreach($quiz as $qu)
           @if($qu->status == 1 && $qu->deleted_at == NULL)
           @if($qu->quiz_exam == "Quiz" || $qu->quiz_exam == "Both")
-      <a style="cursor: pointer;" class="pallate pallate-color-{{ $i }} not-atempt" onclick="question_pallate({{ $i }})">{{ $i }}</a>
+          <?php
+            $options_session = DB::table("question_analysis")->where("reference_id",$reference_id)->where("question_id",$qu->q_id)->first();
+          ?>
+          @if($options_session)
+          @if($options_session->student_answer)
+            <a style="cursor: pointer;" class="pallate pallate-color-{{ $i }} active-q" onclick="question_pallate({{ $i }})">{{ $i }}</a>
+          @else  
+            @if($options_session->student_answer == NULL)
+              <a style="cursor: pointer;" class="pallate pallate-color-{{ $i }} skiped" onclick="question_pallate({{ $i }})">{{ $i }}</a>
+            @endif
+          @endif
+          @else
+            <a style="cursor: pointer;" class="pallate pallate-color-{{ $i }} not-atempt" onclick="question_pallate({{ $i }})">{{ $i }}</a>
+          @endif
       <?php
       $i++;
     ?>
@@ -467,7 +540,7 @@
                <a href="#" class="not-atempt">10</a> -->
                
 </div>
-<center><a href="#" class="submit-btn"> Submit</a></center>
+<center><a href="#" class="submit-btn" onclick="submit_quiz1()"> Submit</a></center>
 
          </div>
 </div>

@@ -28,7 +28,7 @@
   <link href="{{ url('/public') }}/assets/css/style.css" rel="stylesheet">
   @yield('current_page_css')
   <?php
-  if($_SERVER['REQUEST_URI'] != "/git/e-learning/login" and $_SERVER['REQUEST_URI'] != "/git/e-learning/register" and $_SERVER['REQUEST_URI'] != "/git/e-learning/user/start_quiz"){
+  if($_SERVER['REQUEST_URI'] != "/dev/login" and $_SERVER['REQUEST_URI'] != "/dev/register" and $_SERVER['REQUEST_URI'] != "/dev/user/start_quiz"){
     ?>
     <style type="text/css">
       body{
@@ -39,7 +39,7 @@
   }
 ?>
 <?php
-  if($_SERVER['REQUEST_URI'] == "/git/e-learning/user/start_quiz"){
+  if($_SERVER['REQUEST_URI'] == "/dev/user/start_quiz"){
     ?>
     <style type="text/css">
       body{
@@ -58,16 +58,16 @@
 </style>  
 </head>
 
-<body>
+<body <?php if(strpos($_SERVER['REQUEST_URI'],'quiz')){ ?>onunload="deleteAllCookies()"<?php } ?>>
 
 <!-- End About Section -->
 
 <?php
   
-  if($_SERVER['REQUEST_URI'] != "/git/elearning/" and $_SERVER['REQUEST_URI'] != "/git/elearning/register" and !strpos($_SERVER['REQUEST_URI'],'start_quiz') and !strpos($_SERVER['REQUEST_URI'],'quiz')){
+  if($_SERVER['REQUEST_URI'] != "/dev/" and $_SERVER['REQUEST_URI'] != "/dev/register" and !strpos($_SERVER['REQUEST_URI'],'start_quiz') and !strpos($_SERVER['REQUEST_URI'],'quiz')){
     ?>
     @include('Front.layouts.header')
-    <?php if($_SERVER['REQUEST_URI'] != "/git/elearning/user/user_status" and $_SERVER['REQUEST_URI'] != "/git/elearning/user/settings" and $_SERVER['REQUEST_URI'] != "/git/elearning/user/change_password"){ ?>
+    <?php if($_SERVER['REQUEST_URI'] != "/dev/user/user_status" and $_SERVER['REQUEST_URI'] != "/dev/user/settings" and $_SERVER['REQUEST_URI'] != "/dev/user/change_password"){ ?>
       <div id="main" style="margin-left: 250px;">
     <div class="class-box <?php if(strpos($_SERVER['REQUEST_URI'],'course_view')){ ?>topics<?php } ?>">
     <?php } ?>
@@ -77,10 +77,10 @@
 ?>
 @yield('content')
 <?php
-  if($_SERVER['REQUEST_URI'] != "/git/elearning/" and $_SERVER['REQUEST_URI'] != "/git/elearning/register" and !strpos($_SERVER['REQUEST_URI'],'start_quiz') and !strpos($_SERVER['REQUEST_URI'],'quiz')){
+  if($_SERVER['REQUEST_URI'] != "/dev/" and $_SERVER['REQUEST_URI'] != "/dev/register" and !strpos($_SERVER['REQUEST_URI'],'start_quiz') and !strpos($_SERVER['REQUEST_URI'],'quiz')){
     ?>
     @include('Front.layouts.sidebar')
-    <?php if($_SERVER['REQUEST_URI'] != "/git/elearning/user/user_status"  and $_SERVER['REQUEST_URI'] != "/git/elearning/user/settings" and $_SERVER['REQUEST_URI'] != "/git/elearning/user/change_password"){ ?>
+    <?php if($_SERVER['REQUEST_URI'] != "/dev/user/user_status"  and $_SERVER['REQUEST_URI'] != "/dev/user/settings" and $_SERVER['REQUEST_URI'] != "/dev/user/change_password"){ ?>
     </div>
   </div>
   <?php

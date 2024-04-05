@@ -1,5 +1,15 @@
 @extends('Front.layouts.layout')
 @section('title', 'Start Quiz')
+@section("current_page_js")
+<script type="text/javascript">
+	$(".start-quz").click(function({
+		sessionStorage.setItem("quiz_time_session", "new");
+	}));
+	
+
+console.log("quiz_time",getCookie("quiz_time"));
+</script>	
+@endsection
 
 @section('content')
 	<section class="quiz-man">
@@ -22,7 +32,7 @@ keyboard_backspace
 <p class="alrm-ct">@if($subtopic_data->timer != "Not Timed")<b><i class='bx bx-alarm' style="font-size: 21px;position: relative;top: 2px;"></i> {{ $total_time }} mins <i class='bx bxs-circle' style="font-size: 8px;"></i></b>@else <b><i class='bx bx-alarm' style="font-size: 21px;position: relative;top: 2px;"></i>Not Timed</b> @endif Total Question: <strong>{{ $question_count }}</strong> </p>
 
 </div>
-<a href="{{ url('/user/quiz') }}/{{ $course_id }}/{{ $topic_id }}/{{ $st_id }}?question=1" class="start-quz">Start Quiz </a>
+<a href="{{ url('/user/quiz') }}/{{ $course_id }}/{{ $topic_id }}/{{ $st_id }}?question=1" class="start-quz" target="_blank">Start Quiz </a>
 </div>
           </div>
 

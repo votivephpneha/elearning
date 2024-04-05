@@ -44,13 +44,15 @@ Route::group(['prefix' => 'user', 'middleware' => 'user_auth:customer'], functio
 	Route::get('/course_view/{id}', [UserController::class, 'course_view1'])->name("course_view");
 	Route::get('/course_views/{id}', [UserController::class, 'course_view1'])->name("course_view1");
 	Route::get('/theory/{id}', [UserController::class, 'theory'])->name("theory");
-	Route::get('/start_quiz/{course_id}/{topic_id}/{st_id}/{reference_id?}', [UserController::class, 'start_quiz'])->name("start_quiz");
+	Route::get('/start_quiz/{course_id}/{topic_id}/{st_id}', [UserController::class, 'start_quiz'])->name("start_quiz");
 	Route::get('/start_quiz/{reference_id}', [UserController::class, 'start_quiz_exam'])->name("start_quiz_exam");
 	Route::get('/quiz/{course_id}/{topic_id}/{st_id}', [UserController::class, 'quiz'])->name("quiz");
+	Route::get('/quiz/{reference_id}', [UserController::class, 'quiz'])->name("exam_quiz");
 	Route::post('/submit_quiz', [UserController::class, 'submit_quiz'])->name("submit_quiz");
 	Route::post('/submit_question_answer', [UserController::class, 'submit_question_answer'])->name("submit_question_answer");
 	
 	Route::get('/session_analysis/{course_id}/{topic_id}/{st_id}', [UserController::class, 'session_analysis'])->name("session_analysis");
+	Route::get('/session_analysis_view/{course_id}/{topic_id}/{st_id}', [UserController::class, 'session_analysis_view'])->name("session_analysis");
 	Route::get('/exam_builder', [UserController::class, 'exam_builder'])->name("exam_builder");
 	Route::get('/exam_builder_view/{course_id}', [UserController::class, 'exam_builder_view'])->name("exam_builder_view");
 	Route::post('/submit_exam_builder', [UserController::class, 'submit_exam_builder'])->name("submit_exam_builder");
@@ -65,6 +67,7 @@ Route::get('/admin/add_questions', [AdminquesController1::class, 'index'])->name
 Route::post('/admin/post_questions', [AdminquesController1::class, 'post_questions'])->name('post_questions');
 Route::get('/admin/add_questions_bank/{chapter_id?}', [AdminquesController1::class, 'add_questions_bank'])->name('add_questions_bank');
 Route::post('/admin/post_questions_bank', [AdminquesController1::class, 'post_questions_bank'])->name('post_questions_bank');
+Route::post('question/img', [AdminquesController1::class, 'uploadMedia'])->name('admin.question.uploadMedia');
 Route::post('/admin/fetch-subtopics', [AdminquesController1::class, 'fetch_subtopics'])->name('fetch-subtopics');
 Route::get('/admin/show_questions/{chapter_id}', [AdminquesController1::class, 'show_questions'])->name('show_questions');
 Route::get('/admin', [AuthController::class, 'showLoginForm'])->name('admin.login');

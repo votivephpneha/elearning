@@ -1,5 +1,6 @@
 @extends('admin.layouts.layout')
 
+
 @section('current_page_js')
 <style type="text/css">
   /* The Modal (background) */
@@ -121,7 +122,7 @@
         },
         {
           "name": "insert",
-          "groups": ["insert"]
+          "groups": ['Image', 'Table']
         },
         {
           "name": "styles",
@@ -133,6 +134,14 @@
         }
         
       ],
+      extraAllowedContent: 'h3{clear};h2{line-height};h2 h3{margin-left,margin-top}',
+
+      // Adding drag and drop image upload.
+      
+      
+      filebrowserUploadUrl: "{{ route('admin.question.uploadMedia', ['_token' => csrf_token()]) }}",
+      filebrowserUploadMethod: 'form',
+      removeDialogTabs: 'image:advanced;link:advanced',
       // Remove the redundant buttons from toolbar groups defined 
         //extraPlugins:'mathjax',
            mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML'
@@ -171,6 +180,9 @@
         }
         
       ],
+      filebrowserUploadUrl: "{{ route('admin.question.uploadMedia', ['_token' => csrf_token()]) }}",
+      filebrowserUploadMethod: 'form',
+      removeDialogTabs: 'image:advanced;link:advanced',
       // Remove the redundant buttons from toolbar groups defined 
         //extraPlugins:'mathjax',
            mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML'
@@ -209,6 +221,9 @@
         }
         
       ],
+      filebrowserUploadUrl: "{{ route('admin.question.uploadMedia', ['_token' => csrf_token()]) }}",
+      filebrowserUploadMethod: 'form',
+      removeDialogTabs: 'image:advanced;link:advanced',
       // Remove the redundant buttons from toolbar groups defined 
         //extraPlugins:'mathjax',
            mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML'
@@ -263,6 +278,9 @@
         }
         
       ],
+      filebrowserUploadUrl: "{{ route('admin.question.uploadMedia', ['_token' => csrf_token()]) }}",
+      filebrowserUploadMethod: 'form',
+      removeDialogTabs: 'image:advanced;link:advanced',
       // Remove the redundant buttons from toolbar groups defined 
         //extraPlugins:'mathjax',
            mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML'
@@ -780,30 +798,6 @@ $(function() {
                 </div>
               </div>
               @endif
-              <div class="col-md-12">
-                <div class="form-group">
-                  <label>Correct Answer Explanation</label>
-                  <div class="input-group">
-                    <textarea name="answer_explanation" class="materialize-textarea" id="answer_explanation"></textarea>
-                  </div><br>
-                  <button type="button" class="btn btn-primary" id="myBtn_ans">Preview Latex</button>
-                  <div class="preview_latex_error_ans" style="color:red"></div>
-                </div>
-              </div>
-              <div class="col-md-12">
-                <div class="form-group">
-                  <label>Add Options</label>
-                  <div class="input-group option_answer">
-                    <!-- <input type="hidden" name="correct_answer_check[]" value="incorrect" /> -->
-                    <input type="checkbox" name="correct_answer_check[]" class="check" value="incorrect"> Correct Answer<br>
-                    <textarea name="options[]" class="materialize-textarea" id="options" col="10"></textarea><br>
-                    <button type="button" class="btn btn-primary" id="myBtn_options">Preview Latex</button><br>
-                    <div class="preview_latex_error_options" style="color:red"></div>
-                  </div><br>
-                  
-                  <button style="text-align:center" type="button" class="btn btn-primary" onclick="add_options()">Add options</button>
-                </div>
-              </div>
               <div class="col-md-4">
                 <div class="form-group">
                   <label>Time Length(Seconds)</label>
@@ -837,6 +831,31 @@ $(function() {
                   
                 </div>
               </div>
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label>Correct Answer Explanation</label>
+                  <div class="input-group">
+                    <textarea name="answer_explanation" class="materialize-textarea" id="answer_explanation"></textarea>
+                  </div><br>
+                  <button type="button" class="btn btn-primary" id="myBtn_ans">Preview Latex</button>
+                  <div class="preview_latex_error_ans" style="color:red"></div>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label>Add Options</label>
+                  <div class="input-group option_answer">
+                    <!-- <input type="hidden" name="correct_answer_check[]" value="incorrect" /> -->
+                    <input type="checkbox" name="correct_answer_check[]" class="check" value="incorrect"> Correct Answer<br>
+                    <textarea name="options[]" class="materialize-textarea" id="options" col="10"></textarea><br>
+                    <button type="button" class="btn btn-primary" id="myBtn_options">Preview Latex</button><br>
+                    <div class="preview_latex_error_options" style="color:red"></div>
+                  </div><br>
+                  
+                  <button style="text-align:center" type="button" class="btn btn-primary" onclick="add_options()">Add options</button>
+                </div>
+              </div>
+              
             </div>
             <!-- /.row -->
 

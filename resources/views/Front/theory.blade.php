@@ -1,8 +1,27 @@
 @extends('Front.layouts.layout')
 @section('title', 'Course view')
 
-@section("current_page_js")
+@section('current_page_css')
+<style type="text/css">
+  ::-webkit-scrollbar {
+    display: none;
+}
+</style>
+@endsection
 
+@section("current_page_js")
+<script type="text/javascript">
+document.onmousedown = disableRightclick;
+var message = "Right click not allowed !!";
+document.querySelector('#myFrame').scrolling = "no";
+function disableRightclick(evt){
+    if(evt.button == 2){
+        //alert(message);
+        return false;    
+    }
+}
+document.addEventListener('contextmenu', event => event.preventDefault());
+</script>
 @endsection
 @section('content')
 
@@ -23,7 +42,9 @@ keyboard_backspace
   <p>  Theory - {{ $theory->title }}</p>
 
  <center> 
-         <embed src="{{ url('/public') }}/assets/img/{{ $queries->theory_pdf }}#toolbar=0" width="100%" height="500"> 
+        <!-- <iframe id="fraDisabled" src="{{ url('/public') }}/assets/img/{{ $queries->theory_pdf }}#toolbar=0" width="100%" height="500"/> -->
+          <iframe id="myFrame" src="{{ url('/public') }}/assets/img/{{ $queries->theory_pdf }}#toolbar=0" style="pointer-events: none;" width="100%" height="500" frameborder="0" scrolling="no"></iframe>
+         <!-- <embed id="fraDisabled" src="{{ url('/public') }}/assets/img/{{ $queries->theory_pdf }}#toolbar=0" width="100%" height="500">  -->
         </embed> 
     </center> 
 

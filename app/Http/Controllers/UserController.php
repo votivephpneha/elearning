@@ -116,9 +116,9 @@ class UserController extends Controller
     public function start_quiz_exam(Request $request){
         
         $reference_id = base64_decode($request->reference_id);
-
+        $data['reference_id'] = $request->reference_id;
         $exam_data = DB::table("exam_builder")->where("reference_id",$reference_id)->first();
-
+        Session::put("reference_id", $reference_id);
         $get_exam_data = $exam_data->topics_id;
 
         $topic_ids = explode(",",$get_exam_data);
@@ -134,7 +134,10 @@ class UserController extends Controller
             
             
             foreach ($question_data as $q_data) {
-                $question_array[] = $q_data;
+                if($q_data->quiz_exam == "Exam Builder" || $q_data->quiz_exam == "Both"){
+                    $question_array[] = $q_data;
+                }
+                
             }
            
             
@@ -172,9 +175,13 @@ class UserController extends Controller
             $total_time = $question_time/60;
         }
         if($exam_data->session_length == "Long"){
-            $total_time = $question_time/3600;
+            $total_time = $question_time/60;
         }
+
         $data['total_time'] = $total_time;
+        Session::put("timer", $total_time);
+        Session::put("qu_array", $qu_array);
+        
         $data['marks'] = $marks;
         $data['question_count'] = count($qu_array);
         
@@ -195,18 +202,28 @@ class UserController extends Controller
         $topic_id = base64_decode($request->topic_id);
         $st_id = base64_decode($request->st_id);
         
-        $data['reference_id'] = Session::get("reference_id");
-        
-        $data['course_id'] = base64_decode($request->course_id);
-        $data['topic_id'] = base64_decode($request->topic_id);
-        $data['st_id'] = base64_decode($request->st_id);
-        $data['timer'] = Session::get("timer");
-        $data['quiz'] = QuestionBank::where("course_id",$course_id)->where("topic_id",$topic_id)->where("chapter_id",$st_id)->orderBy('ordering_id', 'ASC')->groupBy('q_id')->get();
-        $data['subtopic_data'] = DB::table("subtopics")->where("st_id",$st_id)->first();
-
-        // echo "<pre>";
-        // print_r($data['quiz']);die;
-    	return view("Front.quiz")->with($data);
+        if($request->course_id && $request->topic_id && $request->st_id){
+            $data['reference_id'] = Session::get("reference_id");
+            
+            $data['course_id'] = base64_decode($request->course_id);
+            $data['topic_id'] = base64_decode($request->topic_id);
+            $data['st_id'] = base64_decode($request->st_id);
+            $data['timer'] = Session::get("timer");
+            $data['quiz'] = QuestionBank::where("course_id",$course_id)->where("topic_id",$topic_id)->where("chapter_id",$st_id)->orderBy('ordering_id', 'ASC')->groupBy('q_id')->get();
+            $data['subtopic_data'] = DB::table("subtopics")->where("st_id",$st_id)->first();
+            $data['attempt_count'] = DB::table("question_analysis")->where("reference_id",$data['reference_id'])->groupBy('question_id')->get();
+            // echo "<pre>";
+            // print_r($data['quiz']);die;
+        	return view("Front.quiz")->with($data);
+        }else{
+            //echo base64_decode($request->reference_id);die;
+            $qu_array = Session::get("qu_array");
+            $data['reference_id'] = Session::get("reference_id");
+            $data['quiz'] = $qu_array;
+            $data['timer'] = Session::get("timer");
+            
+            return view("Front.quiz_exam")->with($data);
+        }
     }
 
     public function submit_quiz(Request $request){
@@ -346,7 +363,24 @@ class UserController extends Controller
     	return view("Front.session_analysis")->with($data);
     }
 
+    public function session_analysis_view(Request $request){
+        $course_id = base64_decode($request->course_id);
+        $topic_id = base64_decode($request->topic_id);
+        $st_id = base64_decode($request->st_id);
+        $data['st_id'] = $st_id;
+
+        $last_reference_id = NewSessionAnalysis::where("course_id",$course_id)->where("topic_id",$topic_id)->where("chapter_id",$st_id)->where("student_id",Auth::guard("customer")->user()->id)->orderBy('analysis_id', 'ASC')->groupBy('question_id')->latest()->first();
+        //echo $last_reference_id->reference_id;
+        $data['reference_id'] = $last_reference_id->reference_id;
+        $data['session_analysis'] = NewSessionAnalysis::where("course_id",$course_id)->where("topic_id",$topic_id)->where("chapter_id",$st_id)->where("reference_id",$last_reference_id->reference_id)->where("student_id",Auth::guard("customer")->user()->id)->orderBy('analysis_id', 'ASC')->groupBy('question_id')->get();
+        $data['session_analysis1'] = SessionAnalysis::where("course_id",$course_id)->where("topic_id",$topic_id)->where("subtopic_id",$st_id)->where("reference_id",$last_reference_id->reference_id)->where("student_id",Auth::guard("customer")->user()->id)->first();
+
+        
+        return view("Front.session_analysis")->with($data);
+    }
+
     public function exam_builder(){
+
         $data['course_data'] = DB::table("courses")->orderBy('ordering_id', 'ASC')->get();
         return view("Front.exam_builder")->with($data);
     }

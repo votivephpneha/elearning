@@ -23,11 +23,11 @@
   <div class="pd-bane">
     <div>
 <h3> Welcome to Mathify!</h3>
-<p> You’ve learned 70% of your goal this week! Keep it up and improve your progress.</p>
+<!-- <p> You’ve learned 70% of your goal this week! Keep it up and improve your progress.</p> -->
 
 </div>
 
-<a href="#">See more</a>
+<!-- <a href="#">See more</a> -->
 </div>
 
 </div>

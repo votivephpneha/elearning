@@ -61,6 +61,13 @@
               @if($ch->type == "Quiz")
 
               <li><a href="{{ url('/user/start_quiz') }}/{{ base64_encode($ch->course_id) }}/{{ base64_encode($ch->topic_id) }}/{{ base64_encode($ch->st_id) }}"><img src="{{ url('/public') }}/assets/img/quiz_img.png">{{ $ch->title }}</a>
+                <?php
+                  $view_button = DB::table("question_analysis")->where("course_id",$ch->course_id)->where("topic_id",$ch->topic_id)->where("chapter_id",$ch->st_id)->where("student_id",Auth::guard("customer")->user()->id)->get();
+                  //print_r($view_button);
+                ?>
+                <!-- @if(count($view_button)>0)
+                <a href="{{ url('/user/session_analysis_view') }}/{{ base64_encode($ch->course_id) }}/{{ base64_encode($ch->topic_id) }}/{{ base64_encode($ch->st_id) }}">View Last Result</a>
+                @endif -->
               @endif
               </li>
               @endif

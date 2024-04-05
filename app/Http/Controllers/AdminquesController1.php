@@ -56,6 +56,27 @@ class AdminquesController1 extends Controller{
 		return view("admin.add_questions_bank")->with($data);
 	}
 
+	public function uploadMedia(Request $request)
+{
+    if ($request->hasFile('upload')) {
+        $originName = $request->file('upload')->getClientOriginalName();
+        $fileName = pathinfo($originName, PATHINFO_FILENAME);
+        $extension = $request->file('upload')->getClientOriginalExtension();
+        $fileName = $fileName . '_' . time() . '.' . $extension;
+        $path = base_path() .'/public/uploads/';
+        $fileName = $request->file('upload')->move($path, $fileName)->getFilename();
+
+        $CKEditorFuncNum = $request->input('CKEditorFuncNum');
+        $url = asset('/public/uploads/' . $fileName);
+        $msg = 'Image uploaded successfully';
+        $response = "<script>window.parent.CKEDITOR.tools.callFunction($CKEditorFuncNum, '$url')</script>";
+
+        @header('Content-type: text/html; charset=utf-8');
+        echo $response;
+    }
+    return false;
+}
+
 	public function edit_questions_bank(Request $request){
 		
 
@@ -193,6 +214,8 @@ class AdminquesController1 extends Controller{
 public function post_questions_bank_edit(Request $request){
 
 		$chapter_id = base64_decode($request->chapter_id);
+		$course_id = $request->course_id;
+		$topic_id = $request->topic_id;
             
         $q_id = $request->question_id;
 		$question_title = $request->question_title;
@@ -206,18 +229,42 @@ public function post_questions_bank_edit(Request $request){
 		$marks = $request->marks;
 		
 		//print_r($options);die;
+
+		
+
 		
 		$i = 0;
 		//print_r($correct_answer_check);die;
 		//echo $correct_answer_check[3];die;
 		foreach($options as $op){
 			
+			$questions_data = DB::table("question_bank")->where("q_id",$i+1)->get();
 			
-
-			$result = DB::table('question_bank')
+			if(!empty($questions_data)){
+				$result = DB::table('question_bank')
                     ->where('option_id', $i+1)
                     ->where('q_id', $q_id)
                     ->update(['title' => $question_title,'quiz_exam' => $question_exam,'correct_answer_explanation' => $answer_explanation,'Options' => $op,'correct_answer' => $correct_answer_check[$i],'time_length' => $time_length,'difficulty_level' => $difficulty_level,'marks' => $marks]);
+                }else{
+                	$questions_model = new QuestionBank();
+
+					$questions_model->q_id = $q_id; 
+					$questions_model->option_id = $i+1; 
+					$questions_model->title = $question_title; 
+					$questions_model->quiz_exam = $question_exam; 
+					$questions_model->course_id = $course_id; 
+					$questions_model->topic_id = $topic_id; 
+					$questions_model->chapter_id = $chapter_id; 
+					$questions_model->correct_answer_explanation = $answer_explanation; 
+					$questions_model->Options = $op; 
+					$questions_model->correct_answer = $correct_answer_check[$i]; 
+					$questions_model->time_length = $time_length; 
+					$questions_model->difficulty_level = $difficulty_level; 
+					$questions_model->marks = $marks; 
+					
+					$questions_model->save();
+                }
+			
 			 
 			// $questions_model->title = $question_title; 
 			// $questions_model->quiz_exam = $question_exam; 

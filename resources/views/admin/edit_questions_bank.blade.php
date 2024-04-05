@@ -133,6 +133,9 @@
         }
         
       ],
+      filebrowserUploadUrl: "{{ route('admin.question.uploadMedia', ['_token' => csrf_token()]) }}",
+      filebrowserUploadMethod: 'form',
+      removeDialogTabs: 'image:advanced;link:advanced',
       // Remove the redundant buttons from toolbar groups defined 
         //extraPlugins:'mathjax',
            mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML'
@@ -171,6 +174,9 @@
         }
         
       ],
+      filebrowserUploadUrl: "{{ route('admin.question.uploadMedia', ['_token' => csrf_token()]) }}",
+      filebrowserUploadMethod: 'form',
+      removeDialogTabs: 'image:advanced;link:advanced',
       // Remove the redundant buttons from toolbar groups defined 
         //extraPlugins:'mathjax',
            mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML'
@@ -212,6 +218,9 @@
           }
           
         ],
+        filebrowserUploadUrl: "{{ route('admin.question.uploadMedia', ['_token' => csrf_token()]) }}",
+      filebrowserUploadMethod: 'form',
+      removeDialogTabs: 'image:advanced;link:advanced',
         // Remove the redundant buttons from toolbar groups defined 
           //extraPlugins:'mathjax',
              mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML'
@@ -267,6 +276,9 @@
         }
         
       ],
+      filebrowserUploadUrl: "{{ route('admin.question.uploadMedia', ['_token' => csrf_token()]) }}",
+      filebrowserUploadMethod: 'form',
+      removeDialogTabs: 'image:advanced;link:advanced',
       // Remove the redundant buttons from toolbar groups defined 
         //extraPlugins:'mathjax',
            mathJaxLib : 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML'
@@ -691,6 +703,9 @@ $(function() {
                   <div class="input-group">
                     <input type="hidden" name="question_id" value="{{ $id }}">
                     <input type="hidden" name="chapter_id" value="{{ $chapter_id }}">
+                    <input type="hidden" name="course_id" value="{{ $question_details->course_id }}">
+                    <input type="hidden" name="topic_id" value="{{ $question_details->topic_id }}">
+                    
                     <textarea name="question_title" class="materialize-textarea" id="question_content">
                       {!! $question_details->title !!}
                     </textarea>
@@ -768,40 +783,6 @@ $(function() {
                   
                 </div>
               </div>
-              
-              <div class="col-md-12">
-                <div class="form-group">
-                  <label>Correct Answer Explanation</label>
-                  <div class="input-group">
-                    <textarea name="answer_explanation" class="materialize-textarea" id="answer_explanation">
-                      {!! $question_details->correct_answer_explanation !!}
-                    </textarea>
-                  </div><br>
-                  <button type="button" class="btn btn-primary" id="myBtn_ans">Preview Latex</button>
-                  <div class="preview_latex_error_ans" style="color:red"></div>
-                </div>
-              </div>
-              <div class="col-md-12">
-                <div class="form-group">
-                  <label>Add Options</label>
-                  <div class="input-group option_answer">
-                    <!-- <input type="hidden" name="correct_answer_check[]" value="incorrect" /> -->
-                    <?php
-                      $i = 1;
-                    ?>
-                    @foreach($options as $op)
-                    <input type="hidden" name="correct_answer_check[]" value="{{ $op->correct_answer }}" />
-                    <input type="checkbox" name="correct_answer_check[]" class="check" value="incorrect" @if($op->correct_answer == "correct") checked @endif> Correct Answer<br>
-                    <textarea name="options[]" class="materialize-textarea options_textarea" id="options-{{ $i }}" col="10">{!! $op->Options !!}</textarea><br>
-                    <button type="button" class="btn btn-primary" id="myBtn_options">Preview Latex</button><br>
-                    <div class="preview_latex_error_options" style="color:red"></div>
-                    <?php $i++; ?>
-                    @endforeach
-                  </div><br>
-                  
-                  <button style="text-align:center" type="button" class="btn btn-primary" onclick="add_options()">Add options</button>
-                </div>
-              </div>
               <div class="col-md-4">
                 <div class="form-group">
                   <label>Time Length(Seconds)</label>
@@ -835,6 +816,40 @@ $(function() {
                   
                 </div>
               </div>
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label>Correct Answer Explanation</label>
+                  <div class="input-group">
+                    <textarea name="answer_explanation" class="materialize-textarea" id="answer_explanation">
+                      {!! $question_details->correct_answer_explanation !!}
+                    </textarea>
+                  </div><br>
+                  <button type="button" class="btn btn-primary" id="myBtn_ans">Preview Latex</button>
+                  <div class="preview_latex_error_ans" style="color:red"></div>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label>Add Options</label>
+                  <div class="input-group option_answer">
+                    <!-- <input type="hidden" name="correct_answer_check[]" value="incorrect" /> -->
+                    <?php
+                      $i = 1;
+                    ?>
+                    @foreach($options as $op)
+                    <input type="hidden" name="correct_answer_check[]" value="{{ $op->correct_answer }}" />
+                    <input type="checkbox" name="correct_answer_check[]" class="check" value="incorrect" @if($op->correct_answer == "correct") checked @endif> Correct Answer<br>
+                    <textarea name="options[]" class="materialize-textarea options_textarea" id="options-{{ $i }}" col="10">{!! $op->Options !!}</textarea><br>
+                    <button type="button" class="btn btn-primary" id="myBtn_options">Preview Latex</button><br>
+                    <div class="preview_latex_error_options" style="color:red"></div>
+                    <?php $i++; ?>
+                    @endforeach
+                  </div><br>
+                  
+                  <button style="text-align:center" type="button" class="btn btn-primary" onclick="add_options()">Add options</button>
+                </div>
+              </div>
+              
             </div>
             <!-- /.row -->
 

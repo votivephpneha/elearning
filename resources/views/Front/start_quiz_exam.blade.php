@@ -22,7 +22,7 @@ keyboard_backspace
 <p class="alrm-ct"><b><i class='bx bx-alarm' style="font-size: 21px;position: relative;top: 2px;"></i> {{ $total_time }} mins <i class='bx bxs-circle' style="font-size: 8px;"></i></b> Total Question: <strong>{{ $question_count }}</strong> </p>
 
 </div>
-<a href="{{ url('/user/quiz') }}/{{ $course_id }}/{{ $topic_id }}/{{ $st_id }}" class="start-quz">Start Quiz </a>
+<a href="{{ url('/user/quiz') }}/{{ $reference_id }}?question=1" class="start-quz" target="_blank">Start Quiz </a>
 </div>
           </div>
 

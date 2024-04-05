@@ -113,11 +113,11 @@
 
 <input type="radio" class="btn-check" name="session_length" id="danger-outlinedk" autocomplete="off" value="Medium">
 <label class="btn btn-outline-success" for="danger-outlinedk">Medium
-30 mins - 1 hour</label>
+30 mins - 45 mins</label>
 
 <input type="radio" class="btn-check" name="session_length" id="success-outlinedbx" autocomplete="off" value="Long">
 <label class="btn btn-outline-success" for="success-outlinedbx">Long
-2 Hour - 3 hour</label>
+60 mins - 90 mins</label>
 
 </div>
 

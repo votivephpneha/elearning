@@ -82,3 +82,8 @@
 [21-Mar-2024 00:14:57 America/Chicago] PHP Warning:  Undefined variable $Ah in /home2/eicyjdte/public_html/dev/adminer-4.8.1.php on line 1787
 [21-Mar-2024 00:14:57 America/Chicago] PHP Warning:  Undefined variable $Ah in /home2/eicyjdte/public_html/dev/adminer-4.8.1.php on line 1787
 [21-Mar-2024 00:14:57 America/Chicago] PHP Warning:  Undefined variable $Ah in /home2/eicyjdte/public_html/dev/adminer-4.8.1.php on line 1787
+[03-Apr-2024 04:11:07 America/Chicago] PHP Warning:  Undefined array key "CKEditor" in /home2/eicyjdte/public_html/dev/upload.php on line 38
+[03-Apr-2024 04:11:07 America/Chicago] PHP Warning:  Undefined array key "CKEditorFuncNum" in /home2/eicyjdte/public_html/dev/upload.php on line 41
+[03-Apr-2024 04:11:07 America/Chicago] PHP Warning:  Undefined array key "langCode" in /home2/eicyjdte/public_html/dev/upload.php on line 44
+[03-Apr-2024 04:13:51 America/Chicago] PHP Warning:  Undefined array key "CKEditorFuncNum" in /home2/eicyjdte/public_html/dev/upload.php on line 17
+[03-Apr-2024 12:13:35 UTC] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 266342400 bytes) in /home2/eicyjdte/public_html/dev/storage/framework/views/bdcc971041063350248a4b8a2c2f27e87c3eaa8a.php on line 65
