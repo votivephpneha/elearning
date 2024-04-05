@@ -117,7 +117,24 @@ class UserController extends Controller
         
         $reference_id = base64_decode($request->reference_id);
         $data['reference_id'] = $request->reference_id;
+        
         $exam_data = DB::table("exam_builder")->where("reference_id",$reference_id)->first();
+        $qu_ids = array();
+        $qu_data = array();
+        if($exam_data->question_type == "Attempted"){
+            $qu_data = DB::table("question_analysis")->where("student_id",Auth::guard("customer")->user()->id)->where("quiz_type","exam_builder")->where("attempted_status","!=",NULL)->groupBy('question_id')->get();
+
+        }
+        if($exam_data->question_type == "Not attempted"){
+            $qu_data = DB::table("question_analysis")->where("student_id",Auth::guard("customer")->user()->id)->where("quiz_type","exam_builder")->where("attempted_status","=",NULL)->groupBy('question_id')->get();
+        }
+        foreach ($qu_data as $q_d) {
+            $qu_ids[] = $q_d->question_id;
+        }
+        
+        $q_id_string = implode(",",$qu_ids);
+        
+        
         Session::put("reference_id", $reference_id);
         $get_exam_data = $exam_data->topics_id;
 
@@ -129,7 +146,28 @@ class UserController extends Controller
         $question_time = 0;
         foreach($topic_ids as $topic_id){
 
-            $question_data = DB::table("question_bank")->where("course_id",$exam_data->course_id)->where("topic_id",$topic_id)->where("difficulty_level",$exam_data->difficulty_level)->get();
+            
+
+            if($exam_data->question_type == "Any Questions"){
+                if($exam_data->difficulty_level == "Mix it up"){
+                
+                    $question_data = DB::table("question_bank")->where("course_id",$exam_data->course_id)->where("topic_id",$topic_id)->groupBy('q_id')->get();
+                
+
+                }else{
+                    $question_data = DB::table("question_bank")->where("course_id",$exam_data->course_id)->where("topic_id",$topic_id)->where("difficulty_level",$exam_data->difficulty_level)->groupBy('q_id')->get();
+                }
+            }else{
+                if($exam_data->difficulty_level == "Mix it up"){
+                
+                    $question_data = DB::table("question_bank")->where("course_id",$exam_data->course_id)->where("topic_id",$topic_id)->whereIn("q_id",$qu_ids)->groupBy('q_id')->get();
+                
+
+                }else{
+                    $question_data = DB::table("question_bank")->where("course_id",$exam_data->course_id)->where("topic_id",$topic_id)->where("difficulty_level",$exam_data->difficulty_level)->whereIn("q_id",$qu_ids)->groupBy('q_id')->get();
+                }
+            }
+            
 
             
             
@@ -142,6 +180,8 @@ class UserController extends Controller
            
             
         }
+        // echo "<pre>";
+        // print_r($question_array);die;
         shuffle($question_array);
         $question_time = 0;
         $marks = 0;
@@ -158,16 +198,17 @@ class UserController extends Controller
                 }
             }
             if($exam_data->session_length == "Medium"){
-                if($question_time >= 1800 && $question_time <= 3600){
+                if($question_time >= 1800 && $question_time <= 2700){
                     break;
                 }
             }
             if($exam_data->session_length == "Long"){
-                if($question_time >= 7200 && $question_time <= 10800){
+                if($question_time >= 3600 && $question_time <= 5400){
                     break;
                 }
             }
         }
+
         if($exam_data->session_length == "Short"){
             $total_time = $question_time/60;
         }
@@ -178,8 +219,8 @@ class UserController extends Controller
             $total_time = $question_time/60;
         }
 
-        $data['total_time'] = $total_time;
-        Session::put("timer", $total_time);
+        $data['total_time'] = number_format((float)$total_time, 2, '.', '');
+        Session::put("timer", $data['total_time']);
         Session::put("qu_array", $qu_array);
         
         $data['marks'] = $marks;
@@ -256,6 +297,7 @@ class UserController extends Controller
                 $new_session_analysis->attempted_status = $request->answer_val1;
                 $new_session_analysis->reference_id = $reference_id;
                 $new_session_analysis->time_spent_seconds = $request->ans_time;
+                $new_session_analysis->quiz_type = $request->quiz_type;
                 $new_session_analysis->save();
             }
 
@@ -269,7 +311,7 @@ class UserController extends Controller
             //$session_analysis->quiz_json = $request->quiz_json;
             $session_analysis->reference_id = $reference_id;
             $session_analysis->time_spent_seconds = $request->total_time;
-
+            $session_analysis->quiz_type = $request->quiz_type;
             $session_analysis->save();
         }else{
             
@@ -313,6 +355,7 @@ class UserController extends Controller
                 $new_session_analysis->attempted_status = $request->answer_val1;
                 $new_session_analysis->reference_id = $reference_id;
                 $new_session_analysis->time_spent_seconds = $request->ans_time;
+                $new_session_analysis->quiz_type = $request->quiz_type;
                 $new_session_analysis->save();
             }
 
@@ -353,12 +396,19 @@ class UserController extends Controller
         $course_id = base64_decode($request->course_id);
         $topic_id = base64_decode($request->topic_id);
         $st_id = base64_decode($request->st_id);
-        $data['st_id'] = $st_id;
-        $data['reference_id'] = Session::get("reference_id");
-        $data['questions'] = QuestionBank::where("course_id",$course_id)->where("topic_id",$topic_id)->where("chapter_id",$st_id)->groupBy('q_id')->get();
-        $data['session_analysis'] = NewSessionAnalysis::where("course_id",$course_id)->where("topic_id",$topic_id)->where("chapter_id",$st_id)->where("reference_id",$data['reference_id'])->where("student_id",Auth::guard("customer")->user()->id)->orderBy('analysis_id', 'ASC')->groupBy('question_id')->get();
-        $data['session_analysis1'] = SessionAnalysis::where("course_id",$course_id)->where("topic_id",$topic_id)->where("subtopic_id",$st_id)->where("reference_id",$data['reference_id'])->where("student_id",Auth::guard("customer")->user()->id)->first();
+        
 
+        if($course_id && $topic_id && $st_id){
+                $data['st_id'] = $st_id;
+                $data['reference_id'] = Session::get("reference_id");
+                $data['questions'] = QuestionBank::where("course_id",$course_id)->where("topic_id",$topic_id)->where("chapter_id",$st_id)->groupBy('q_id')->get();
+                $data['session_analysis'] = NewSessionAnalysis::where("course_id",$course_id)->where("topic_id",$topic_id)->where("chapter_id",$st_id)->where("reference_id",$data['reference_id'])->where("student_id",Auth::guard("customer")->user()->id)->orderBy('analysis_id', 'ASC')->groupBy('question_id')->get();
+                $data['session_analysis1'] = SessionAnalysis::where("course_id",$course_id)->where("topic_id",$topic_id)->where("subtopic_id",$st_id)->where("reference_id",$data['reference_id'])->where("student_id",Auth::guard("customer")->user()->id)->first();
+            }else{
+                $data['reference_id'] = Session::get("reference_id");
+                $data['session_analysis'] = NewSessionAnalysis::where("reference_id",$data['reference_id'])->where("student_id",Auth::guard("customer")->user()->id)->orderBy('analysis_id', 'ASC')->groupBy('question_id')->get();
+                $data['session_analysis1'] = SessionAnalysis::where("reference_id",$data['reference_id'])->where("student_id",Auth::guard("customer")->user()->id)->first();
+            }
         
     	return view("Front.session_analysis")->with($data);
     }

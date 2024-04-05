@@ -104,30 +104,40 @@
 
 <div class="tex-bk">
   <?php 
-  $subtopic_data = DB::table("subtopics")->where("st_id",$st_id)->first();
+  if(strpos($reference_id,'quiz')){
+    $subtopic_data = DB::table("subtopics")->where("st_id",$st_id)->first();
 
-  if($subtopic_data->quiz_time == "Timed"){
-    $avg_mins = $session_analysis1->time_spent_seconds /$session_analysis1->total_questions;
+    if($subtopic_data->quiz_time == "Timed"){
+      $avg_mins = $session_analysis1->time_spent_seconds /$session_analysis1->total_questions;
+      $mins1 = $avg_mins/60;
+      ?>
+      <h5> {{ $mins1 }} <small>minutes</small></h5>
+      <p>Avg. Time per Questions</p>
+      <?php
+    }else{
+      $sum = 0;
+
+      foreach($session_analysis as $s_an){
+        
+        $sum = $sum + $s_an->time_spent_seconds;
+      }
+
+      $sum1 = $sum/count($session_analysis);
+      ?>
+
+      <h5><?php echo number_format((float)$sum1, 2, '.', ''); ?> Seconds</small></h5>
+
+      <p>Avg. Time per Questions</p>
+      <?php
+    }  
+  }else{
+    $avg_mins = (int)$session_analysis1->time_spent_seconds/(int)$session_analysis1->total_questions;
     $mins1 = $avg_mins/60;
     ?>
-    <h5> {{ $mins1 }} <small>minutes</small></h5>
+    <h5> <?php echo number_format((float)$mins1, 2, '.', ''); ?> <small>minutes</small></h5>
     <p>Avg. Time per Questions</p>
     <?php
-  }else{
-    $sum = 0;
-
-    foreach($session_analysis as $s_an){
-      
-      $sum = $sum + $s_an->time_spent_seconds;
-    }
-
-    $sum1 = $sum/count($session_analysis);
-    ?>
-
-    <h5><?php echo number_format((float)$sum1, 2, '.', ''); ?> Seconds</small></h5>
-    <p>Avg. Time per Questions</p>
-    <?php
-  }  
+  }
   
   ?>
 
@@ -143,19 +153,26 @@
 
 <div class="tex-bk">
   <?php
-  if($subtopic_data->quiz_time == "Timed"){
-    $mins = $session_analysis1->time_spent_seconds /60;
-    ?>
-    <h5>{{ $mins }} <small>minutes</small></h5>
-    <p>Total Time Spent</p>
-    <?php
+  if(strpos($reference_id,'quiz')){
+    if($subtopic_data->quiz_time == "Timed"){
+      $mins = (int)$session_analysis1->time_spent_seconds /60;
+      ?>
+      <h5>{{ $mins }} <small>minutes</small></h5>
+      <p>Total Time Spent</p>
+      <?php
+    }else{
+      ?>
+      <h5><?php echo $session_analysis1->time_spent_seconds; ?> minutes</small></h5>
+      <p>Total Time Spent</p>
+      <?php
+    }  
   }else{
-    ?>
-    <h5><?php echo $session_analysis1->time_spent_seconds; ?> minutes</small></h5>
-    <p>Total Time Spent</p>
-    <?php
-  }  
-  
+    $mins = (int)$session_analysis1->time_spent_seconds/60;
+      ?>
+      <h5><?php echo number_format((float)$mins, 2, '.', ''); ?> <small>minutes</small></h5>
+      <p>Total Time Spent</p>
+      <?php
+  }
   ?>
   
 

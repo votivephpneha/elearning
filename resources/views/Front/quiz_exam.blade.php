@@ -5,8 +5,11 @@
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3.0.0/es5/tex-mml-chtml.js"></script>
 <script type="text/javascript">
   var total_questions = $(".pallate").length;
-  $(".attempted").html("0/"+total_questions);
-  $(".remaining_questions").html(total_questions);
+  $(".attempted").html($(".active-q").length+"/"+total_questions);
+  var remaining_questions_nat = $(".not-atempt").length;
+  var remaining_questions_skip = $(".skiped").length;
+  var remaining_questions = remaining_questions_nat + remaining_questions_skip;
+  $(".remaining_questions").html(remaining_questions);
   
 
 
@@ -84,9 +87,11 @@
       seconds1++;
       timer1.val(seconds1);
     }, 1000);
+    console.log("total_div",total_div);
+    console.log("(i+1)",(i+1));
     if(total_div == (i+1)){
       $(".next-btn-"+(i+1)).removeAttr("onclick");
-      $(".submit-btn").attr("onclick","submit_quiz1()");
+      //$(".submit-btn").attr("onclick","submit_quiz1()");
     }
 
     window.history.replaceState(null, null, "?question="+(i+1));
@@ -125,7 +130,9 @@
       var active_div = $('.qust-no .active-q').length;
       var total_questions = $(".pallate").length;
       var attempted_div = active_div+"/"+total_questions;
-      var remaining_questions = $('.qust-no .not-atempt').length;
+      var remaining_questions_qno = $('.qust-no').length;
+      var remaining_questions_nat = $('.not-atempt').length;
+      var remaining_questions = remaining_questions_qno + remaining_questions_nat;
       $(".attempted").html(attempted_div);
       $(".remaining_questions").html(remaining_questions);
     }
@@ -158,7 +165,7 @@
       data: {"q_id":q_id,"answer_val1":answer_val1,"attempted_questions":active_div,"total_questions":total_questions,"course_id":course_id,"topic_id":topic_id,"subtopic_id":subtopic_id,"total_time":time_spent,"ans_time":ans_time,"quiz_type":"exam_builder","_token":"{{ csrf_token() }}"},
       cache: false,
       success: function(data){
-         
+         window.location.href = "{{ url('/user/session_analysis') }}/{{ base64_encode($reference_id) }}";
            
          
       }
@@ -182,7 +189,7 @@
     //minutes = (minutes < 10) ?  minutes : minutes;
     $('.countdown').html(minutes + '.' + seconds);
     timer2 = minutes + '.' + seconds;
-    console.log("timer2",timer2);
+    //console.log("timer2",timer2);
     $(".timer").val(timer2);
 
     if(timer2 == "0.00"){
@@ -358,17 +365,24 @@
      <div class="qust-no">
       <?php
             $i = 1;
+
           ?>
+
           @foreach($quiz as $qu)
           @if($qu->status == 1 && $qu->deleted_at == NULL)
           @if($qu->quiz_exam == "Exam Builder" || $qu->quiz_exam == "Both")
           <?php
             $options_session = DB::table("question_analysis")->where("reference_id",$reference_id)->where("question_id",$qu->q_id)->first();
+
           ?>
           @if($options_session)
           @if($options_session->student_answer)
             <a style="cursor: pointer;" class="pallate pallate-color-{{ $i }} active-q" onclick="question_pallate({{ $i }})">{{ $i }}</a>
-          
+          @else  
+            {{ $options_session->student_answer }}
+            @if($options_session->student_answer == NULL)
+              <a style="cursor: pointer;" class="pallate pallate-color-{{ $i }} skiped" onclick="question_pallate({{ $i }})">{{ $i }}</a>
+            @endif
           @endif
           @else
             <a style="cursor: pointer;" class="pallate pallate-color-{{ $i }} not-atempt" onclick="question_pallate({{ $i }})">{{ $i }}</a>
