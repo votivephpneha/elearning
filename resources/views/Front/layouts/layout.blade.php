@@ -69,7 +69,9 @@
     @include('Front.layouts.header')
     <?php if($_SERVER['REQUEST_URI'] != "/git/elearning/user/user_status" and $_SERVER['REQUEST_URI'] != "/git/elearning/user/settings" and $_SERVER['REQUEST_URI'] != "/git/elearning/user/change_password"){ ?>
       <div id="main" style="margin-left: 250px;">
+        <?php if($_SERVER['REQUEST_URI'] != "/git/elearning/user/session_history"){ ?>
     <div class="class-box <?php if(strpos($_SERVER['REQUEST_URI'],'course_view')){ ?>topics<?php } ?>">
+      <?php } ?>
     <?php } ?>
     
     <?php
@@ -81,7 +83,9 @@
     ?>
     @include('Front.layouts.sidebar')
     <?php if($_SERVER['REQUEST_URI'] != "/git/elearning/user/user_status"  and $_SERVER['REQUEST_URI'] != "/git/elearning/user/settings" and $_SERVER['REQUEST_URI'] != "/git/elearning/user/change_password"){ ?>
+      <?php if($_SERVER['REQUEST_URI'] != "/git/elearning/user/session_history"){ ?>
     </div>
+    <?php } ?>
   </div>
   <?php
   }

@@ -1,5 +1,7 @@
 <div id="mySidebar" class="sidebar" onmouseover="toggleSidebar()" onmouseout="toggleSidebar()" style="width: 80px;">
-  <a href="{{ url('/user/user_dashboard') }}" class="logo-box"><span class="favi-logo"><img src="{{ url('/public') }}/assets/img/m.png"> </span><span class="icon-text"><img src="{{ url('/public') }}/assets/img/text-logo.png"></span></a><br>
+  <a href="{{ url('/user/user_dashboard') }}" class="logo-box"><span class="favi-logo"><img src="{{ url('/public') }}/assets/img/new_logo.png"> </span>
+  	<!-- <span class="icon-text"><img src="{{ url('/public') }}/assets/img/text-logo.png"></span> -->
+  </a><br>
   
 <a href="{{ url('/user/user_dashboard') }}"><i class="material-symbols-outlined">
 grid_view
@@ -9,6 +11,11 @@ grid_view
 content_paste_search
 </i><span class="icon-text"></span>Exam Builder</a>
 <br>
+
+<a href="{{ url('/user/session_history') }}"><i class="material-symbols-outlined">
+pie_chart
+</i>
+<span class="icon-text"></span>Attempt History</a><br>
 
 <a href="{{ url('/user/user_status') }}"><i class="material-symbols-outlined">
 pie_chart

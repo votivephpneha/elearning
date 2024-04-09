@@ -19,6 +19,7 @@ use Hash;
 use Session;
 use DB;
 use Auth;
+
 use App\Models\QuestionBank;
 
 class UserController extends Controller
@@ -244,6 +245,7 @@ class UserController extends Controller
         $st_id = base64_decode($request->st_id);
         
         if($request->course_id && $request->topic_id && $request->st_id){
+
             $data['reference_id'] = Session::get("reference_id");
             
             $data['course_id'] = base64_decode($request->course_id);
@@ -257,6 +259,7 @@ class UserController extends Controller
             // print_r($data['quiz']);die;
         	return view("Front.quiz")->with($data);
         }else{
+
             //echo base64_decode($request->reference_id);die;
             $qu_array = Session::get("qu_array");
             $data['reference_id'] = Session::get("reference_id");
@@ -411,6 +414,12 @@ class UserController extends Controller
             }
         
     	return view("Front.session_analysis")->with($data);
+    }
+
+    public function session_history(Request $request){
+        $data['session_history'] = DB::table("question_analysis")->where("student_id",Auth::guard("customer")->user()->id)->groupBy('reference_id')->orderBy('created_at', 'DESC')->get();
+        
+        return view("Front.session_history")->with($data);
     }
 
     public function session_analysis_view(Request $request){

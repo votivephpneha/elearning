@@ -100,7 +100,9 @@
 
     
     window.history.replaceState(null, null, "?question="+(i+1));
-
+    var minutes = $("#minutes").text();
+    var seconds = $("#seconds").text();
+    
     
   }
 
@@ -269,6 +271,7 @@
         
       }
       submit_quiz1();
+      clearInterval(interval);
       //window.location.href = "{{ url('/user/session_analysis') }}/{{ $course_id }}/{{ $topic_id }}/{{ $st_id }}";
     }
     var now = new Date();
@@ -277,6 +280,7 @@
     document.cookie="quiz_time_minutes-"+"<?php echo $st_id; ?>"+"="+minutes+"."+seconds;  
     document.cookie = "expires=" + now.toUTCString() + ";"
   }, 1000);
+  //clearInterval(interval);
    <?php
     }else{
       ?>
@@ -284,16 +288,20 @@
         var secondsLabel = document.getElementById("seconds");
         var time_value = getCookie("quiz_time-"+"<?php echo $st_id; ?>");
         //alert(time_value);
-        
-        
-        if(time_value){
-          
-          var totalSeconds = time_value;
-          
+        var local_time = localStorage.getItem("quiz_time-"+"<?php echo $st_id; ?>");
+        if(local_time){
+          totalSeconds = local_time;
         }else{
+          if(time_value){
+          
+            var totalSeconds = time_value;
+            
+          }else{
 
-          var totalSeconds = 0;
+            var totalSeconds = 0;
+          }
         }
+       
         
         
         setInterval(setTime, 1000);
@@ -304,7 +312,7 @@
           minutesLabel.innerHTML = pad(parseInt(totalSeconds / 60));
           var min = $("#minutes").text();
           var sec = $("#seconds").text();
-          //sessionStorage.setItem("quiz_time", totalSeconds);
+          localStorage.setItem("quiz_time-"+"<?php echo $st_id; ?>", totalSeconds);
           var now = new Date();
           var minutes = 120;
           now.setTime(now.getTime() + (minutes * 60 * 1000));

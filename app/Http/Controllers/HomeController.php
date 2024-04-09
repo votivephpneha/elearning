@@ -11,6 +11,7 @@ use Hash;
 use DB;
 use Auth;
 use Illuminate\Support\Str;
+use Mail;
 
 class HomeController extends Controller
 {
@@ -45,6 +46,12 @@ class HomeController extends Controller
                   'email'  => $request->get('email'),
                   'password' => $request->get('password')
                 );
+                $data = array('name'=>"xxxx");
+                Mail::send("Front.registration_email", $data, function($message) {
+                     $message->to('votivephp.neha@gmail.com', 'Tutorials Point')->subject
+                        ('Laravel Basic Testing Mail');
+                     $message->from('votivephp.neha@gmail.com','xxx');
+               });
                 if(Auth::guard("customer")->attempt($user_data))
                 {
                     

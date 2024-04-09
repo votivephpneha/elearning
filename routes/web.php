@@ -54,6 +54,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'user_auth:customer'], functio
 	Route::get('/session_analysis/{course_id}/{topic_id}/{st_id}', [UserController::class, 'session_analysis'])->name("session_analysis");
 	Route::get('/session_analysis/{reference_id}', [UserController::class, 'session_analysis'])->name("session_analysis_exam");
 	Route::get('/session_analysis_view/{course_id}/{topic_id}/{st_id}', [UserController::class, 'session_analysis_view'])->name("session_analysis");
+	Route::get('/session_history/', [UserController::class, 'session_history'])->name("session_history");
 	Route::get('/exam_builder', [UserController::class, 'exam_builder'])->name("exam_builder");
 	Route::get('/exam_builder_view/{course_id}', [UserController::class, 'exam_builder_view'])->name("exam_builder_view");
 	Route::post('/submit_exam_builder', [UserController::class, 'submit_exam_builder'])->name("submit_exam_builder");
