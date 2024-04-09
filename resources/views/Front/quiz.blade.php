@@ -17,10 +17,25 @@
   var session_quiz_array1 = JSON.stringify(quiz);
   sessionStorage.setItem("quiz_json", session_quiz_array1);
   var timer = $(".ans_time-1");
-  var seconds = 0;
+  var ans_time_1 = $(".ans_time-1").val();
+
+  if(ans_time_1 != ""){
+    var seconds = ans_time_1;
+  }else{
+    var ans_time_value = getCookie("ans_time-1");
+
+    if(ans_time_value){
+      var seconds = ans_time_value;
+    }else{
+      var seconds = 0;
+    }
+  }
+  
+
 
   var q_timer = setInterval(function() {
     seconds++;
+    document.cookie="ans_time-1="+seconds;  
     timer.val(seconds);
   }, 1000);
   function next_btn(i,q_id){
@@ -81,14 +96,15 @@
 
     
     
+
     //clearInterval(q_timer);
     //alert(".ans_time-"+(i+1));
-    var timer1 = $(".ans_time-"+(i+1));
-    var seconds1 = 0;
+    var timer_next = $(".ans_time-"+(i+1));
+    var seconds_next = 0;
 
-    var q_timer1 = setInterval(function() {
-      seconds1++;
-      timer1.val(seconds1);
+    var q_timer_next = setInterval(function() {
+      seconds_next++;
+      timer_next.val(seconds_next);
     }, 1000);
 
     //clearInterval(q_timer1);
@@ -122,6 +138,14 @@
       $(".qustion-box-one").hide();
       $(".qustion-box-one-"+next_box).show();
     }
+
+    var timer_prev = $(".ans_time-"+(i-1));
+    var seconds_prev = 0;
+
+    var q_timer_prev = setInterval(function() {
+      seconds_prev++;
+      timer_prev.val(seconds_prev);
+    }, 1000);
 
     window.history.replaceState(null, null, "?question="+(i-1));
     
@@ -377,12 +401,18 @@
           @foreach($quiz as $qu)
           @if($qu->status == 1 && $qu->deleted_at == NULL)
           @if($qu->quiz_exam == "Quiz" || $qu->quiz_exam == "Both")
+          <?php
+        $options = DB::table("question_bank")->where("course_id",$qu->course_id)->where("topic_id",$qu->topic_id)->where("chapter_id",$qu->chapter_id)->where("topic_id",$qu->topic_id)->where("q_id",$qu->q_id)->get();
+
+        $options_session = DB::table("question_analysis")->where("reference_id",$reference_id)->where("question_id",$qu->q_id)->first();
+
+      ?>
         <div class="qustion-box-one qustion-box-one-{{ $i }}" style="@if($i != 1) display: none;@endif">
           
         <div class="question-main">
       <div class="title mb-3 mt-2">
         <input type="hidden" name="question_id" class="question_id-{{ $i }}" value="{{ $qu->q_id }}">
-        <input type="hidden" name="ans_time" class="ans_time-{{ $i }}" value="">
+        <input type="hidden" name="ans_time" class="ans_time ans_time-{{ $i }}" value="">
         <div class="question_marks_title">
         <h6 class="tp-q">Question {{ $i }}</h6>
           @if($qu->marks <= 1)
@@ -400,12 +430,7 @@
         <img src="https://mathifyhsc.com/dev/public/assets/img/image 318.png">
       </div> -->
       </div>
-      <?php
-        $options = DB::table("question_bank")->where("course_id",$qu->course_id)->where("topic_id",$qu->topic_id)->where("chapter_id",$qu->chapter_id)->where("topic_id",$qu->topic_id)->where("q_id",$qu->q_id)->get();
-
-        $options_session = DB::table("question_analysis")->where("reference_id",$reference_id)->where("question_id",$qu->q_id)->first();
-
-      ?>
+      
       <div class="row">
         <div class="col-md-12">
             @foreach($options as $op)

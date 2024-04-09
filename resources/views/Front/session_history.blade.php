@@ -3,8 +3,15 @@
 
 @section('current_page_js')
 <script type="text/javascript">
-  function resumeTest(course_id,topic_id,chapter_id){
-    window.location.href = "/git/elearning/user/quiz/"+course_id+"/"+topic_id+"/"+chapter_id+"?question=1";
+  function resumeTest(course_id,topic_id,chapter_id,reference_id){
+
+    //window.location.href = "/git/elearning/user/quiz/"+course_id+"/"+topic_id+"/"+chapter_id+"?question=1";
+    window.open("{{ url('/user/quiz/') }}/"+course_id+"/"+topic_id+"/"+chapter_id+"?question=1&&reference_id="+reference_id, '_blank');
+  }
+  function testResult(course_id,topic_id,chapter_id,reference_id){
+
+    //window.location.href = "/git/elearning/user/quiz/"+course_id+"/"+topic_id+"/"+chapter_id+"?question=1";
+    window.open("{{ url('/user/session_analysis/') }}/"+course_id+"/"+topic_id+"/"+chapter_id+"?question=1&&reference_id="+reference_id, '_blank');
   }
 </script>
 @endsection
@@ -49,7 +56,9 @@ margin-bottom: 0px;
    <div class="row">
  
     <div class="sesn"><h4><b>Attempt History </b><br></h4></div>
+    <?php $i=0; ?>
     @foreach($session_history as $session_his)
+
     <?php
       $total_question = DB::table("question_bank")->where("chapter_id",$session_his->chapter_id)->groupBy('q_id')->get();
 
@@ -83,13 +92,15 @@ more_time
 <p> <?php echo count($attempted_question); ?>/<?php echo count($total_question); ?> 
 <?php
   $test_status_data = DB::table("session_analysis")->where("reference_id",$session_his->reference_id)->first();
+
+  
 ?>
 @if($test_status_data)
-<button type="button" class="resume-btn">
+<button type="button" class="resume-btn" onclick="testResult('{{ base64_encode($session_his->course_id) }}','{{ base64_encode($session_his->topic_id) }}','{{ base64_encode($session_his->chapter_id) }}','{{ base64_encode($session_his->reference_id) }}')">
 Complete
 </button>
 @else
-<button type="button" class="resume-btn" onclick="resumeTest('{{ base64_encode($session_his->course_id) }}','{{ base64_encode($session_his->topic_id) }}','{{ base64_encode($session_his->chapter_id) }}')">
+<button type="button" class="resume-btn" onclick="resumeTest('{{ base64_encode($session_his->course_id) }}','{{ base64_encode($session_his->topic_id) }}','{{ base64_encode($session_his->chapter_id) }}','{{ base64_encode($session_his->reference_id) }}')">
 Resume
 </button>
 @endif
@@ -100,6 +111,9 @@ Resume
 </div>
 
 </div>
+<?php
+  $i++;
+?>
 @endforeach
  
 

@@ -52,6 +52,11 @@ class AdminquesController1 extends Controller{
 		$chapter_id = base64_decode($request->chapter_id);
 		$data['chapter_id'] = $chapter_id;
 		$data['chapter_data'] = DB::table("subtopics")->where("st_id",$chapter_id)->first();
+		if (isset($_GET['question_type'])) {
+		  $data['question_type'] = $_GET['question_type'];
+		}else{
+		  $data['question_type'] = "";		
+		}
 
 		return view("admin.add_questions_bank")->with($data);
 	}
@@ -82,14 +87,20 @@ class AdminquesController1 extends Controller{
 
 		$id = base64_decode($request->id);
 		$chapter_id = base64_decode($request->chapter_id);
+		if(isset($_GET['question_type'])){
+		  	$question_type = $_GET['question_type'];
+		  }else{
+		  	$question_type = "";
+		  }	
 
 		
 
 		if($id){
+
 		  $question_details  = DB::table("question_bank")->where('q_id','=',$id)->first();
 		  $chapter_data = DB::table("subtopics")->where("st_id",$question_details->chapter_id)->first();
           $options  = DB::table("question_bank")->where('q_id','=',$question_details->q_id)->get();
-          $data_onview = array('id'=>$id,'question_details'=>$question_details,'options'=>$options,'chapter_data'=>$chapter_data,'chapter_id'=>$chapter_id);
+          $data_onview = array('id'=>$id,'question_details'=>$question_details,'options'=>$options,'chapter_data'=>$chapter_data,'chapter_id'=>$chapter_id,'question_type'=>$question_type);
           return view("admin.edit_questions_bank")->with($data_onview);
 		 }
 	}
@@ -155,7 +166,8 @@ class AdminquesController1 extends Controller{
 		if($request->chapter_text == "chapter_text"){
 			return redirect()->to('/admin/show_questions/'.base64_encode($request->chapter));
 		}else{
-			return redirect()->to('/admin/show_questions/');
+
+			return redirect()->to('/admin/show_questions?question_type='.$_GET['question_type']);
 		}
 		
 
@@ -163,14 +175,26 @@ class AdminquesController1 extends Controller{
 
 	public function show_questions(Request $request){
 		$chapter_id = base64_decode($request->chapter_id);
-
+		
 		$data['chapter_id'] = $chapter_id;
 		if($chapter_id){
 			$data['questions_data'] = DB::table("question_bank")->where("chapter_id",$chapter_id)->orderBy('ordering_id', 'ASC')
             ->groupBy('q_id')->get();
+            $data['add_questions'] = "quiz_exam";
 		}else{
-			$data['questions_data'] = DB::table("question_bank")->orderBy('ordering_id', 'ASC')
-            ->groupBy('q_id')->get();
+			
+			if($_GET['question_type'] == "quiz"){
+				$data['questions_data'] = DB::table("question_bank")->where("quiz_exam","Quiz")->orWhere("quiz_exam","Both")->orderBy('ordering_id', 'ASC')
+            	->groupBy('q_id')->get();
+            	$data['add_questions'] = $_GET['question_type'];
+			}
+			if($_GET['question_type'] == "exam_builder"){
+
+				$data['questions_data'] = DB::table("question_bank")->where("quiz_exam","Exam Builder")->orWhere("quiz_exam","Both")->orderBy('ordering_id', 'ASC')
+            	->groupBy('q_id')->get();
+            	$data['add_questions'] = $_GET['question_type'];
+			}
+			
 		}
 		
 
@@ -195,7 +219,7 @@ class AdminquesController1 extends Controller{
         if($request->chapter_id){
         	return redirect()->to('/admin/show_questions/'.base64_encode($question_data->chapter_id));
         }else{
-        	return redirect()->to('/admin/show_questions/');
+        	return redirect()->to('/admin/show_questions?question_type='.$_GET["question_type"]);
         }
 
 	}
@@ -287,7 +311,8 @@ public function post_questions_bank_edit(Request $request){
     if($request->chapter_id){
     	return redirect()->to('/admin/show_questions/'.base64_encode($request->chapter_id));
     }else{
-    	return redirect()->to('/admin/show_questions');
+
+    	return redirect()->to('/admin/show_questions?question_type='.$_GET['question_type']);
     }
 }
 

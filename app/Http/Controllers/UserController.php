@@ -245,8 +245,14 @@ class UserController extends Controller
         $st_id = base64_decode($request->st_id);
         
         if($request->course_id && $request->topic_id && $request->st_id){
-
-            $data['reference_id'] = Session::get("reference_id");
+            
+            if(isset($_GET['reference_id'])){
+                $data['reference_id'] = base64_decode($_GET['reference_id']);
+                Session::put("reference_id",$data['reference_id']);
+            }else{
+                $data['reference_id'] = Session::get("reference_id");
+            }
+            
             
             $data['course_id'] = base64_decode($request->course_id);
             $data['topic_id'] = base64_decode($request->topic_id);
@@ -339,7 +345,7 @@ class UserController extends Controller
         $questions_data = QuestionBank::where("q_id",$q_id)->orderBy('ordering_id', 'ASC')->get();
         $session_data = NewSessionAnalysis::where("question_id",$q_id)->where("reference_id",$reference_id)->get();
         // echo count($session_data);die;
-        // print_r($session_data);
+        
         $reference_id = Session::get("reference_id");
         if(count($session_data) == 0){
             foreach($questions_data as $q_data){
@@ -375,10 +381,13 @@ class UserController extends Controller
             // $session_analysis->save();
         }else{
             
+            
+            
             foreach($session_data as $s_data){
+                
                 $new_session_analysis = NewSessionAnalysis::find($s_data->analysis_id);
                 
-                
+
                 $new_session_analysis->student_answer = $request->answer_val1;
                 $new_session_analysis->attempted_status = $request->answer_val1;
                 $new_session_analysis->time_spent_seconds = $request->ans_time;
@@ -402,8 +411,14 @@ class UserController extends Controller
         
 
         if($course_id && $topic_id && $st_id){
+
                 $data['st_id'] = $st_id;
-                $data['reference_id'] = Session::get("reference_id");
+                if(isset($_GET["reference_id"])){
+                    $data['reference_id'] = base64_decode($_GET["reference_id"]);
+                }else{
+                    $data['reference_id'] = Session::get("reference_id");
+                }
+                
                 $data['questions'] = QuestionBank::where("course_id",$course_id)->where("topic_id",$topic_id)->where("chapter_id",$st_id)->groupBy('q_id')->get();
                 $data['session_analysis'] = NewSessionAnalysis::where("course_id",$course_id)->where("topic_id",$topic_id)->where("chapter_id",$st_id)->where("reference_id",$data['reference_id'])->where("student_id",Auth::guard("customer")->user()->id)->orderBy('analysis_id', 'ASC')->groupBy('question_id')->get();
                 $data['session_analysis1'] = SessionAnalysis::where("course_id",$course_id)->where("topic_id",$topic_id)->where("subtopic_id",$st_id)->where("reference_id",$data['reference_id'])->where("student_id",Auth::guard("customer")->user()->id)->first();

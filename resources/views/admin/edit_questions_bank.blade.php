@@ -678,7 +678,7 @@ $(function() {
           <!-- /.card-header -->
           <div class="card-body">
             
-            <form action="{{ url('/admin/post_questions_bank_edit') }}" id="question_form" method="post">
+            <form action="{{ url('/admin/post_questions_bank_edit') }}?question_type={{ $question_type }}" id="question_form" method="post">
                       {!! csrf_field() !!}
                        
 
@@ -721,12 +721,21 @@ $(function() {
                 <div class="form-group">
                   <label>Questions available in:</label>
                   <div class="input-group questions_available">
+                  @if($question_type == "quiz")   
                   <div class="icheck-primary d-inline">
                     <input type="radio" id="radioPrimary1" name="question_exam" value="Quiz" @if($question_details->quiz_exam == "Quiz") checked @endif>
                     <label for="radioPrimary1">
                       Quiz
                     </label>
                   </div><br><br>
+                  <div class="icheck-primary d-inline">
+                    <input type="radio" id="radioPrimary3" name="question_exam" value="Both" @if($question_details->quiz_exam == "Both") checked @endif>
+                    <label for="radioPrimary3">
+                      Quiz and Exam Builder both
+                    </label>
+                  </div><br><br>
+                  @endif
+                  @if($question_type == "exam_builder")
                   <div class="icheck-primary d-inline">
                     <input type="radio" id="radioPrimary2" name="question_exam" value="Exam Builder" @if($question_details->quiz_exam == "Exam Builder") checked @endif>
                     <label for="radioPrimary2" >
@@ -736,9 +745,30 @@ $(function() {
                   <div class="icheck-primary d-inline">
                     <input type="radio" id="radioPrimary3" name="question_exam" value="Both" @if($question_details->quiz_exam == "Both") checked @endif>
                     <label for="radioPrimary3">
-                      Both
+                      Exam Builder and Quiz both
                     </label>
                   </div><br><br>
+                  @endif
+                  @if($question_type == "quiz_exam")
+                    <div class="icheck-primary d-inline">
+                      <input type="radio" id="radioPrimary1" name="question_exam" value="Quiz" @if($question_details->quiz_exam == "Quiz") checked @endif>
+                      <label for="radioPrimary1">
+                        Quiz
+                      </label>
+                    </div><br><br>
+                    <div class="icheck-primary d-inline">
+                    <input type="radio" id="radioPrimary2" name="question_exam" value="Exam Builder" @if($question_details->quiz_exam == "Exam Builder") checked @endif>
+                    <label for="radioPrimary2" >
+                      Exam Builder
+                    </label>
+                  </div><br><br>
+                    <div class="icheck-primary d-inline">
+                      <input type="radio" id="radioPrimary3" name="question_exam" value="Both">
+                      <label for="radioPrimary3">
+                        Quiz and Exam Builder both
+                      </label>
+                    </div><br><br>
+                  @endif 
                   </div>
                 </div>
               </div>

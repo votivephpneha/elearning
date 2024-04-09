@@ -66,10 +66,18 @@
             </a>
           </li>  -->
           <li class="nav-item">
-            <a href="{{ url('/admin/show_questions') }}" class="nav-link">
+            <a href="{{ url('/admin/show_questions') }}?question_type=quiz" class="nav-link">
               <i class="nav-icon fas fa-question"></i>
               <p>
-                Question Management
+                Quiz Management
+              </p>
+            </a>
+          </li> 
+          <li class="nav-item">
+            <a href="{{ url('/admin/exam_builder_management') }}?question_type=exam_builder" class="nav-link">
+              <i class="nav-icon fas fa-book-open"></i>
+              <p>
+                Exam Builder Management
               </p>
             </a>
           </li> 

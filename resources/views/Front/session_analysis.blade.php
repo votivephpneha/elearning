@@ -167,7 +167,7 @@
       <?php
     }  
   }else{
-    $mins = (int)$session_analysis1->time_spent_seconds/60;
+    $mins = (int)$session_analysis1->time_spent_seconds;
       ?>
       <h5><?php echo number_format((float)$mins, 2, '.', ''); ?> <small>minutes</small></h5>
       <p>Total Time Spent</p>

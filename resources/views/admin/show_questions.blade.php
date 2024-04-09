@@ -40,7 +40,7 @@
               <div class="card-header">
                 <h3 class="card-title">Questions List</h3>
                 <div style="float:right; margin-right:10px; margin-top:10px;">
-                  <a href="{{ url('/admin/add_questions_bank') }}/@if($chapter_id){{ base64_encode($chapter_id) }}@endif" class="btn btn-primary" style="color:#FFFFFF"> Add New Questions</a>
+                  <a href="{{ url('/admin/add_questions_bank') }}/@if($chapter_id){{ base64_encode($chapter_id) }}@endif?question_type={{ $add_questions }}" class="btn btn-primary" style="color:#FFFFFF"> Add New Questions</a>
                 </div>
               </div>
 
@@ -111,9 +111,12 @@
 
                       <!-- <a href="{{ route('course.view', base64_encode($list->course_id)) }}"><i class="fa fa-eye"></i></a> -->
 
-                    <a href="{{ route('question.edit', ['id'=>base64_encode($list->q_id),'chapter_id'=>base64_encode($chapter_id)]) }}"><i class="fa fa-edit"></i></a>
-                      
+                    <a href="{{ route('question.edit', ['id'=>base64_encode($list->q_id),'chapter_id'=>base64_encode($chapter_id)]) }}?question_type={{ $add_questions }}"><i class="fa fa-edit"></i></a>
+                      @if($chapter_id)
                       <a title="Delete User" href="{{ route('question.delete',['id'=>base64_encode($list->q_id),'chapter_id'=>$chapter_id] ) }}" onclick="return confirm('Are you sure you want to delete this record?')"><i class="fa fa-trash"></i></a>
+                      @else
+                      <a title="Delete User" href="{{ route('question.delete',base64_encode($list->q_id)) }}?question_type={{ $add_questions }}" onclick="return confirm('Are you sure you want to delete this record?')"><i class="fa fa-trash"></i></a>
+                      @endif
                     </td>
                   </tr>
                   

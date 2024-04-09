@@ -72,6 +72,7 @@ Route::post('/admin/post_questions_bank', [AdminquesController1::class, 'post_qu
 Route::post('question/img', [AdminquesController1::class, 'uploadMedia'])->name('admin.question.uploadMedia');
 Route::post('/admin/fetch-subtopics', [AdminquesController1::class, 'fetch_subtopics'])->name('fetch-subtopics');
 Route::get('/admin/show_questions/{chapter_id}', [AdminquesController1::class, 'show_questions'])->name('show_questions');
+Route::get('/admin/exam_builder_management', [AdminquesController1::class, 'show_questions'])->name('exam_builder_management');
 Route::get('/admin', [AuthController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/admin/login', [Authcontroller::class, 'login'])->name("login.admin");
 Route::get('/admin/dashboard', [AdminController::class, 'index'])->name("admin.dashboard");
