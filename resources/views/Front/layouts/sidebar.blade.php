@@ -13,7 +13,7 @@ content_paste_search
 <br>
 
 <a href="{{ url('/user/session_history') }}"><i class="material-symbols-outlined">
-pie_chart
+history
 </i>
 <span class="icon-text"></span>Attempt History</a><br>
 

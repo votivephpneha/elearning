@@ -28,7 +28,7 @@ keyboard_backspace
  </div> -->
  <div class="text-quize">
 <h5>{{ $course_title->title }}</h5>
-<p>Function</p>
+<p>{{ $topic_name }}</p>
 <p>Total marks <b>{{ $marks }} Marks</b></p>
 <p class="alrm-ct">@if($subtopic_data->timer != "Not Timed")<b><i class='bx bx-alarm' style="font-size: 21px;position: relative;top: 2px;"></i> {{ $total_time }} mins <i class='bx bxs-circle' style="font-size: 8px;"></i></b>@else <b><i class='bx bx-alarm' style="font-size: 21px;position: relative;top: 2px;"></i>Not Timed</b> @endif Total Question: <strong>{{ $question_count }}</strong> </p>
 

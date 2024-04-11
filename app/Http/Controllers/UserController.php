@@ -94,6 +94,9 @@ class UserController extends Controller
         }
 
         $get_timer = DB::table("subtopics")->where("st_id",$st_id)->first();
+        $topic_name = DB::table("topics")->where("topic_id",$topic_id)->first();
+        $data['topic_name'] = $topic_name->title;
+
         $total_time = $get_timer->quiz_time;
 
         $min = $total_time/60;
@@ -415,6 +418,11 @@ class UserController extends Controller
         if($course_id && $topic_id && $st_id){
 
                 $data['st_id'] = $st_id;
+
+                $timer_type = DB::table("subtopics")->where("st_id",$st_id)->first();
+                $data['timer_type'] = $timer_type->timer;
+                $data['timer'] = Session::get("timer");
+
                 if(isset($_GET["reference_id"])){
                     $data['reference_id'] = base64_decode($_GET["reference_id"]);
                 }else{

@@ -53,6 +53,104 @@
         $(".label_incorrect-"+i).remove();
     }
   }
+
+  var timer_type = "<?php echo $timer_type; ?>";
+  console.log("timer_type",timer_type);
+  if(timer_type == "Timed"){
+    var avg_time_length = $(".avg_time").length;
+    for(var i = 1;i<=avg_time_length;i++){
+      
+      if(i == 1){
+        var prev_timer = "<?php echo $timer; ?>";
+        var timer_split = prev_timer.split('.');
+        var new_time = parseInt(timer_split[0])*60+parseInt(timer_split[1]);
+        console.log("new_time",new_time);
+        var avg_time_prev = $(".avg_time-"+i).val();
+        console.log("avg_time_prev",avg_time_prev);
+        var new_time_first = new_time - avg_time_prev;
+        $(".label_one-"+i).html(new_time_first);
+      }else{
+        var avg_time_prev = $(".avg_time-"+(i-1)).val();
+        //console.log("avg_time_prev",$(".avg_time-"+i).val());
+        var avg_time_next = $(".avg_time-"+i).val();
+        var avg_time = avg_time_prev - avg_time_next;
+        console.log("avg_time",avg_time);
+        var new_avg_time;
+        if(avg_time < 0){
+          new_avg_time = avg_time * -1;
+        }else{
+          new_avg_time = avg_time;
+        }
+        
+        $(".label_one-"+i).html(new_avg_time);
+      }
+      // var avg_time_prev = $(".avg_time-"+(i-1)).val();
+      // console.log("avg_time_prev",avg_time_prev);
+    }
+  }else{
+    var avg_time_length = $(".avg_time").length;
+    for(var i = 1;i<=avg_time_length;i++){
+      
+      if(i == 1){
+        var avg_time_prev = $(".avg_time-"+i).val();
+        //console.log("avg_time_prev",avg_time_prev);
+        $(".label_one-"+i).html(avg_time_prev);
+      }else{
+        var avg_time_prev = $(".avg_time-"+(i-1)).val();
+        //console.log("avg_time_prev",$(".avg_time-"+i).val());
+        var avg_time_next = $(".avg_time-"+i).val();
+        var avg_time = avg_time_next - avg_time_prev;
+        var new_avg_time;
+        if(avg_time < 0){
+          new_avg_time = avg_time * -1;
+        }else{
+          new_avg_time = avg_time;
+        }
+        $(".label_one-"+i).html(new_avg_time);
+      }
+      // var avg_time_prev = $(".avg_time-"+(i-1)).val();
+      // console.log("avg_time_prev",avg_time_prev);
+    }
+  }
+  
+  var time_sum = 0;
+  $(".label_span").each(function(){
+    var label_span_val = $(this).text();
+    
+    time_sum = time_sum + parseInt(label_span_val);
+  });
+
+  if(time_sum<60){
+    var digit_count = time_sum.toString().length;
+    var time_sum_sec1;
+    if(digit_count < 2){
+      time_sum_sec1 = "0"+time_sum;
+    }else{
+      time_sum_sec1 = time_sum;
+    }
+    $(".total_time_mins").html("0:"+time_sum_sec1);
+  }else{
+    var time_sum_min = parseInt(time_sum/60);
+
+    var time_sum_sec = time_sum%60;
+    var digit_count = time_sum_sec.toString().length;
+    var time_sum_sec1;
+    if(digit_count < 2){
+      time_sum_sec1 = "0"+time_sum_sec;
+    }else{
+      time_sum_sec1 = time_sum_sec;
+    }
+    
+    $(".total_time_mins").html(time_sum_min+":"+time_sum_sec1);
+  }
+  var total_questions = $(".attempt-quesa").length;
+  var total_avg_time = time_sum/60;
+  console.log("total_avg_time",total_avg_time);
+  var total_avg = total_avg_time/total_questions;
+  var avg_time = total_avg.toFixed(2);
+  $(".avg_time_minutes").html(avg_time);
+
+  
   
 </script>
 @endsection
@@ -111,7 +209,7 @@
       $avg_mins = $session_analysis1->time_spent_seconds /$session_analysis1->total_questions;
       $mins1 = $avg_mins/60;
       ?>
-      <h5> {{ $mins1 }} <small>minutes</small></h5>
+      <h5><span class="avg_time_minutes"> {{ $mins1 }}</span> <small>minutes</small></h5>
       <p>Avg. Time per Questions</p>
       <?php
     }else{
@@ -125,7 +223,7 @@
       $sum1 = $sum/count($session_analysis);
       ?>
 
-      <h5><?php echo number_format((float)$sum1, 2, '.', ''); ?> Seconds</small></h5>
+      <h5><span class="avg_time_minutes"><?php echo number_format((float)$sum1, 2, '.', ''); ?></span> Seconds</small></h5>
 
       <p>Avg. Time per Questions</p>
       <?php
@@ -134,7 +232,7 @@
     $avg_mins = (int)$session_analysis1->time_spent_seconds/(int)$session_analysis1->total_questions;
     $mins1 = $avg_mins/60;
     ?>
-    <h5> <?php echo number_format((float)$mins1, 2, '.', ''); ?> <small>minutes</small></h5>
+    <h5><span class="avg_time_minutes"></span> <small>minutes</small></h5>
     <p>Avg. Time per Questions</p>
     <?php
   }
@@ -162,14 +260,14 @@
       <?php
     }else{
       ?>
-      <h5><?php echo $session_analysis1->time_spent_seconds; ?> minutes</small></h5>
+      <h5><span class="total_time_mins"><?php echo $session_analysis1->time_spent_seconds; ?></span> minutes</small></h5>
       <p>Total Time Spent</p>
       <?php
     }  
   }else{
     $mins = $session_analysis1->time_spent_seconds;
       ?>
-      <h5><?php echo $mins; ?> <small>minutes</small></h5>
+      <h5><span class="total_time_mins"><?php echo $mins; ?></span> <small>minutes</small></h5>
       <p>Total Time Spent</p>
       <?php
   }
@@ -251,6 +349,7 @@
 <?php
 
   $options = DB::table("question_analysis")->where("course_id",$qu->course_id)->where("topic_id",$qu->topic_id)->where("chapter_id",$qu->chapter_id)->where("question_id",$qu->question_id)->where("student_id",Auth::guard("customer")->user()->id)->where("reference_id",$reference_id)->get();
+  //echo $qu->question_id;
   
 ?>
 <div class="attempt-quesa">
@@ -263,7 +362,14 @@
     @endif</p>
 <h3>Question {{ $i }} - <span>{!! $qu->questions !!}</span> </h3>
 <input type="hidden" name="">
-<div class="color-bx"> <label class="label_one"> Average Time: {{ $qu->time_spent_seconds }} seconds</label>
+<input type="hidden" name="avg_time" class="avg_time avg_time-{{ $i }}" value="{{ $qu->time_spent_seconds }}">
+<div class="color-bx"> <label class="label_one "> Average Time: 
+  @if($qu->time_spent_seconds == NULL)
+    <span class="label_span">0</span> seconds</label>
+  @else
+    <span class="label_span label_one-{{ $i }}">{{ $qu->time_spent_seconds }}</span> seconds</label>
+  @endif
+  
 @if($qu->attempted_status == NULL)
  <label class="label_two label_attempted-{{ $i }}">0% Correct</label>  
 @endif    
@@ -281,7 +387,13 @@
   
 @endforeach
 
-<label class="label_three"> You spent : {{ $qu->time_spent_seconds }} seconds</label>  </div>
+<label class="label_three"> You spent : 
+  @if($qu->time_spent_seconds == NULL)
+    <span>0</span> seconds</label>  </div>
+  @else
+    <span class="label_one-{{ $i }}">{{ $qu->time_spent_seconds }}</span> seconds</label>  </div>
+  @endif
+
 </div>
 <br>
 

@@ -19,23 +19,135 @@
   if(c == null){
     document.cookie="quiz_time-"+"<?php echo $st_id; ?>"+"= 0";
     document.cookie="ans_time-1= 0";
-    
+    document.cookie="quiz_time_minutes-"+"<?php echo $st_id; ?>"+"="+"<?php echo $timer; ?>";  
     $(".qustion-box-one").hide();
     $(".qustion-box-one-1").show();
   }else{
     $(".qustion-box-one").hide();
     $(".qustion-box-one-"+c).show();
 
-    var timer_next = $(".ans_time-"+c);
-    var seconds_next = 0;
+    // var timer_next = $(".ans_time-"+c);
+    // var seconds_next = 0;
 
-    var q_timer_next = setInterval(function() {
-      seconds_next++;
-      timer_next.val(seconds_next);
-    }, 1000);
+    // var q_timer_next = setInterval(function() {
+    //   seconds_next++;
+    //   timer_next.val(seconds_next);
+
+    // }, 1000);
   }
   //alert();
+  <?php
+    if($subtopic_data->timer != "Not Timed"){
+      ?>
+  var timer2 = "<?php echo $timer; ?>";
+  console.log("timer2",timer2);
   
+  var interval = setInterval(function() {
+
+    var new_time = getCookie("quiz_time_minutes-"+"<?php echo $st_id; ?>");
+    
+    //console.log("quiz_time_minutes",new_time);
+    if(new_time){
+      var timer = new_time.split('.');
+    }else{
+      var timer = timer2.split('.');
+    }
+    
+    //by parsing integer, I avoid all extra string processing
+    var minutes = parseInt(timer[0], 10);
+    var seconds = parseInt(timer[1], 10);
+
+    --seconds;
+    minutes = (seconds < 0) ? --minutes : minutes;
+    
+    
+    
+    if (minutes < 0) clearInterval(interval);
+    seconds = (seconds < 0) ? 59 : seconds;
+    seconds = (seconds < 10) ? '0' + seconds : seconds;
+    //minutes = (minutes < 10) ?  minutes : minutes;
+    $('.countdown').html(minutes + '.' + seconds);
+    var new_time = minutes*60 + seconds;
+    //console.log(new_time);
+    $(".ans_time-1").val(new_time);
+    $(".timer1").val(new_time);
+    timer2 = minutes + '.' + seconds;
+    
+    $(".timer").val(timer2);
+
+
+    if(timer2 == "0.00"){
+      var total_questions = $(".pallate").length;
+      for(var i = 1;i<=total_questions;i++){
+        var q_id = $(".question_id-"+i).val();
+        if(i != total_questions){
+          next_btn(i,q_id);
+        }
+        
+      }
+      submit_quiz1();
+      clearInterval(interval);
+      //window.location.href = "{{ url('/user/session_analysis') }}/{{ $course_id }}/{{ $topic_id }}/{{ $st_id }}";
+    }
+    var now = new Date();
+    var minutes1 = 120;
+    now.setTime(now.getTime() + (minutes1 * 60 * 1000));
+    document.cookie="quiz_time_minutes-"+"<?php echo $st_id; ?>"+"="+minutes+"."+seconds;  
+    document.cookie = "expires=" + now.toUTCString() + ";"
+  }, 1000);
+  //clearInterval(interval);
+   <?php
+    }else{
+      ?>
+        var minutesLabel = document.getElementById("minutes");
+        var secondsLabel = document.getElementById("seconds");
+        var time_value = getCookie("quiz_time-"+"<?php echo $st_id; ?>");
+        
+        
+        
+          if(time_value){
+          
+            var totalSeconds = time_value;
+            
+          }else{
+
+            var totalSeconds = 0;
+          }
+        
+       
+        
+        
+        var not_timed = setInterval(setTime, 1000);
+
+        function setTime() {
+          ++totalSeconds;
+          secondsLabel.innerHTML = pad(totalSeconds % 60);
+          minutesLabel.innerHTML = pad(parseInt(totalSeconds / 60));
+          var min = $("#minutes").text();
+          var sec = $("#seconds").text();
+          localStorage.setItem("quiz_time-"+"<?php echo $st_id; ?>", totalSeconds);
+          var now = new Date();
+          var minutes = 120;
+          $(".timer1").val(totalSeconds);
+          now.setTime(now.getTime() + (minutes * 60 * 1000));
+          document.cookie="quiz_time-"+"<?php echo $st_id; ?>"+"="+totalSeconds;  
+          document.cookie = "expires=" + now.toUTCString() + ";"
+          //var timer1 = $(".timer1").val();
+          $(".ans_time-1").val(totalSeconds);
+        }
+
+        function pad(val) {
+          var valString = val + "";
+          if (valString.length < 2) {
+            return "0" + valString;
+          } else {
+            return valString;
+          }
+        }
+  
+      <?php
+    }
+  ?>
 
   var quiz = [];
   var session_quiz_array1 = JSON.stringify(quiz);
@@ -43,22 +155,22 @@
   var timer = $(".ans_time-1");
 
   
-  var ans_time_value = getCookie("ans_time-1");
+  // var ans_time_value = getCookie("ans_time-1");
 
-  if(ans_time_value){
-    var seconds = ans_time_value;
-  }else{
-    var seconds = 0;
-  }
+  // if(ans_time_value){
+  //   var seconds = ans_time_value;
+  // }else{
+  //   var seconds = 0;
+  // }
   
   
 
 
-  var q_timer = setInterval(function() {
-    seconds++;
-    document.cookie="ans_time-1="+seconds;  
-    timer.val(seconds);
-  }, 1000);
+  // var q_timer = setInterval(function() {
+  //   seconds++;
+  //   document.cookie="ans_time-1="+seconds;  
+  //   timer.val(seconds);
+  // }, 1000);
   function next_btn(i,q_id){
     //alert(i);
     var total_div = $('.qustion-box-one').length;
@@ -117,19 +229,35 @@
     });
 
     
-    
+    var timer1_val = $(".timer1").val();
+    //alert(timer1_val);
+    $(".ans_time-"+i).val("");
+    $(".ans_time-"+(i+1)).val(timer1_val);
 
     //clearInterval(q_timer);
     //alert(".ans_time-"+(i+1));
-    var timer_next = $(".ans_time-"+(i+1));
-    var seconds_next = 0;
+    var timer_type = "<?php echo $subtopic_data->timer; ?>";
+    if(timer_type == "Timed"){
+      var timer_next = $(".ans_time-"+(i+1));
+      console.log("timer1_val",timer1_val);
+      var seconds_next = timer1_val;
 
-    var q_timer_next = setInterval(function() {
-      seconds_next++;
-      timer_next.val(seconds_next);
-    }, 1000);
+      var q_timer_next = setInterval(function() {
+        seconds_next--;
+        timer_next.val(seconds_next);
+      }, 1000);
+    }else{
+      var timer_next = $(".ans_time-"+(i+1));
+      var seconds_next = timer1_val;
 
-    //clearInterval(q_timer1);
+      var q_timer_next = setInterval(function() {
+        seconds_next++;
+        timer_next.val(seconds_next);
+      }, 1000);
+    }
+    
+
+    
 
     if(total_div == (i+1)){
       $(".next-btn-"+(i+1)).removeAttr("onclick");
@@ -138,8 +266,7 @@
 
     
     window.history.replaceState(null, null, "?question="+(i+1));
-    var minutes = $("#minutes").text();
-    var seconds = $("#seconds").text();
+    
     
     
   }
@@ -236,6 +363,15 @@
       success: function(data){
           
             delete_cookie("quiz_time-"+"<?php echo $st_id; ?>");
+
+            var timer_type = "<?php echo $subtopic_data->timer; ?>";
+
+            if(timer_type == "Timed"){
+              clearInterval(interval);
+            }else{
+              clearInterval(not_timed);
+            }
+            
            window.location.href = "{{ url('/user/session_analysis') }}/{{ base64_encode($course_id) }}/{{ base64_encode($topic_id) }}/{{ base64_encode($st_id) }}";
          
       }
@@ -265,115 +401,10 @@
   function question_pallate(i){
     $(".qustion-box-one").hide();
     $(".qustion-box-one-"+i).show();
+    window.history.replaceState(null, null, "?question="+i);
   }
 
-  <?php
-    if($subtopic_data->timer != "Not Timed"){
-      ?>
-  var timer2 = "<?php echo $timer; ?>";
-  console.log("timer2",timer2);
   
-  var interval = setInterval(function() {
-
-    var new_time = getCookie("quiz_time_minutes-"+"<?php echo $st_id; ?>");
-    
-    //console.log("quiz_time_minutes",new_time);
-    if(new_time){
-      var timer = new_time.split('.');
-    }else{
-      var timer = timer2.split('.');
-    }
-    
-    //by parsing integer, I avoid all extra string processing
-    var minutes = parseInt(timer[0], 10);
-    var seconds = parseInt(timer[1], 10);
-
-    --seconds;
-    minutes = (seconds < 0) ? --minutes : minutes;
-    
-    
-    
-    if (minutes < 0) clearInterval(interval);
-    seconds = (seconds < 0) ? 59 : seconds;
-    seconds = (seconds < 10) ? '0' + seconds : seconds;
-    //minutes = (minutes < 10) ?  minutes : minutes;
-    $('.countdown').html(minutes + '.' + seconds);
-    timer2 = minutes + '.' + seconds;
-    
-    $(".timer").val(timer2);
-
-    if(timer2 == "0.00"){
-      var total_questions = $(".pallate").length;
-      for(var i = 1;i<=total_questions;i++){
-        var q_id = $(".question_id-"+i).val();
-        if(i != total_questions){
-          next_btn(i,q_id);
-        }
-        
-      }
-      submit_quiz1();
-      clearInterval(interval);
-      //window.location.href = "{{ url('/user/session_analysis') }}/{{ $course_id }}/{{ $topic_id }}/{{ $st_id }}";
-    }
-    var now = new Date();
-    var minutes1 = 120;
-    now.setTime(now.getTime() + (minutes1 * 60 * 1000));
-    document.cookie="quiz_time_minutes-"+"<?php echo $st_id; ?>"+"="+minutes+"."+seconds;  
-    document.cookie = "expires=" + now.toUTCString() + ";"
-  }, 1000);
-  //clearInterval(interval);
-   <?php
-    }else{
-      ?>
-        var minutesLabel = document.getElementById("minutes");
-        var secondsLabel = document.getElementById("seconds");
-        var time_value = getCookie("quiz_time-"+"<?php echo $st_id; ?>");
-        
-        
-        
-          if(time_value){
-          
-            var totalSeconds = time_value;
-            
-          }else{
-
-            var totalSeconds = 0;
-          }
-        
-       
-        
-        
-        var not_timed = setInterval(setTime, 1000);
-
-        function setTime() {
-          ++totalSeconds;
-          secondsLabel.innerHTML = pad(totalSeconds % 60);
-          minutesLabel.innerHTML = pad(parseInt(totalSeconds / 60));
-          var min = $("#minutes").text();
-          var sec = $("#seconds").text();
-          localStorage.setItem("quiz_time-"+"<?php echo $st_id; ?>", totalSeconds);
-          var now = new Date();
-          var minutes = 120;
-          $(".timer1").val(totalSeconds);
-          now.setTime(now.getTime() + (minutes * 60 * 1000));
-          document.cookie="quiz_time-"+"<?php echo $st_id; ?>"+"="+totalSeconds;  
-          document.cookie = "expires=" + now.toUTCString() + ";"
-          var timer1 = $(".timer1").val();
-          
-        }
-
-        function pad(val) {
-          var valString = val + "";
-          if (valString.length < 2) {
-            return "0" + valString;
-          } else {
-            return valString;
-          }
-        }
-  
-      <?php
-    }
-  ?>
   var delete_cookie = function(name) {
     document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
   };
