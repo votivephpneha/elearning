@@ -155,7 +155,7 @@
   <?php
   if(strpos($reference_id,'quiz')){
     if($subtopic_data->quiz_time == "Timed"){
-      $mins = (int)$session_analysis1->time_spent_seconds /60;
+      $mins = (int)$session_analysis1->time_spent_seconds;
       ?>
       <h5>{{ $mins }} <small>minutes</small></h5>
       <p>Total Time Spent</p>
@@ -167,9 +167,9 @@
       <?php
     }  
   }else{
-    $mins = (int)$session_analysis1->time_spent_seconds;
+    $mins = $session_analysis1->time_spent_seconds;
       ?>
-      <h5><?php echo number_format((float)$mins, 2, '.', ''); ?> <small>minutes</small></h5>
+      <h5><?php echo $mins; ?> <small>minutes</small></h5>
       <p>Total Time Spent</p>
       <?php
   }
@@ -244,9 +244,9 @@
   $i = 1;
   $j = 1;
   $correct_answer = array();
-  
+  //print_r($session_array);
 ?>
-@if(count($session_analysis)>1)
+
 @foreach($session_analysis as $qu)
 <?php
 
@@ -262,7 +262,7 @@
       Not Attempted 
     @endif</p>
 <h3>Question {{ $i }} - <span>{!! $qu->questions !!}</span> </h3>
-
+<input type="hidden" name="">
 <div class="color-bx"> <label class="label_one"> Average Time: {{ $qu->time_spent_seconds }} seconds</label>
 @if($qu->attempted_status == NULL)
  <label class="label_two label_attempted-{{ $i }}">0% Correct</label>  
@@ -325,9 +325,9 @@
 ?>
 
 @endforeach
-@else
 @foreach($questions as $qu)
-<?php
+  @if(!in_array($qu->q_id, $session_array))
+  <?php
 
   $options = DB::table("question_bank")->where("course_id",$qu->course_id)->where("topic_id",$qu->topic_id)->where("chapter_id",$qu->chapter_id)->where("q_id",$qu->q_id)->get();
   
@@ -336,7 +336,7 @@
   <div class="rel-funct">
     
     <p class="atmpt">Not Attempted</p>
-<h3>Question {{ $i }} - <span>{!! $qu->questions !!}</span> </h3>
+<h3>Question {{ $i }} - <span>{!! $qu->title !!}</span> </h3>
 
 <div class="color-bx"> <label class="label_one"> Average Time: 0 seconds</label>
   
@@ -377,9 +377,9 @@
 <?php
   $i++;
 ?>
-
-@endforeach
 @endif
+@endforeach
+
 <input type="hidden" name="correct_answer" class="correct_answer" value="<?php echo count($correct_answer); ?>">
 
 

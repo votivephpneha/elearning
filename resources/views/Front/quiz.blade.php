@@ -11,25 +11,46 @@
   var remaining_questions = $(".not-atempt,.skiped").length;
   $(".remaining_questions").html(remaining_questions);
   
+  var url_string = window.location.href; 
+  var url = new URL(url_string);
+  var c = url.searchParams.get("question");
+  console.log(c);
 
+  if(c == null){
+    document.cookie="quiz_time-"+"<?php echo $st_id; ?>"+"= 0";
+    document.cookie="ans_time-1= 0";
+    
+    $(".qustion-box-one").hide();
+    $(".qustion-box-one-1").show();
+  }else{
+    $(".qustion-box-one").hide();
+    $(".qustion-box-one-"+c).show();
+
+    var timer_next = $(".ans_time-"+c);
+    var seconds_next = 0;
+
+    var q_timer_next = setInterval(function() {
+      seconds_next++;
+      timer_next.val(seconds_next);
+    }, 1000);
+  }
+  //alert();
+  
 
   var quiz = [];
   var session_quiz_array1 = JSON.stringify(quiz);
   sessionStorage.setItem("quiz_json", session_quiz_array1);
   var timer = $(".ans_time-1");
-  var ans_time_1 = $(".ans_time-1").val();
 
-  if(ans_time_1 != ""){
-    var seconds = ans_time_1;
+  
+  var ans_time_value = getCookie("ans_time-1");
+
+  if(ans_time_value){
+    var seconds = ans_time_value;
   }else{
-    var ans_time_value = getCookie("ans_time-1");
-
-    if(ans_time_value){
-      var seconds = ans_time_value;
-    }else{
-      var seconds = 0;
-    }
+    var seconds = 0;
   }
+  
   
 
 
@@ -81,11 +102,12 @@
     var total_questions = $(".pallate").length;
     var total_time = $(".timer").val();
     var ans_time = $(".ans_time-"+i).val();
+    var question_no = $(".question_no-"+i).val();
     //alert(ans_time);
     $.ajax({
       type: "post",
       url: "{{ url('/user/submit_question_answer') }}",
-      data: {"q_id":q_id,"answer_val1":answer_val1,"reference_id":'{{ $reference_id }}',"attempted_questions":active_div,"total_questions":total_questions,"course_id":course_id,"topic_id":topic_id,"subtopic_id":subtopic_id,"total_time":total_time,"ans_time":ans_time,"_token":"{{ csrf_token() }}"},
+      data: {"question_no":question_no,"q_id":q_id,"answer_val1":answer_val1,"reference_id":'{{ $reference_id }}',"attempted_questions":active_div,"total_questions":total_questions,"course_id":course_id,"topic_id":topic_id,"subtopic_id":subtopic_id,"total_time":total_time,"ans_time":ans_time,"_token":"{{ csrf_token() }}"},
       cache: false,
       success: function(data){
          // if(data == 1){
@@ -122,12 +144,8 @@
     
   }
 
-  var url_string = window.location.href; 
-  var url = new URL(url_string);
-  var c = url.searchParams.get("question");
-  console.log(c);
-  $(".qustion-box-one").hide();
-  $(".qustion-box-one-"+c).show();
+
+  
 
   function prev_btn(i){
     //alert(i);
@@ -139,13 +157,7 @@
       $(".qustion-box-one-"+next_box).show();
     }
 
-    var timer_prev = $(".ans_time-"+(i-1));
-    var seconds_prev = 0;
-
-    var q_timer_prev = setInterval(function() {
-      seconds_prev++;
-      timer_prev.val(seconds_prev);
-    }, 1000);
+   
 
     window.history.replaceState(null, null, "?question="+(i-1));
     
@@ -215,19 +227,24 @@
     var topic_id = "<?php echo $topic_id; ?>";
     var subtopic_id = "<?php echo $st_id; ?>";
     var ans_time = $(".ans_time-"+total_div).val();
+    var question_no = $(".question_no-"+total_div).val();
     $.ajax({
       type: "post",
       url: "{{ url('/user/submit_quiz') }}",
-      data: {"q_id":q_id,"answer_val1":answer_val1,"attempted_questions":active_div,"total_questions":total_questions,"course_id":course_id,"topic_id":topic_id,"subtopic_id":subtopic_id,"total_time":time_spent,"ans_time":ans_time,"_token":"{{ csrf_token() }}"},
+      data: {"question_no":question_no,"q_id":q_id,"answer_val1":answer_val1,"attempted_questions":active_div,"total_questions":total_questions,"course_id":course_id,"topic_id":topic_id,"subtopic_id":subtopic_id,"total_time":time_spent,"ans_time":ans_time,"_token":"{{ csrf_token() }}"},
       cache: false,
       success: function(data){
-         
+          
+            delete_cookie("quiz_time-"+"<?php echo $st_id; ?>");
            window.location.href = "{{ url('/user/session_analysis') }}/{{ base64_encode($course_id) }}/{{ base64_encode($topic_id) }}/{{ base64_encode($st_id) }}";
          
       }
     });
-  }
+   
 
+    
+  }
+ 
   function answerClick(i,q_id){
     //alert(i);
     if($("input:radio[name='question_options-"+i+"']").is(":checked")) {
@@ -311,11 +328,9 @@
         var minutesLabel = document.getElementById("minutes");
         var secondsLabel = document.getElementById("seconds");
         var time_value = getCookie("quiz_time-"+"<?php echo $st_id; ?>");
-        //alert(time_value);
-        var local_time = localStorage.getItem("quiz_time-"+"<?php echo $st_id; ?>");
-        if(local_time){
-          totalSeconds = local_time;
-        }else{
+        
+        
+        
           if(time_value){
           
             var totalSeconds = time_value;
@@ -324,11 +339,11 @@
 
             var totalSeconds = 0;
           }
-        }
+        
        
         
         
-        setInterval(setTime, 1000);
+        var not_timed = setInterval(setTime, 1000);
 
         function setTime() {
           ++totalSeconds;
@@ -339,9 +354,12 @@
           localStorage.setItem("quiz_time-"+"<?php echo $st_id; ?>", totalSeconds);
           var now = new Date();
           var minutes = 120;
+          $(".timer1").val(totalSeconds);
           now.setTime(now.getTime() + (minutes * 60 * 1000));
           document.cookie="quiz_time-"+"<?php echo $st_id; ?>"+"="+totalSeconds;  
           document.cookie = "expires=" + now.toUTCString() + ";"
+          var timer1 = $(".timer1").val();
+          
         }
 
         function pad(val) {
@@ -356,6 +374,9 @@
       <?php
     }
   ?>
+  var delete_cookie = function(name) {
+    document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+  };
   function getCookie(name) {
     // Split cookie string and get all individual name=value pairs in an array
     let cookieArr = document.cookie.split(";");
@@ -393,6 +414,7 @@
           <p class="m-0 fiv-con"><i class='bx bx-time-five'></i><span id="minutes">00</span>:<span id="seconds">00</span></p>
           
         @endif
+        <input type="hidden" name="timer1" class="timer1" value="">
         <input type="hidden" name="timer" class="timer" value="">
     </div>
         <?php
@@ -411,6 +433,7 @@
           
         <div class="question-main">
       <div class="title mb-3 mt-2">
+        <input type="hidden" name="question_no" class="question_no-{{ $i }}" value="{{ $i }}">
         <input type="hidden" name="question_id" class="question_id-{{ $i }}" value="{{ $qu->q_id }}">
         <input type="hidden" name="ans_time" class="ans_time ans_time-{{ $i }}" value="">
         <div class="question_marks_title">

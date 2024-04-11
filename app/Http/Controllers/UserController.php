@@ -295,6 +295,7 @@ class UserController extends Controller
                 $new_session_analysis->student_id = Auth::guard("customer")->user()->id;
                 $new_session_analysis->course_id = $q_data->course_id;
                 $new_session_analysis->question_id = $q_data->q_id;
+                $new_session_analysis->question_ordering_id = $request->question_no;
                 $new_session_analysis->option_id = $q_data->option_id;
                 $new_session_analysis->course_id = $q_data->course_id;
                 $new_session_analysis->topic_id = $q_data->topic_id;
@@ -330,7 +331,7 @@ class UserController extends Controller
                 
                 $new_session_analysis->student_answer = $request->answer_val1;
                 $new_session_analysis->attempted_status = $request->answer_val1;
-                $new_session_analysis->time_spent_seconds = $request->ans_time;
+                //$new_session_analysis->time_spent_seconds = $request->ans_time;
                 $new_session_analysis->save();
                 
             }
@@ -353,6 +354,7 @@ class UserController extends Controller
                 $new_session_analysis->student_id = Auth::guard("customer")->user()->id;
                 $new_session_analysis->course_id = $q_data->course_id;
                 $new_session_analysis->question_id = $q_data->q_id;
+                $new_session_analysis->question_ordering_id = $request->question_no;
                 $new_session_analysis->option_id = $q_data->option_id;
                 $new_session_analysis->course_id = $q_data->course_id;
                 $new_session_analysis->topic_id = $q_data->topic_id;
@@ -390,7 +392,7 @@ class UserController extends Controller
 
                 $new_session_analysis->student_answer = $request->answer_val1;
                 $new_session_analysis->attempted_status = $request->answer_val1;
-                $new_session_analysis->time_spent_seconds = $request->ans_time;
+                //$new_session_analysis->time_spent_seconds = $request->ans_time;
 
                 $new_session_analysis->save();
                 
@@ -420,7 +422,12 @@ class UserController extends Controller
                 }
                 
                 $data['questions'] = QuestionBank::where("course_id",$course_id)->where("topic_id",$topic_id)->where("chapter_id",$st_id)->groupBy('q_id')->get();
-                $data['session_analysis'] = NewSessionAnalysis::where("course_id",$course_id)->where("topic_id",$topic_id)->where("chapter_id",$st_id)->where("reference_id",$data['reference_id'])->where("student_id",Auth::guard("customer")->user()->id)->orderBy('analysis_id', 'ASC')->groupBy('question_id')->get();
+                $data['session_analysis'] = NewSessionAnalysis::where("course_id",$course_id)->where("topic_id",$topic_id)->where("chapter_id",$st_id)->where("reference_id",$data['reference_id'])->where("student_id",Auth::guard("customer")->user()->id)->orderBy('question_ordering_id', 'ASC')->groupBy('question_id')->get();
+                $session_array = array();
+                foreach ($data['session_analysis'] as $ses_an) {
+                    $session_array[] = $ses_an->question_id;
+                }
+                $data['session_array'] = $session_array;
                 $data['session_analysis1'] = SessionAnalysis::where("course_id",$course_id)->where("topic_id",$topic_id)->where("subtopic_id",$st_id)->where("reference_id",$data['reference_id'])->where("student_id",Auth::guard("customer")->user()->id)->first();
             }else{
                 $data['reference_id'] = Session::get("reference_id");
