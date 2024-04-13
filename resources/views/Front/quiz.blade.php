@@ -3,8 +3,11 @@
 
 @section("current_page_js")
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3.0.0/es5/tex-mml-chtml.js"></script>
+
 <script type="text/javascript">
 
+ 
+  
 
   var total_questions = $(".pallate").length;
   $(".attempted").html($(".active-q").length+"/"+total_questions);
@@ -26,16 +29,57 @@
     $(".qustion-box-one").hide();
     $(".qustion-box-one-"+c).show();
 
-    // var timer_next = $(".ans_time-"+c);
-    // var seconds_next = 0;
+    var timer1_val = $(".timer1").val();
+    var timer_type = "<?php echo $subtopic_data->timer; ?>";
+    if(timer_type == "Timed"){
+      var timer_next = $(".ans_time-"+c);
+      console.log("timer1_val",timer1_val);
+      var seconds_next = timer1_val;
 
-    // var q_timer_next = setInterval(function() {
-    //   seconds_next++;
-    //   timer_next.val(seconds_next);
+      var time_value = getCookie("quiz_time-"+"<?php echo $st_id; ?>");
+        
+      
+      
+      var seconds_next = time_value;
+      
 
-    // }, 1000);
+      var q_timer_next = setInterval(function() {
+        //document.cookie="quiz_time-"+"<?php echo $st_id; ?>"+"-"+c+"="+seconds_next;
+        seconds_next--;
+        timer_next.val(seconds_next);
+        if("<?php echo isset($_GET['reference_id']); ?>"){
+          $(".ans_time").val(seconds_next);
+        }
+      }, 1000);
+    }else{
+      var timer_next = $(".ans_time-"+c);
+      var seconds_next = timer1_val;
+      
+      console.log("timer1_val",timer1_val);
+      var time_value = getCookie("quiz_time-"+"<?php echo $st_id; ?>");
+        
+        
+      
+      
+      var seconds_next = time_value;
+      
+        
+      
+     
+
+      var q_timer_next = setInterval(function() {
+        //document.cookie="quiz_time-"+"<?php echo $st_id; ?>"+"-"+c+"="+seconds_next;
+        seconds_next++;
+
+        timer_next.val(seconds_next);
+        if("<?php echo isset($_GET['reference_id']); ?>"){
+          $(".ans_time").val(seconds_next);
+        }
+      }, 1000);
+    }
   }
   //alert();
+
   <?php
     if($subtopic_data->timer != "Not Timed"){
       ?>
@@ -48,9 +92,24 @@
     
     //console.log("quiz_time_minutes",new_time);
     if(new_time){
-      var timer = new_time.split('.');
+      var timer = new_time.split(':');
     }else{
-      var timer = timer2.split('.');
+      var get_timer = "<?php echo $get_timer; ?>";
+      var time_min = parseInt(get_timer/60);
+      var time_sec = parseInt(get_timer%60);
+      var digit_count = time_sec.toString().length;
+      if(digit_count < 2){
+        time_sec1 = "0"+time_sec;
+      }else{
+        time_sec1 = time_sec;
+      }
+      var get_db_time = time_min+":"+time_sec1;
+      if(get_timer){
+        var timer = get_db_time.split(':');
+      }else{
+        var timer = timer2.split(':');
+      }
+      
     }
     
     //by parsing integer, I avoid all extra string processing
@@ -59,24 +118,35 @@
 
     --seconds;
     minutes = (seconds < 0) ? --minutes : minutes;
-    
+    console.log("seconds",seconds);
     
     
     if (minutes < 0) clearInterval(interval);
     seconds = (seconds < 0) ? 59 : seconds;
     seconds = (seconds < 10) ? '0' + seconds : seconds;
     //minutes = (minutes < 10) ?  minutes : minutes;
-    $('.countdown').html(minutes + '.' + seconds);
-    var new_time = minutes*60 + seconds;
+    $('.countdown').html(minutes + ':' + seconds);
+    var new_time = parseInt(minutes*60) + parseInt(seconds);
     //console.log(new_time);
     $(".ans_time-1").val(new_time);
     $(".timer1").val(new_time);
-    timer2 = minutes + '.' + seconds;
+    timer2 = minutes + ':' + seconds;
     
     $(".timer").val(timer2);
+    $.ajax({
+      type: "post",
+      url: "{{ url('/user/save_timer') }}",
+      data: {"reference_id":"{{ $reference_id }}","timer_value":new_time,"_token":"{{ csrf_token() }}"},
+      cache: false,
+      success: function(data){
+         // if(data == 1){
+         //   window.location.href = "{{ url('/user/session_analysis') }}/{{ base64_encode($course_id) }}/{{ base64_encode($topic_id) }}/{{ base64_encode($st_id) }}";
+         // }
+      }
+    });
 
 
-    if(timer2 == "0.00"){
+    if(timer2 == "0:00"){
       var total_questions = $(".pallate").length;
       for(var i = 1;i<=total_questions;i++){
         var q_id = $(".question_id-"+i).val();
@@ -92,7 +162,7 @@
     var now = new Date();
     var minutes1 = 120;
     now.setTime(now.getTime() + (minutes1 * 60 * 1000));
-    document.cookie="quiz_time_minutes-"+"<?php echo $st_id; ?>"+"="+minutes+"."+seconds;  
+    document.cookie="quiz_time_minutes-"+"<?php echo $st_id; ?>"+"="+minutes+":"+seconds;  
     document.cookie = "expires=" + now.toUTCString() + ";"
   }, 1000);
   //clearInterval(interval);
@@ -110,8 +180,22 @@
             var totalSeconds = time_value;
             
           }else{
-
-            var totalSeconds = 0;
+            var get_timer = "<?php echo $get_timer; ?>";
+            var time_min = parseInt(get_timer/60);
+            var time_sec = parseInt(get_timer%60);
+            var digit_count = time_sec.toString().length;
+            if(digit_count < 2){
+              time_sec1 = "0"+time_sec;
+            }else{
+              time_sec1 = time_sec;
+            }
+            
+            if(get_timer){
+              var totalSeconds = get_timer;
+            }else{
+              var totalSeconds = 0;
+            }
+            
           }
         
        
@@ -134,6 +218,17 @@
           document.cookie = "expires=" + now.toUTCString() + ";"
           //var timer1 = $(".timer1").val();
           $(".ans_time-1").val(totalSeconds);
+          $.ajax({
+            type: "post",
+            url: "{{ url('/user/save_timer') }}",
+            data: {"reference_id":"{{ $reference_id }}","timer_value":totalSeconds,"_token":"{{ csrf_token() }}"},
+            cache: false,
+            success: function(data){
+               // if(data == 1){
+               //   window.location.href = "{{ url('/user/session_analysis') }}/{{ base64_encode($course_id) }}/{{ base64_encode($topic_id) }}/{{ base64_encode($st_id) }}";
+               // }
+            }
+          });
         }
 
         function pad(val) {
@@ -162,7 +257,7 @@
   // }else{
   //   var seconds = 0;
   // }
-  
+
   
 
 
@@ -243,15 +338,22 @@
       var seconds_next = timer1_val;
 
       var q_timer_next = setInterval(function() {
+        //document.cookie="quiz_time-"+"<?php echo $st_id; ?>"+"-"+(i+1)+"="+seconds_next;
         seconds_next--;
         timer_next.val(seconds_next);
       }, 1000);
     }else{
       var timer_next = $(".ans_time-"+(i+1));
       var seconds_next = timer1_val;
+      //var time_value = getCookie("quiz_time-"+"<?php echo $st_id; ?>");
+        
+      
+     
 
       var q_timer_next = setInterval(function() {
+        //document.cookie="quiz_time-"+"<?php echo $st_id; ?>"+"-"+"="+seconds_next;
         seconds_next++;
+
         timer_next.val(seconds_next);
       }, 1000);
     }
@@ -401,7 +503,13 @@
   function question_pallate(i){
     $(".qustion-box-one").hide();
     $(".qustion-box-one-"+i).show();
-    window.history.replaceState(null, null, "?question="+i);
+     var reference_id_url = "<?php if(isset($_GET['reference_id'])){ echo $_GET['reference_id']; } ?>";
+     if(reference_id_url){
+      var reference_url = reference_id_url;
+     }else{
+      var reference_url = "";
+     }
+    window.history.replaceState(null, null, "?question="+i+"<?php if(isset($_GET['reference_id'])){ ?>&&reference_id="+reference_url+"<?php } ?>");
   }
 
   

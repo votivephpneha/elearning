@@ -50,7 +50,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'user_auth:customer'], functio
 	Route::get('/quiz/{reference_id}', [UserController::class, 'quiz'])->name("exam_quiz");
 	Route::post('/submit_quiz', [UserController::class, 'submit_quiz'])->name("submit_quiz");
 	Route::post('/submit_question_answer', [UserController::class, 'submit_question_answer'])->name("submit_question_answer");
-	
+	Route::post('/save_timer', [UserController::class, 'save_timer'])->name("save_timer");
 	Route::get('/session_analysis/{course_id}/{topic_id}/{st_id}', [UserController::class, 'session_analysis'])->name("session_analysis");
 	Route::get('/session_analysis/{reference_id}', [UserController::class, 'session_analysis'])->name("session_analysis_exam");
 	Route::get('/session_analysis_view/{course_id}/{topic_id}/{st_id}', [UserController::class, 'session_analysis_view'])->name("session_analysis");

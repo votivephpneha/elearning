@@ -62,7 +62,7 @@
       
       if(i == 1){
         var prev_timer = "<?php echo $timer; ?>";
-        var timer_split = prev_timer.split('.');
+        var timer_split = prev_timer.split(':');
         var new_time = parseInt(timer_split[0])*60+parseInt(timer_split[1]);
         console.log("new_time",new_time);
         var avg_time_prev = $(".avg_time-"+i).val();
@@ -144,11 +144,20 @@
     $(".total_time_mins").html(time_sum_min+":"+time_sum_sec1);
   }
   var total_questions = $(".attempt-quesa").length;
-  var total_avg_time = time_sum/60;
-  console.log("total_avg_time",total_avg_time);
-  var total_avg = total_avg_time/total_questions;
-  var avg_time = total_avg.toFixed(2);
-  $(".avg_time_minutes").html(avg_time);
+  var total_avg_time = time_sum/total_questions;
+  var total_avg_min = parseInt(total_avg_time/60);
+  var total_avg_sec = parseInt(total_avg_time%60);
+  
+  var digit_count = total_avg_sec.toString().length;
+  if(digit_count < 2){
+    var total_avg_sec1 = "0"+total_avg_sec;
+  }else{
+    var total_avg_sec1 = total_avg_sec;
+  }
+  console.log("total_avg_time",digit_count);
+  
+  $(".avg_time_minutes").html(total_avg_min+":"+total_avg_sec1);
+  
 
   
   
@@ -373,6 +382,7 @@
 @if($qu->attempted_status == NULL)
  <label class="label_two label_attempted-{{ $i }}">0% Correct</label>  
 @endif    
+
 <label class="label_two label_incorrect-{{ $i }}">0% Correct</label>  
 @foreach($options as $op)
   @if($op->correct_answer == "correct" && $op->student_answer == $op->option_id)

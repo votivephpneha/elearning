@@ -15,6 +15,7 @@ use App\Models\Courses;
 use App\Models\Topics;
 use App\Models\Subtopics;
 use App\Models\Exambuilder;
+use App\Models\Savetime;
 use Hash;
 use Session;
 use DB;
@@ -99,13 +100,20 @@ class UserController extends Controller
 
         $total_time = $get_timer->quiz_time;
 
-        $min = $total_time/60;
-        $mins = number_format($min, 2, '.', '');
-        $mins1 = str_replace(".",":",$mins);
-        Session::put("timer", $mins);
+        $min = intval($total_time/60);
+        $sec = $total_time%60;
+        $sec1 = strlen($sec);
+        if($sec1 < 2){
+            $sec2 = "0".$sec;
+        }else{
+            $sec2 = $sec;
+        }
+        // $mins = number_format($min, 2, '.', '');
+        // $mins1 = str_replace(".",":",$mins);
+        Session::put("timer", $min.":".$sec2);
         $data['question_count'] = $i;
         $data['marks'] = $marks;
-        $data['total_time'] = $mins1;
+        $data['total_time'] = $min.":".$sec2;
 
         $data['course_title'] = DB::table("courses")->where("course_id",$course_id)->first();
         $data['subtopic_data'] = DB::table("subtopics")->where("st_id",$st_id)->first();
@@ -254,6 +262,13 @@ class UserController extends Controller
                 Session::put("reference_id",$data['reference_id']);
             }else{
                 $data['reference_id'] = Session::get("reference_id");
+            }
+
+            $get_timer = DB::table("quiz_timer")->where("reference_id",$data['reference_id'])->first();
+            if($get_timer){
+                $data['get_timer'] = $get_timer->timer_value;
+            }else{
+                $data['get_timer'] = "";
             }
             
             
@@ -444,6 +459,25 @@ class UserController extends Controller
             }
         
     	return view("Front.session_analysis")->with($data);
+    }
+
+    public function save_timer(Request $request){
+        $reference_id = $request->reference_id;
+        $timer_value = $request->timer_value;
+
+        $get_timer = DB::table("quiz_timer")->where("reference_id",$reference_id)->first();
+
+        if($get_timer){
+            DB::table('quiz_timer')
+                    ->where("reference_id",$reference_id)
+                    ->update(['timer_value' => $timer_value]);
+        }else{
+            $save_time = new Savetime();
+            $save_time->timer_value = $timer_value;
+            $save_time->reference_id = $reference_id;
+            $save_time->save();
+        }
+
     }
 
     public function session_history(Request $request){
